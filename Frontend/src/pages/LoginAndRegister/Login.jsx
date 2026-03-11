@@ -7,7 +7,10 @@ import { Link } from "react-router-dom";
 import { useState } from 'react';
 
 const Login = () => {
+    // For show and hide password toggle
     const [reveal, setReveal] = useState(false); 
+    // For role toggle
+    const [role, setRole] = useState("user");
   return (
     <div className={styles["auth-wrapper"]}>
         <div className={styles["auth-card"]}>
@@ -30,33 +33,45 @@ const Login = () => {
                     {/* Role selector */}
                     <div className={styles["role-toggle"]}>
                         {/* User role (Citizen) toggle button */}
-                        <div className={`${styles["role-btn"]} ${styles.active}`}>
+                        <button 
+                            className={`${styles["role-btn"]} ${role === "user" ? styles.active : styles.inactive}`}
+                            onClick = {() => {setRole("user")}}
+                            type = {"button"}
+                        >
                             <span className={styles["role-icon"]}> <FaUser/></span>
                             <span className ={styles["role-text"]} >Citizen</span>
-                        </div>
+                        </button>
                         {/* Admin role (Dot Admin) toggle button */}
-                        <div className={styles["role-btn"]}>
+                        <button 
+                            className={`${styles["role-btn"]} ${role === "admin" ? styles.active : styles.inactive}`}
+                            onClick ={() => setRole("admin")}
+                            type = {"button"}
+                        >
                             <span className={styles["role-icon"]}><FaLandmark/></span>
                             <span className ={styles["role-text"]}>DOT Admin</span>
-                        </div>
+                        </button>
                     </div>
                     {/* Input section for email and password */}
                     {/* Input field for email */}
                     <div className={styles["field"]}>
-                        <label>EMAIL</label>
+                        <label htmlFor = "email">EMAIL</label>
                         <div className={styles["input-wrapper"]}>
                             <CiMail className = {styles.icon}/>
                             <input type="text" 
-                            placeholder="email@example.com" required/>
+                                placeholder="email@example.com" required
+                                id = "email"
+                            />
                         </div>
                     </div>
                     {/* Input field for password */}
                     <div className={styles["field"]}>
-                        <label>PASSWORD</label>
+                        <label htmlFor = "password">PASSWORD</label>
                         <div className={styles["input-wrapper"]}>
                             <CiLock className = {styles.icon}/>
                             <input type={ reveal ? "text":"password"} 
-                            placeholder="Enter your password" required/>
+                                placeholder="Enter your password" required
+                                id = "password"
+                            />
                             <span className = {styles.eyeIcon}
                                 onClick = {() => {setReveal(!reveal)}}>
                                 {reveal? <IoEyeOutline /> : <IoEyeOffOutline /> }

@@ -87,11 +87,13 @@ body{
 .role-toggle .role-text{
     font-size: 0.75rem;
 }
-.role-toggle .role-btn .active{
-    border-color: var(--accent);
+/* For toggle */
+.role-toggle .role-btn.active{
     background-color: var(--accent-light);
     color: var(--accent);    
-
+}
+.role-toggle .role-btn.inactive{
+    color: #8A8880;
 }
 /* For input section */
 .form-box{
@@ -127,6 +129,10 @@ form .input-wrapper{
     padding: 0 50px;
     background-color: var(--bg-color);
     box-sizing: border-box;
+}
+.input-wrapper input:focus{
+    border: 1px solid #2563Eb;
+    background-color: #fff;
 }
 .icon{
     position: absolute;
