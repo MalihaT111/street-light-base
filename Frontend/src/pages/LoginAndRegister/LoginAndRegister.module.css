@@ -1,28 +1,78 @@
 body{
-  background-color: #0F172A;
+  background-color: var(--bg-color);
 }
-.wrapper{
-    width: 100vw;
+.auth-wrapper{
+    /* use calc() for width when nav-bar is introduce */
+    width: 100vw; 
     height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1A1F2E;
+}
+.auth-card{
+    max-width: 400px;
+    width: 100%;
+
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+.auth-body{
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 24px;
+}
+.auth-logo{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.auth-logo-mark{
+    width: 52px;
+    height: 53px;
+    fill: #fff;
 
     display: flex;
     align-items: center;
     justify-content: center;
-
-    color: #1A1F2E;
+    background-color: #3778e1;
+    border-radius: 5px;
 }
-.container{
-    width: 400px;
-    max-width: 90%;
-
-    background-color:#E5E7EB ;
-    padding: 2rem;
+.auth-logo-mark svg{
+    width: 26px;
+    height: 26px;
+    fill: #fff;
+}
+/* For role toggle buttons (User/Admin)*/
+.role-toggle{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+.role-toggle .role-btn{
+    padding: 10px;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    align-items: center;
+    justify-content: center;
 
-    border-radius: 15px;   
+    background-color: var(--bg-color);
+    border-radius: 8px;
 }
+.role-toggle .role-btn .active{
+    border-color: var(--accent);
+    background-color: var(--accent-light);
+    color: var(--accent);    
+
+}
+/* For input section */
 .form-box h1{
     text-align: center;
 }
@@ -41,6 +91,7 @@ form .input-wrapper{
     border-radius: 30px;
 
     padding: 0 50px;
+    background-color: var(--bg-color);
 }
 .icon{
     position: absolute;
@@ -56,12 +107,14 @@ form .input-wrapper{
     transform: translateY(-40%);
     font-size: 1.5rem;
 }
-.remember-forget{
+.forget-password{
     display: flex;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: flex-end;
     font-size: 0.8rem;
     margin: 0 10px 1rem;
 }
+/* For sign in and register buttons */
 .btn-wrapper{
     display: flex;
     justify-content: space-evenly;
@@ -86,4 +139,18 @@ button:hover{
 .registeration{
     text-align: center;
     font-size: 0.8rem;
+}
+.divider{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+    color: #333;
+    font-size: 0.8rem;
+    gap: 20px;
+}
+.divider::before, .divider::after{
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #ddd;
 }
