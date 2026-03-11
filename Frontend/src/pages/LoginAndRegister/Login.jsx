@@ -32,18 +32,18 @@ const Login = () => {
                         {/* User role (Citizen) toggle button */}
                         <div className={`${styles["role-btn"]} ${styles.active}`}>
                             <span className={styles["role-icon"]}> <FaUser/></span>
-                            <span>Citizen</span>
+                            <span className ={styles["role-text"]} >Citizen</span>
                         </div>
                         {/* Admin role (Dot Admin) toggle button */}
                         <div className={styles["role-btn"]}>
                             <span className={styles["role-icon"]}><FaLandmark/></span>
-                            <span>DOT Admin</span>
+                            <span className ={styles["role-text"]}>DOT Admin</span>
                         </div>
                     </div>
                     {/* Input section for email and password */}
                     {/* Input field for email */}
                     <div className={styles["field"]}>
-                        <label>Email</label>
+                        <label>EMAIL</label>
                         <div className={styles["input-wrapper"]}>
                             <CiMail className = {styles.icon}/>
                             <input type="text" 
@@ -51,8 +51,8 @@ const Login = () => {
                         </div>
                     </div>
                     {/* Input field for password */}
-                    <div className="field">
-                        <label>Password</label>
+                    <div className={styles["field"]}>
+                        <label>PASSWORD</label>
                         <div className={styles["input-wrapper"]}>
                             <CiLock className = {styles.icon}/>
                             <input type={ reveal ? "text":"password"} 
@@ -72,7 +72,7 @@ const Login = () => {
                     {/* Divider */}
                     <span className = {styles["divider"]}>or</span>
                     <div className={styles.registeration}>
-                        <p>Don't have an account? <Link to="/register">Sign Up</Link></p>
+                        <p>Don't have an account? <Link to="/register" className ={styles["sign-up-link"]}>Sign Up</Link></p>
                     </div>
                 </div>
             </form>

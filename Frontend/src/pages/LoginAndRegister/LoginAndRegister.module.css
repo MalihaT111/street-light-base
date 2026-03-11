@@ -1,10 +1,15 @@
 body{
   background-color: var(--bg-color);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 .auth-wrapper{
     /* use calc() for width when nav-bar is introduce */
-    width: 100vw; 
-    height: 100vh;
+    height: 100%;
+    padding: 40px 24px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -19,11 +24,13 @@ body{
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
+    gap: 8px;
 }
 .auth-body{
     background-color: #fff;
+    border: 1px solid #E2E0DA;
     border-radius: 15px;
+    box-shadow: 0 1px 4pxrgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.05);
     padding: 24px;
 }
 .auth-logo{
@@ -36,18 +43,29 @@ body{
 .auth-logo-mark{
     width: 52px;
     height: 53px;
-    fill: #fff;
 
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: #3778e1;
-    border-radius: 5px;
+    border-radius: 13px;
+    margin: 0 auto 14px;
 }
 .auth-logo-mark svg{
     width: 26px;
     height: 26px;
     fill: #fff;
+}
+/* For auth title and subtitle */
+.auth-logo-title{
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111827;
+}
+.auth-logo-subtitle{
+    font-size: 0.75rem;
+    color:#8A8880;
+    margin-bottom: 1.2rem;
 }
 /* For role toggle buttons (User/Admin)*/
 .role-toggle{
@@ -66,6 +84,9 @@ body{
     background-color: var(--bg-color);
     border-radius: 8px;
 }
+.role-toggle .role-text{
+    font-size: 0.75rem;
+}
 .role-toggle .role-btn .active{
     border-color: var(--accent);
     background-color: var(--accent-light);
@@ -73,6 +94,20 @@ body{
 
 }
 /* For input section */
+.form-box{
+    width: 100%;
+}
+.field{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;  
+    margin-bottom: 18px;
+}
+.field label{
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #8A8880; 
+}
 .form-box h1{
     text-align: center;
 }
@@ -80,7 +115,6 @@ form .input-wrapper{
     width: 100%;
     position: relative;
     height: 50px;
-    margin: 30px 0;
 }
 .input-wrapper input{
     width: 100%;
@@ -92,6 +126,7 @@ form .input-wrapper{
 
     padding: 0 50px;
     background-color: var(--bg-color);
+    box-sizing: border-box;
 }
 .icon{
     position: absolute;
@@ -123,7 +158,6 @@ button{
     padding: 0.8rem 1.2rem;
     border-radius: 30px;
     width: 100%;
-    margin-top: 1rem;
     border: none;
     cursor: pointer;
     background-color: #3B82F6;
@@ -153,4 +187,13 @@ button:hover{
     content: "";
     flex: 1;
     border-bottom: 1px solid #ddd;
+}
+a, a:visited{
+    text-decoration: none;
+    color: #2563Eb;
+    font-size: 0.7rem;
+}
+.sign-up-link{
+    font-size: 0.75rem;
+    font-weight: 600;
 }
