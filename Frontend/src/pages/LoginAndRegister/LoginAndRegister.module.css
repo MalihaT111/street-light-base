@@ -8,7 +8,7 @@ body{
 }
 .auth-wrapper{
     /* use calc() for width when nav-bar is introduce */
-    height: 100%;
+    max-height: 100vh;
     padding: 40px 24px;
     display: flex;
     align-items: center;
@@ -114,7 +114,7 @@ body{
 form .input-wrapper{
     width: 100%;
     position: relative;
-    height: 50px;
+    height: 42px;
 }
 .input-wrapper input{
     width: 100%;
@@ -133,7 +133,7 @@ form .input-wrapper{
     left: 0.8rem;
     top: 50%;
     translate: 0 -50%;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
 }
 .eyeIcon {
     position: absolute;
@@ -182,6 +182,8 @@ button:hover{
     color: #333;
     font-size: 0.8rem;
     gap: 20px;
+    color: #8A8880;
+    font-size: 0.7rem;
 }
 .divider::before, .divider::after{
     content: "";
@@ -196,4 +198,14 @@ a, a:visited{
 .sign-up-link{
     font-size: 0.75rem;
     font-weight: 600;
+}
+
+/* For first name and last name input section */
+.name-wrapper{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+.name-wrapper input{
+    padding: 0 20px;
 }
