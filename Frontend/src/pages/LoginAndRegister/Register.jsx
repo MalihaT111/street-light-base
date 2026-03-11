@@ -95,7 +95,7 @@ const Register = () => {
                         </div>
                     </div>
                     <div className={styles["btn-wrapper"]}>
-                        <button type = "submit">Sign In →</button>
+                        <button type = "submit">Create Account →</button>
                     </div>
                     {/* Divider */}
                     <span className = {styles["divider"]}>or</span>
