@@ -18,6 +18,7 @@ nav{
     position: sticky;
     top: 0;
     z-index: 999;
+    box-sizing: border-box;
 }
 nav:nth-child(1){
     align-self: flex-start;
@@ -47,7 +48,7 @@ nav .logo-mark svg{
 }
 .auth-wrapper{
     /* use calc() for width when nav-bar is introduce */
-    height: calc(100vh - 52px);
+    max-height: calc(100vh - 52px);
     padding: 40px 24px;
     display: flex;
     align-items: center;
@@ -253,4 +254,9 @@ a, a:visited{
 }
 .name-wrapper input{
     padding: 0 20px;
+}
+.error{
+    color: #ff4d4f;
+    font-size: 0.75rem;
+    font-weight: 700;
 }

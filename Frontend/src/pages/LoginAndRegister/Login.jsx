@@ -11,6 +11,53 @@ const Login = () => {
     const [reveal, setReveal] = useState(false); 
     // For role toggle
     const [role, setRole] = useState("user");
+    // Client side form validation
+    const [formInput, setFormInput] = useState({email:"" ,password:""});
+    const [errors, setErrors] = useState({});
+    // Message for each error type and case
+    const validate = () => {
+        const errorMessage = {};
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        // Validation for email
+        if (!formInput.email.trim()){
+            errorMessage.email = "Email is required";
+        }
+        else if (formInput.email.length > 100){
+            errorMessage.email = "Email is too long";
+        }
+        else if (!emailRegex.test(formInput.email)){
+            errorMessage.email = "Pleae enter a valid email address"
+        }
+        // Validation for password
+        if(!formInput.password.trim()){
+            errorMessage.password = "Password is required";
+        }
+        else if (formInput.password.length < 8){
+            errorMessage.password = "Password must be at least 8 characters"
+        }
+        return errorMessage;
+    }
+    //To update and store formInput values
+    const handleChange = (e) => {
+        // Object decontrusting
+        const {id,value} = e.target;
+
+        setFormInput((prev) => ({
+            ...prev, [id] : value
+        }));
+    }
+    const handleSubmit = (e) =>{
+        e.preventDefault();
+
+        const errorMessages = validate();
+        setErrors(errorMessages);
+
+        if (Object.keys(errorMessages).length > 0) {
+            return;
+        }
+    
+        console.log("Form submitted successfully");   
+    }
   return (
     <>
         {/* Nav bar */}
@@ -39,7 +86,7 @@ const Login = () => {
                 <p className ={styles["auth-logo-subtitle"]}>NYC Streetlight Base Damage Reporting</p>
                 <form 
                     className={`${styles["form-box"]} ${styles.login}`} 
-                    onSubmit = {(e) => e.preventDefault()}
+                    onSubmit = {handleSubmit}
                 >
                     <div className={styles["auth-body"]}>
                         {/* Role selector */}
@@ -70,9 +117,11 @@ const Login = () => {
                             <div className={styles["input-wrapper"]}>
                                 <CiMail className = {styles.icon}/>
                                 <input type="text" 
-                                    placeholder="email@example.com" required
+                                    placeholder="email@example.com"
                                     id = "email"
+                                    onChange = {handleChange}
                                 />
+                                <div className={styles["error"]}>{errors.email}</div>
                             </div>
                         </div>
                         {/* Input field for password */}
@@ -81,13 +130,16 @@ const Login = () => {
                             <div className={styles["input-wrapper"]}>
                                 <CiLock className = {styles.icon}/>
                                 <input type={ reveal ? "text":"password"} 
-                                    placeholder="Enter your password" required
+                                    placeholder="Enter your password"
                                     id = "password"
+                                    onChange = {handleChange}
+                                    className={errors.password ? styles["input-error"]: ""}
                                 />
                                 <span className = {styles.eyeIcon}
                                     onClick = {() => {setReveal(!reveal)}}>
                                     {reveal? <IoEyeOutline /> : <IoEyeOffOutline /> }
                                 </span>
+                                <div className={styles["error"]}>{errors.password}</div>
                             </div>
                         </div>
                         <div className={styles["forget-password"]}>
