@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './Home.module.css';
 import { 
@@ -22,6 +22,8 @@ const Home = () => {
   // Get user from localStorage
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
   
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -39,15 +41,39 @@ const Home = () => {
     }
   }, [navigate]);
 
-  if (loading) return null;
-
   const username = user?.username || 'Citizen';
+
+  useEffect(() => {
+    const handleOutsidePress = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsidePress);
+    document.addEventListener('touchstart', handleOutsidePress);
+
+    return () => {
+      document.removeEventListener('mousedown', handleOutsidePress);
+      document.removeEventListener('touchstart', handleOutsidePress);
+    };
+  }, []);
 
   const handleSignOut = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     navigate('/');
   };
+
+  const toggleUserMenu = () => {
+    setIsUserMenuOpen((prevOpen) => !prevOpen);
+  };
+
+  const closeUserMenu = () => {
+    setIsUserMenuOpen(false);
+  };
+
+  if (loading) return null;
   
   // Mock data for dashboard
   const mockStats = {
@@ -97,25 +123,44 @@ const Home = () => {
             <FaChartBar className={styles.navIcon} />
             <span>Leaderboard</span>
           </Link>
-          <Link to="/profile" className={styles.navLink}>
-            <FaUser className={styles.navIcon} />
-            <span>Profile</span>
-          </Link>
-          <Link to="/settings" className={styles.navLink}>
-            <FaCog className={styles.navIcon} />
-            <span>Settings</span>
-          </Link>
         </div>
         
-        <div className={styles.userInfo}>
-          <div className={styles.userAvatar}>
-            {username.charAt(0).toUpperCase()}
-          </div>
-          <span className={styles.userName}>{username}</span>
-          <button onClick={handleSignOut} className={styles.signOutBtn} title="Sign Out">
-            <FaSignOutAlt className={styles.signOutIcon} />
-            <span>Sign Out</span>
+        <div
+          ref={userMenuRef}
+          className={`${styles.userInfo} ${isUserMenuOpen ? styles.userInfoOpen : ''}`}
+        >
+          <button
+            type="button"
+            className={styles.userMenuTrigger}
+            onClick={toggleUserMenu}
+            aria-haspopup="menu"
+            aria-expanded={isUserMenuOpen}
+          >
+            <div className={styles.userAvatar}>
+              {username.charAt(0).toUpperCase()}
+            </div>
+            <span className={styles.userName}>{username}</span>
           </button>
+          <div className={styles.userDropdown}>
+            <Link to="/profile" className={styles.dropdownItem} onClick={closeUserMenu}>
+              <FaUser className={styles.dropdownIcon} />
+              <span>Profile</span>
+            </Link>
+            <Link to="/settings" className={styles.dropdownItem} onClick={closeUserMenu}>
+              <FaCog className={styles.dropdownIcon} />
+              <span>Settings</span>
+            </Link>
+            <button
+              onClick={() => {
+                closeUserMenu();
+                handleSignOut();
+              }}
+              className={styles.dropdownItemButton}
+            >
+              <FaSignOutAlt className={styles.dropdownIcon} />
+              <span>Sign Out</span>
+            </button>
+          </div>
         </div>
       </nav>
 

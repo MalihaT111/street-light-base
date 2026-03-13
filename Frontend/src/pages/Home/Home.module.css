@@ -80,7 +80,17 @@
 .userInfo {
   display: flex;
   align-items: center;
+  position: relative;
+}
+
+.userMenuTrigger {
+  display: inline-flex;
+  align-items: center;
   gap: 12px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
 }
 
 .userAvatar {
@@ -102,29 +112,68 @@
   color: #111827;
 }
 
-.signOutBtn {
+.userDropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 170px;
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.12);
+  padding: 6px;
+  display: none;
+  z-index: 1100;
+}
+
+.userInfo:hover .userDropdown,
+.userInfo:focus-within .userDropdown {
+  display: block;
+}
+
+.userInfoOpen .userDropdown {
+  display: block;
+}
+
+.dropdownItem,
+.dropdownItemButton {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background-color: transparent;
+  gap: 8px;
+  width: 100%;
+  background: transparent;
   color: #6B7280;
-  border: 1px solid #E5E7EB;
-  padding: 8px 16px;
+  border: none;
+  padding: 10px 12px;
   border-radius: 8px;
+  text-decoration: none;
+  text-align: left;
   cursor: pointer;
   font-size: 0.85rem;
   font-weight: 500;
   transition: all 0.2s ease;
 }
 
-.signOutBtn:hover {
+.dropdownItem:link,
+.dropdownItem:visited,
+.dropdownItem:hover,
+.dropdownItem:active {
+  color: #6B7280;
+}
+
+.dropdownItem:hover,
+.dropdownItemButton:hover {
+  background-color: #F9FAFB;
+  color: #111827;
+}
+
+.dropdownItemButton:last-child:hover {
   background-color: #FEF2F2;
-  border-color: #FCA5A5;
   color: #DC2626;
 }
 
-.signOutIcon {
-  font-size: 0.9rem;
+.dropdownIcon {
+  font-size: 0.85rem;
 }
 
 /* Main Content */
@@ -222,6 +271,9 @@
 
 .ctaContent {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .ctaContent h2 {
@@ -241,15 +293,27 @@
 .ctaButton {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   background-color: #2563EB;
   color: white;
   padding: 12px 24px;
   border-radius: 8px;
   text-decoration: none;
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  align-self: flex-end;
   transition: background-color 0.2s ease;
+}
+
+.ctaButton:link,
+.ctaButton:visited,
+.ctaButton:hover,
+.ctaButton:active {
+  color: #fff;
 }
 
 .ctaButton:hover {
@@ -260,21 +324,6 @@
   font-size: 0.9rem;
 }
 
-.ctaIllustration {
-  width: 200px;
-  height: 200px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.illustrationCircle {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #EEF3FD 0%, #DBEAFE 100%);
-  border: 8px solid #BFDBFE;
-}
 
 /* Leaderboard Section */
 .leaderboardSection {
@@ -480,6 +529,16 @@
   .navLinks {
     display: none;
   }
+
+  .userMenuTrigger {
+    padding: 6px 8px;
+    border-radius: 8px;
+  }
+
+  .userMenuTrigger:focus-visible {
+    outline: 2px solid #93C5FD;
+    outline-offset: 2px;
+  }
   
   .mainContent {
     padding: 16px;
@@ -498,10 +557,9 @@
     text-align: center;
     gap: 24px;
   }
-  
-  .ctaIllustration {
-    width: 100%;
-    height: 120px;
+
+  .ctaButton {
+    align-self: center;
   }
   
   .tableHeader,
