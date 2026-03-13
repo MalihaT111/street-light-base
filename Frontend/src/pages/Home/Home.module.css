@@ -102,6 +102,31 @@
   color: #111827;
 }
 
+.signOutBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: transparent;
+  color: #6B7280;
+  border: 1px solid #E5E7EB;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.signOutBtn:hover {
+  background-color: #FEF2F2;
+  border-color: #FCA5A5;
+  color: #DC2626;
+}
+
+.signOutIcon {
+  font-size: 0.9rem;
+}
+
 /* Main Content */
 .mainContent {
   padding: 32px;

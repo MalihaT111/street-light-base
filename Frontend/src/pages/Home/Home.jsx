@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './Home.module.css';
 import { 
   FaChartLine, 
@@ -12,25 +12,42 @@ import {
   FaFileAlt,
   FaChartBar,
   FaUser,
-  FaCog
+  FaCog,
+  FaSignOutAlt
 } from 'react-icons/fa';
 
 const Home = () => {
+  const navigate = useNavigate();
+  
   // Get user from localStorage
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (error) {
-        console.error('Error parsing user data:', error);
-      }
+    if (!savedUser) {
+      navigate('/');
+      return;
     }
-  }, []);
+    try {
+      setUser(JSON.parse(savedUser));
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      navigate('/');
+    } finally {
+      setLoading(false);
+    }
+  }, [navigate]);
+
+  if (loading) return null;
 
   const username = user?.username || 'Citizen';
+
+  const handleSignOut = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    navigate('/');
+  };
   
   // Mock data for dashboard
   const mockStats = {
@@ -95,6 +112,10 @@ const Home = () => {
             {username.charAt(0).toUpperCase()}
           </div>
           <span className={styles.userName}>{username}</span>
+          <button onClick={handleSignOut} className={styles.signOutBtn} title="Sign Out">
+            <FaSignOutAlt className={styles.signOutIcon} />
+            <span>Sign Out</span>
+          </button>
         </div>
       </nav>
 
