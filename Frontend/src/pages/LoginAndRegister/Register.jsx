@@ -10,6 +10,7 @@ const Register = () => {
     // For show and hide password toggle
     const [reveal, setReveal] = useState(false); 
     const [role, setRole] = useState("user");
+    const [errors, setErrors] = useState({ general: "" });
     // Form state
     const [formInput, setFormInput] = useState({
         firstName: "",
