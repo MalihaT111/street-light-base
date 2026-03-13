@@ -9,7 +9,6 @@ const Register = () => {
     const navigate = useNavigate();
     // For show and hide password toggle
     const [reveal, setReveal] = useState(false); 
-    // For role toggle
     const [role, setRole] = useState("user");
     // Form state
     const [formInput, setFormInput] = useState({
@@ -83,6 +82,7 @@ const Register = () => {
                     onSubmit = {handleSubmit}
                 >
                     <div className={styles["auth-body"]}>
+                        {errors.general && <div className={styles["error"]}>{errors.general}</div>}
                         {/* Role selector */}
                         <div className={styles["role-toggle"]}>
                             {/* User role (Citizen) toggle button */}
@@ -111,7 +111,7 @@ const Register = () => {
                             <div className={styles["name-wrapper"]}>
                                 {/* First name */}
                                 <div className={styles["first-name"]}>
-                                    <label htmlFor = "first-name">FIRST NAME</label>
+                                    <label htmlFor = "firstName">FIRST NAME</label>
                                     <div className={styles["input-wrapper"]}>
                                         <input 
                                             type="text" 
@@ -124,7 +124,7 @@ const Register = () => {
                                 </div>
                                 {/* Last name */}
                                 <div className={styles["last-name"]}>
-                                    <label htmlFor = "last-name">LAST NAME</label>
+                                    <label htmlFor = "lastName">LAST NAME</label>
                                     <div className={styles["input-wrapper"]}>
                                         <input 
                                             type="text" 
@@ -189,7 +189,7 @@ const Register = () => {
                         {/* Divider */}
                         <span className = {styles["divider"]}>or</span>
                         <div className={styles.registeration}>
-                            <p>Already have an account? <Link to="/" className ={styles["sign-up-link"]}>Sign Up</Link></p>
+                            <p>Already have an account? <Link to="/" className ={styles["sign-up-link"]}>Sign In</Link></p>
                         </div>
                     </div>
                 </form>

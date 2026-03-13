@@ -18,12 +18,12 @@ const Login = () => {
     const validate = () => {
         const errorMessage = {};
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-        // Validation for email
+        // Validation for email or username
         if (!formInput.email.trim()){
-            errorMessage.email = "Email is required";
+            errorMessage.email = "Email or username is required";
         }
         else if (formInput.email.length > 100){
-            errorMessage.email = "Email is too long";
+            errorMessage.email = "Input is too long";
         }
         else if (!emailRegex.test(formInput.email)){
             errorMessage.email = "Please enter a valid email address"
@@ -46,7 +46,7 @@ const Login = () => {
             ...prev, [id] : value
         }));
     }
-    const handleSubmit = (e) =>{
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const errorMessages = validate();
@@ -127,14 +127,14 @@ const Login = () => {
                                 <span className ={styles["role-text"]}>DOT Admin</span>
                             </button>
                         </div>
-                        {/* Input section for email and password */}
-                        {/* Input field for email */}
+                        {/* Input section for email/username and password */}
+                        {/* Input field for email or username */}
                         <div className={styles["field"]}>
-                            <label htmlFor = "email">EMAIL</label>
+                            <label htmlFor = "email">EMAIL OR USERNAME</label>
                             <div className={styles["input-wrapper"]}>
                                 <CiMail className = {styles.icon}/>
                                 <input type="text" 
-                                    placeholder="email@example.com"
+                                    placeholder="email@example.com or username"
                                     id = "email"
                                     value={formInput.email}
                                     onChange = {handleChange}
