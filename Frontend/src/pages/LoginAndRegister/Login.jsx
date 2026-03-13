@@ -1,12 +1,12 @@
-import React from 'react'
-import styles from './LoginAndRegister.module.css'
-import { CiUser , CiMail, CiLock, CiUnlock } from "react-icons/ci";
-import { FaUser , FaLandmark} from "react-icons/fa";
-import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
 import { useState } from 'react';
+import { useNavigate, Link } from "react-router-dom";
+import styles from './LoginAndRegister.module.css';
+import { CiMail, CiLock } from "react-icons/ci";
+import { FaUser, FaLandmark } from "react-icons/fa";
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 
 const Login = () => {
+    const navigate = useNavigate();
     // For show and hide password toggle
     const [reveal, setReveal] = useState(false); 
     // For role toggle
@@ -26,7 +26,7 @@ const Login = () => {
             errorMessage.email = "Email is too long";
         }
         else if (!emailRegex.test(formInput.email)){
-            errorMessage.email = "Pleae enter a valid email address"
+            errorMessage.email = "Please enter a valid email address"
         }
         // Validation for password
         if(!formInput.password.trim()){
@@ -39,7 +39,7 @@ const Login = () => {
     }
     //To update and store formInput values
     const handleChange = (e) => {
-        // Object decontrusting
+        // Object destructuring
         const {id,value} = e.target;
 
         setFormInput((prev) => ({
@@ -56,7 +56,24 @@ const Login = () => {
             return;
         }
     
-        console.log("Form submitted successfully");   
+        // Simulate successful login
+        // In a real app, this would be an API call to the backend
+        const mockUserData = {
+            user: {
+                id: 123,
+                username: formInput.email.split('@')[0] + '_nyc', // Generate username from email
+                email: formInput.email,
+                role: role
+            },
+            access_token: 'mock_jwt_token_' + Date.now()
+        };
+        
+        // Save user data to localStorage as specified in requirements
+        localStorage.setItem("user", JSON.stringify(mockUserData.user));
+        localStorage.setItem("token", mockUserData.access_token);
+        
+        console.log("Login successful, redirecting to home page");
+        navigate('/home');
     }
   return (
     <>
@@ -119,6 +136,7 @@ const Login = () => {
                                 <input type="text" 
                                     placeholder="email@example.com"
                                     id = "email"
+                                    value={formInput.email}
                                     onChange = {handleChange}
                                 />
                                 <div className={styles["error"]}>{errors.email}</div>
@@ -132,6 +150,7 @@ const Login = () => {
                                 <input type={ reveal ? "text":"password"} 
                                     placeholder="Enter your password"
                                     id = "password"
+                                    value={formInput.password}
                                     onChange = {handleChange}
                                     className={errors.password ? styles["input-error"]: ""}
                                 />

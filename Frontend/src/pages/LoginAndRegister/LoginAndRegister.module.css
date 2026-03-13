@@ -123,17 +123,33 @@ nav .logo-mark svg{
 
     background-color: var(--bg-color);
     border-radius: 8px;
+    border: none;
+    box-shadow: none;
+    transition: background-color 0.2s, color 0.2s;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+.role-toggle .role-btn:focus,
+.role-toggle .role-btn:focus-visible,
+.role-toggle .role-btn:active,
+.role-toggle .role-btn:hover{
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
 }
 .role-toggle .role-text{
     font-size: 0.75rem;
 }
 /* For toggle */
 .role-toggle .role-btn.active{
-    background-color: var(--accent-light);
-    color: var(--accent);    
+    background-color: var(--light-accent);
+    color: var(--accent);
+    box-shadow: none !important;
 }
 .role-toggle .role-btn.inactive{
     color: #8A8880;
+    box-shadow: none !important;
 }
 /* For input section */
 .form-box{
@@ -209,6 +225,10 @@ button{
     background-color: #3B82F6;
     color: white;
     font-size: 0.8rem;
+}
+button:focus{
+    outline: none;
+    box-shadow: none;
 }
 button:hover{
     background-color:#3778e1 ;

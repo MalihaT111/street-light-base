@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test localStorage for Street Systems</title>
+    <style>
+        body {
+            font-family: 'DM Sans', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2563EB;
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+        }
+        button {
+            background-color: #2563EB;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #1D4ED8;
+        }
+        .code-block {
+            background-color: #F9FAFB;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            margin: 10px 0;
+            border-left: 4px solid #2563EB;
+        }
+        .success {
+            color: #10B981;
+            font-weight: bold;
+        }
+        .error {
+            color: #EF4444;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Street Systems - localStorage Test</h1>
+        
+        <div class="test-section">
+            <h2>1. Set Test User Data</h2>
+            <p>Click the button below to set test user data in localStorage:</p>
+            <button onclick="setTestUser()">Set Test User Data</button>
+            <div id="setResult"></div>
+            
+            <div class="code-block">
+// Test user object
+const testUser = {
+    username: 'jsmith_nyc',
+    email: 'john.smith@example.com',
+    role: 'user',
+    id: 123
+};
+
+localStorage.setItem('user', JSON.stringify(testUser));
+localStorage.setItem('token', 'test_access_token_12345');
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>2. Check localStorage Contents</h2>
+            <p>Click to check what's currently in localStorage:</p>
+            <button onclick="checkLocalStorage()">Check localStorage</button>
+            <div id="checkResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>3. Clear localStorage</h2>
+            <p>Click to clear all localStorage data:</p>
+            <button onclick="clearLocalStorage()">Clear localStorage</button>
+            <div id="clearResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>4. Test Home Page Integration</h2>
+            <p>After setting test data, navigate to:</p>
+            <div class="code-block">
+http://localhost:5173/home
+            </div>
+            <p>The Home page should display: <strong>"Welcome back, jsmith_nyc 👋"</strong></p>
+            <p>If no user data exists, it will show: <strong>"Welcome back, Citizen 👋"</strong></p>
+        </div>
+    </div>
+
+    <script>
+        function setTestUser() {
+            const testUser = {
+                username: 'jsmith_nyc',
+                email: 'john.smith@example.com',
+                role: 'user',
+                id: 123
+            };
+            
+            try {
+                localStorage.setItem('user', JSON.stringify(testUser));
+                localStorage.setItem('token', 'test_access_token_12345');
+                document.getElementById('setResult').innerHTML = 
+                    '<p class="success">✓ Test user data set successfully!</p>' +
+                    '<p>Username: jsmith_nyc</p>' +
+                    '<p>Token: test_access_token_12345</p>';
+            } catch (error) {
+                document.getElementById('setResult').innerHTML = 
+                    '<p class="error">✗ Error setting localStorage: ' + error.message + '</p>';
+            }
+        }
+        
+        function checkLocalStorage() {
+            const user = localStorage.getItem('user');
+            const token = localStorage.getItem('token');
+            let result = '<h3>Current localStorage Contents:</h3>';
+            
+            if (user) {
+                try {
+                    const parsedUser = JSON.parse(user);
+                    result += '<p><strong>User:</strong> ' + JSON.stringify(parsedUser, null, 2) + '</p>';
+                } catch (e) {
+                    result += '<p><strong>User (raw):</strong> ' + user + '</p>';
+                }
+            } else {
+                result += '<p><strong>User:</strong> Not set</p>';
+            }
+            
+            result += '<p><strong>Token:</strong> ' + (token || 'Not set') + '</p>';
+            document.getElementById('checkResult').innerHTML = result;
+        }
+        
+        function clearLocalStorage() {
+            localStorage.clear();
+            document.getElementById('clearResult').innerHTML = 
+                '<p class="success">✓ localStorage cleared successfully!</p>';
+        }
+        
+        // Check localStorage on page load
+        window.onload = function() {
+            checkLocalStorage();
+        };
+    </script>
+</body>
+</html>

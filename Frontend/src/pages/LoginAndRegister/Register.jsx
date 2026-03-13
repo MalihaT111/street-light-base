@@ -1,17 +1,58 @@
-import React from 'react'
-import styles from './LoginAndRegister.module.css'
-import { CiUser , CiMail, CiLock, CiUnlock } from "react-icons/ci";
-import { FaUser , FaLandmark} from "react-icons/fa";
-import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
 import { useState } from 'react';
+import { useNavigate, Link } from "react-router-dom";
+import styles from './LoginAndRegister.module.css';
+import { CiUser, CiMail, CiLock } from "react-icons/ci";
+import { FaUser, FaLandmark } from "react-icons/fa";
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 
 const Register = () => {
+    const navigate = useNavigate();
     // For show and hide password toggle
     const [reveal, setReveal] = useState(false); 
     // For role toggle
     const [role, setRole] = useState("user");
-  return (
+    // Form state
+    const [formInput, setFormInput] = useState({
+        firstName: "",
+        lastName: "",
+        username: "",
+        email: "",
+        password: ""
+    });
+    
+    const handleChange = (e) => {
+        const {id, value} = e.target;
+        setFormInput((prev) => ({
+            ...prev,
+            [id]: value
+        }));
+    };
+    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        
+        // Simulate successful registration
+        const mockUserData = {
+            user: {
+                id: 456,
+                username: formInput.username || formInput.email.split('@')[0] + '_nyc',
+                email: formInput.email,
+                firstName: formInput.firstName,
+                lastName: formInput.lastName,
+                role: role
+            },
+            access_token: 'mock_jwt_token_' + Date.now()
+        };
+        
+        // Save user data to localStorage as specified in requirements
+        localStorage.setItem("user", JSON.stringify(mockUserData.user));
+        localStorage.setItem("token", mockUserData.access_token);
+        
+        console.log("Registration successful, redirecting to home page");
+        navigate('/home');
+    };
+    
+    return (
     <>
         {/* Nav bar */}
         <nav>
@@ -39,7 +80,7 @@ const Register = () => {
                 <p className ={styles["auth-logo-subtitle"]}>NYC Streetlight Base Damage Reporting</p>
                 <form 
                     className={`${styles["form-box"]} ${styles.login}`} 
-                    onSubmit = {(e) => e.preventDefault()}
+                    onSubmit = {handleSubmit}
                 >
                     <div className={styles["auth-body"]}>
                         {/* Role selector */}
@@ -75,7 +116,9 @@ const Register = () => {
                                         <input 
                                             type="text" 
                                             placeholder="Jane" required
-                                            id = "first-name"
+                                            id = "firstName"
+                                            value={formInput.firstName}
+                                            onChange={handleChange}
                                         />
                                     </div>
                                 </div>
@@ -86,7 +129,9 @@ const Register = () => {
                                         <input 
                                             type="text" 
                                             placeholder="Smith" required
-                                            id = "last-name"
+                                            id = "lastName"
+                                            value={formInput.lastName}
+                                            onChange={handleChange}
                                         />
                                     </div>
                                 </div>
@@ -101,6 +146,8 @@ const Register = () => {
                                     type="text" 
                                     placeholder="janesmith" required
                                     id = "username"
+                                    value={formInput.username}
+                                    onChange={handleChange}
                                 />
                             </div>
                         </div>
@@ -113,6 +160,8 @@ const Register = () => {
                                     type="text" 
                                     placeholder="email@example.com" required
                                     id = "email"
+                                    value={formInput.email}
+                                    onChange={handleChange}
                                 />
                             </div>
                         </div>
@@ -125,6 +174,8 @@ const Register = () => {
                                     type={ reveal ? "text":"password"} 
                                     placeholder="Min. 8 characters" required
                                     id = "password"
+                                    value={formInput.password}
+                                    onChange={handleChange}
                                 />
                                 <span className = {styles.eyeIcon}
                                     onClick = {() => {setReveal(!reveal)}}>
