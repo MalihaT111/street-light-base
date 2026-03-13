@@ -1,14 +1,16 @@
-import React from 'react'
-import styles from './LoginAndRegister.module.css'
-import { CiUser , CiMail, CiLock, CiUnlock } from "react-icons/ci";
-import { FaUser , FaLandmark} from "react-icons/fa";
-import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
 import { useState } from 'react';
+import { useNavigate, Link } from "react-router-dom";
+import styles from './LoginAndRegister.module.css';
+import { CiUser, CiMail, CiLock } from "react-icons/ci";
+import { FaUser, FaLandmark } from "react-icons/fa";
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 
 const Register = () => {
+    const navigate = useNavigate();
+    // For show and hide password toggle
     const [reveal, setReveal] = useState(false); 
     const [role, setRole] = useState("user");
+    // Form state
     const [formInput, setFormInput] = useState({
         firstName: "",
         lastName: "",
@@ -16,49 +18,40 @@ const Register = () => {
         email: "",
         password: ""
     });
-    const [errors, setErrors] = useState({});
-
+    
     const handleChange = (e) => {
         const {id, value} = e.target;
         setFormInput((prev) => ({
-            ...prev, [id]: value
+            ...prev,
+            [id]: value
         }));
     };
-
-    const handleSubmit = async (e) => {
+    
+    const handleSubmit = (e) => {
         e.preventDefault();
-        setErrors({});
-
-        try {
-            const response = await fetch('http://localhost:5001/api/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username: formInput.username,
-                    email: formInput.email,
-                    password: formInput.password,
-                    first_name: formInput.firstName,
-                    last_name: formInput.lastName,
-                    role: role
-                })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                alert('Registration successful! Please login.');
-                window.location.href = '/';
-            } else {
-                setErrors({ general: data.error });
-            }
-        } catch (error) {
-            setErrors({ general: 'Registration failed. Please try again.' });
-            console.error('Registration error:', error);
-        }
+        
+        // Simulate successful registration
+        const mockUserData = {
+            user: {
+                id: 456,
+                username: formInput.username || formInput.email.split('@')[0] + '_nyc',
+                email: formInput.email,
+                firstName: formInput.firstName,
+                lastName: formInput.lastName,
+                role: role
+            },
+            access_token: 'mock_jwt_token_' + Date.now()
+        };
+        
+        // Save user data to localStorage as specified in requirements
+        localStorage.setItem("user", JSON.stringify(mockUserData.user));
+        localStorage.setItem("token", mockUserData.access_token);
+        
+        console.log("Registration successful, redirecting to home page");
+        navigate('/home');
     };
-  return (
+    
+    return (
     <>
         {/* Nav bar */}
         <nav>
@@ -86,7 +79,7 @@ const Register = () => {
                 <p className ={styles["auth-logo-subtitle"]}>NYC Streetlight Base Damage Reporting</p>
                 <form 
                     className={`${styles["form-box"]} ${styles.login}`} 
-                    onSubmit={handleSubmit}
+                    onSubmit = {handleSubmit}
                 >
                     <div className={styles["auth-body"]}>
                         {errors.general && <div className={styles["error"]}>{errors.general}</div>}
@@ -122,8 +115,8 @@ const Register = () => {
                                     <div className={styles["input-wrapper"]}>
                                         <input 
                                             type="text" 
-                                            placeholder="Jane"
-                                            id="firstName"
+                                            placeholder="Jane" required
+                                            id = "firstName"
                                             value={formInput.firstName}
                                             onChange={handleChange}
                                         />
@@ -135,8 +128,8 @@ const Register = () => {
                                     <div className={styles["input-wrapper"]}>
                                         <input 
                                             type="text" 
-                                            placeholder="Smith"
-                                            id="lastName"
+                                            placeholder="Smith" required
+                                            id = "lastName"
                                             value={formInput.lastName}
                                             onChange={handleChange}
                                         />
@@ -151,11 +144,10 @@ const Register = () => {
                                 <CiUser className = {styles.icon}/>
                                 <input 
                                     type="text" 
-                                    placeholder="janesmith"
-                                    id="username"
+                                    placeholder="janesmith" required
+                                    id = "username"
                                     value={formInput.username}
                                     onChange={handleChange}
-                                    required
                                 />
                             </div>
                         </div>
@@ -165,12 +157,11 @@ const Register = () => {
                             <div className={styles["input-wrapper"]}>
                                 <CiMail className = {styles.icon}/>
                                 <input 
-                                    type="email" 
-                                    placeholder="email@example.com"
-                                    id="email"
+                                    type="text" 
+                                    placeholder="email@example.com" required
+                                    id = "email"
                                     value={formInput.email}
                                     onChange={handleChange}
-                                    required
                                 />
                             </div>
                         </div>
@@ -180,12 +171,11 @@ const Register = () => {
                             <div className={styles["input-wrapper"]}>
                                 <CiLock className = {styles.icon}/>
                                 <input 
-                                    type={reveal ? "text":"password"} 
-                                    placeholder="Min. 8 characters"
-                                    id="password"
+                                    type={ reveal ? "text":"password"} 
+                                    placeholder="Min. 8 characters" required
+                                    id = "password"
                                     value={formInput.password}
                                     onChange={handleChange}
-                                    required
                                 />
                                 <span className = {styles.eyeIcon}
                                     onClick = {() => {setReveal(!reveal)}}>
