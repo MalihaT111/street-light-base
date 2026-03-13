@@ -18,15 +18,16 @@ const Login = () => {
     const validate = () => {
         const errorMessage = {};
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-        // Validation for email
+        // Validation for email or username
         if (!formInput.email.trim()){
-            errorMessage.email = "Email is required";
+            errorMessage.email = "Email or username is required";
         }
         else if (formInput.email.length > 100){
-            errorMessage.email = "Email is too long";
+            errorMessage.email = "Input is too long";
         }
-        else if (!emailRegex.test(formInput.email)){
-            errorMessage.email = "Pleae enter a valid email address"
+        // Only validate email format if it contains @
+        else if (formInput.email.includes('@') && !emailRegex.test(formInput.email)){
+            errorMessage.email = "Please enter a valid email address"
         }
         // Validation for password
         if(!formInput.password.trim()){
@@ -46,7 +47,7 @@ const Login = () => {
             ...prev, [id] : value
         }));
     }
-    const handleSubmit = (e) =>{
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const errorMessages = validate();
@@ -56,7 +57,33 @@ const Login = () => {
             return;
         }
     
-        console.log("Form submitted successfully");   
+        try {
+            const response = await fetch('http://localhost:5001/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: formInput.email,
+                    password: formInput.password,
+                    role: role
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                localStorage.setItem('token', data.access_token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                alert('Login successful!');
+                console.log('Logged in user:', data.user);
+            } else {
+                setErrors({ password: data.error });
+            }
+        } catch (error) {
+            setErrors({ password: 'Login failed. Please try again.' });
+            console.error('Login error:', error);
+        }
     }
   return (
     <>
@@ -110,14 +137,14 @@ const Login = () => {
                                 <span className ={styles["role-text"]}>DOT Admin</span>
                             </button>
                         </div>
-                        {/* Input section for email and password */}
-                        {/* Input field for email */}
+                        {/* Input section for email/username and password */}
+                        {/* Input field for email or username */}
                         <div className={styles["field"]}>
-                            <label htmlFor = "email">EMAIL</label>
+                            <label htmlFor = "email">EMAIL OR USERNAME</label>
                             <div className={styles["input-wrapper"]}>
                                 <CiMail className = {styles.icon}/>
                                 <input type="text" 
-                                    placeholder="email@example.com"
+                                    placeholder="email@example.com or username"
                                     id = "email"
                                     onChange = {handleChange}
                                 />
