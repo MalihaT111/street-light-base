@@ -7,10 +7,57 @@ import { Link } from "react-router-dom";
 import { useState } from 'react';
 
 const Register = () => {
-    // For show and hide password toggle
     const [reveal, setReveal] = useState(false); 
-    // For role toggle
     const [role, setRole] = useState("user");
+    const [formInput, setFormInput] = useState({
+        firstName: "",
+        lastName: "",
+        username: "",
+        email: "",
+        password: ""
+    });
+    const [errors, setErrors] = useState({});
+
+    const handleChange = (e) => {
+        const {id, value} = e.target;
+        setFormInput((prev) => ({
+            ...prev, [id]: value
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setErrors({});
+
+        try {
+            const response = await fetch('http://localhost:5001/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: formInput.username,
+                    email: formInput.email,
+                    password: formInput.password,
+                    first_name: formInput.firstName,
+                    last_name: formInput.lastName,
+                    role: role
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert('Registration successful! Please login.');
+                window.location.href = '/';
+            } else {
+                setErrors({ general: data.error });
+            }
+        } catch (error) {
+            setErrors({ general: 'Registration failed. Please try again.' });
+            console.error('Registration error:', error);
+        }
+    };
   return (
     <>
         {/* Nav bar */}
@@ -39,9 +86,10 @@ const Register = () => {
                 <p className ={styles["auth-logo-subtitle"]}>NYC Streetlight Base Damage Reporting</p>
                 <form 
                     className={`${styles["form-box"]} ${styles.login}`} 
-                    onSubmit = {(e) => e.preventDefault()}
+                    onSubmit={handleSubmit}
                 >
                     <div className={styles["auth-body"]}>
+                        {errors.general && <div className={styles["error"]}>{errors.general}</div>}
                         {/* Role selector */}
                         <div className={styles["role-toggle"]}>
                             {/* User role (Citizen) toggle button */}
@@ -70,23 +118,27 @@ const Register = () => {
                             <div className={styles["name-wrapper"]}>
                                 {/* First name */}
                                 <div className={styles["first-name"]}>
-                                    <label htmlFor = "first-name">FIRST NAME</label>
+                                    <label htmlFor = "firstName">FIRST NAME</label>
                                     <div className={styles["input-wrapper"]}>
                                         <input 
                                             type="text" 
-                                            placeholder="Jane" required
-                                            id = "first-name"
+                                            placeholder="Jane"
+                                            id="firstName"
+                                            value={formInput.firstName}
+                                            onChange={handleChange}
                                         />
                                     </div>
                                 </div>
                                 {/* Last name */}
                                 <div className={styles["last-name"]}>
-                                    <label htmlFor = "last-name">LAST NAME</label>
+                                    <label htmlFor = "lastName">LAST NAME</label>
                                     <div className={styles["input-wrapper"]}>
                                         <input 
                                             type="text" 
-                                            placeholder="Smith" required
-                                            id = "last-name"
+                                            placeholder="Smith"
+                                            id="lastName"
+                                            value={formInput.lastName}
+                                            onChange={handleChange}
                                         />
                                     </div>
                                 </div>
@@ -99,8 +151,11 @@ const Register = () => {
                                 <CiUser className = {styles.icon}/>
                                 <input 
                                     type="text" 
-                                    placeholder="janesmith" required
-                                    id = "username"
+                                    placeholder="janesmith"
+                                    id="username"
+                                    value={formInput.username}
+                                    onChange={handleChange}
+                                    required
                                 />
                             </div>
                         </div>
@@ -110,9 +165,12 @@ const Register = () => {
                             <div className={styles["input-wrapper"]}>
                                 <CiMail className = {styles.icon}/>
                                 <input 
-                                    type="text" 
-                                    placeholder="email@example.com" required
-                                    id = "email"
+                                    type="email" 
+                                    placeholder="email@example.com"
+                                    id="email"
+                                    value={formInput.email}
+                                    onChange={handleChange}
+                                    required
                                 />
                             </div>
                         </div>
@@ -122,9 +180,12 @@ const Register = () => {
                             <div className={styles["input-wrapper"]}>
                                 <CiLock className = {styles.icon}/>
                                 <input 
-                                    type={ reveal ? "text":"password"} 
-                                    placeholder="Min. 8 characters" required
-                                    id = "password"
+                                    type={reveal ? "text":"password"} 
+                                    placeholder="Min. 8 characters"
+                                    id="password"
+                                    value={formInput.password}
+                                    onChange={handleChange}
+                                    required
                                 />
                                 <span className = {styles.eyeIcon}
                                     onClick = {() => {setReveal(!reveal)}}>
@@ -138,7 +199,7 @@ const Register = () => {
                         {/* Divider */}
                         <span className = {styles["divider"]}>or</span>
                         <div className={styles.registeration}>
-                            <p>Already have an account? <Link to="/" className ={styles["sign-up-link"]}>Sign Up</Link></p>
+                            <p>Already have an account? <Link to="/" className ={styles["sign-up-link"]}>Sign In</Link></p>
                         </div>
                     </div>
                 </form>
