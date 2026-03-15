@@ -249,7 +249,12 @@ const Home = () => {
             {mockLeaderboard.map((item) => (
               <div key={item.rank} className={styles.tableRow}>
                 <div className={styles.rankCell}>
-                  <span className={`${styles.rankBadge} ${item.rank <= 3 ? styles.topRank : ''}`}>
+                  <span className=
+                  {`${styles.rankBadge} 
+                    ${item.rank === 1 ? styles.topRank1 : ''}
+                    ${item.rank === 2 ? styles.topRank2 : ''}
+                    ${item.rank === 3 ? styles.topRank3 : ''}`}
+                  >
                     {item.rank}
                   </span>
                 </div>
