@@ -55,47 +55,68 @@ const Leaderboard = () => {
                             <div className={`${styles["podium-platform"]} ${styles[`platform${index}`]}`}>{player.rank}</div>
                         </div>
                     ))}
-                </section>   
-                {/* Leaderboard Section */}
-                <div className={styles.leaderboardSection}>
-                    <div className={styles.sectionHeader}>
-                        <h2>Top Contributors</h2>
-                        <div className={styles["leaderboard-btn"]}>
-                            <button className = {styles["filter-tab"]}>All Time</button>
-                            <button className = {styles["filter-tab"]}>Monthly</button>
-                            <button className = {styles["filter-tab"]}>Weekly</button>
-                            <button className = {styles["filter-tab"]}>Daily</button>
-                        </div>
-                    </div>
-                    
-                    <div className={styles.leaderboardTable}>
-                    <div className={styles.tableHeader}>
-                        <div className={styles.headerCell}>Rank</div>
-                        <div className={styles.headerCell}>User</div>
-                        <div className={styles.headerCell}>Points</div>
-                        <div className={styles.headerCell}>Reports</div>
-                    </div>
-                    
-                    {mockLeaderboard.map((item) => (
-                        <div key={item.rank} className={styles.tableRow}>
-                        <div className={styles.rankCell}>
-                            <span className={`${styles.rankBadge} ${item.rank <= 3 ? styles.topRank : ''}`}>
-                            {item.rank}
-                            </span>
-                        </div>
-                        <div className={styles.userCell}>
-                            <div className={styles.userAvatarSmall}>
-                            {item.name.charAt(0).toUpperCase()}
+                </section>
+                <div className={styles["section-wrapper"]}>
+                    {/* Leaderboard Section */}
+                    <div className={styles.leaderboardSection}>
+                        <div className={styles.sectionHeader}>
+                            <h2>Top Contributors</h2>
+                            <div className={styles["leaderboard-btn"]}>
+                                <button className = {styles["filter-tab"]}>All Time</button>
+                                <button className = {styles["filter-tab"]}>Monthly</button>
+                                <button className = {styles["filter-tab"]}>Weekly</button>
+                                <button className = {styles["filter-tab"]}>Daily</button>
                             </div>
-                            <span>{item.name}</span>
                         </div>
-                        <div className={styles.pointsCell}>{item.points}</div>
-                        <div className={styles.reportsCell}>{item.reports}</div>
+                        
+                        <div className={styles.leaderboardTable}>
+                        <div className={styles.tableHeader}>
+                            <div className={styles.headerCell}>Rank</div>
+                            <div className={styles.headerCell}>User</div>
+                            <div className={styles.headerCell}>Points</div>
+                            <div className={styles.headerCell}>Reports</div>
                         </div>
-                    ))}
+                        
+                        {mockLeaderboard.map((item) => (
+                            <div key={item.rank} className={styles.tableRow}>
+                            <div className={styles.rankCell}>
+                                <span className={`${styles.rankBadge} ${item.rank <= 3 ? styles.topRank : ''}`}>
+                                {item.rank}
+                                </span>
+                            </div>
+                            <div className={styles.userCell}>
+                                <div className={styles.userAvatarSmall}>
+                                {item.name.charAt(0).toUpperCase()}
+                                </div>
+                                <span>{item.name}</span>
+                            </div>
+                            <div className={styles.pointsCell}>{item.points}</div>
+                            <div className={styles.reportsCell}>{item.reports}</div>
+                            </div>
+                        ))}
+                        </div>
+                    </div>
+                    {/* Borough filter */}
+                    <div className={styles["borough-filter"]}>
+                        <div className={styles["borough-filter-title"]}>Filter by Boroughs</div>
+                        <div className={styles["borough-field"]}>
+                            <select>
+                                <option>All Boroughs</option>
+                                <option>Manhattan</option>
+                                <option>Brooklyn</option>
+                                <option>Queens</option>
+                                <option>The Bronx</option>
+                                <option>Staten Island</option>
+                            </select>
+                        </div>
+                        <div className={styles["borough-info-card"]}>
+                            <div className={styles["borough-info-label"]}>Your borough rank</div>
+                            <div className={styles["borough-info-rank"]}>#4</div>
+                            <div className={styles["borough-info-city"]}>in Manhattan</div>
+                        </div>   
                     </div>
                 </div>
-            </div>
+            </div>   
         </>
     );
 };
