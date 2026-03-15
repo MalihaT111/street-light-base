@@ -2,6 +2,8 @@
     padding: 32px;
     max-width: 1200px;
     margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
 }
 /* For page title and subtitle */
 .top-title{
@@ -20,7 +22,7 @@
 /* For stat section */
 .stat-section{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 1rem;
     margin-bottom: 24px;
 }
@@ -220,7 +222,6 @@
   font-weight: 600;
   font-size: 0.9rem;
 }
-
 .rankBadge.topRank1 {
   background: #fde245; 
   color: #6f5a02;
@@ -233,7 +234,6 @@
   background-color: #c38d29;  
   color: #774205;
 }
-
 .userCell {
   display: flex;
   align-items: center;
@@ -292,9 +292,12 @@
 }
 .section-wrapper{
     display: grid;
-    grid-template-columns: 1fr 280px;
+    grid-template-columns: minmax(0, 1fr) 280px;
     gap: 24px;
     align-items: start;
+}
+.section-wrapper > *{
+    min-width: 0;
 }
 /* For borough filter  */
 .borough-filter{
@@ -305,6 +308,7 @@
     border: 1px solid #E5E7EB;
     border-radius: 12px;    
     padding: 24px;
+    box-sizing: border-box;
     
 }
 .borough-filter .borough-filter-title{
@@ -346,12 +350,41 @@
     color: #2563EB;
     font-weight: 700;
 }
-
+@media (max-width: 1024px){
+    .section-wrapper{
+        grid-template-columns: 1fr;
+    }
+    .borough-filter{
+        width: 100%;
+    }
+    .borough-filter{
+        order: 2;
+    }
+}
 @media (max-width: 768px){
+    .section-wrapper{
+        gap: 16px;
+    }
+
+    .leaderboardSection,
+    .borough-filter{
+        padding: 20px;
+    }
+
     .sectionHeader{
         flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
     }
+
     .leaderboard-btn{
         flex-wrap: wrap;
     }
+
+    .tableHeader,
+    .tableRow{
+        grid-template-columns: 60px minmax(140px, 1fr) 80px 80px;
+        padding: 14px 12px;
+    }
+    
 }
