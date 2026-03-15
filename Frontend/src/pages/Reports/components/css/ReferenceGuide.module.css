@@ -1,0 +1,97 @@
+.card {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.cardTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.cardBody {
+  padding: 20px;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: #6B7280;
+  margin-bottom: 14px;
+}
+
+.exampleGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.exampleItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.exampleImage {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+}
+
+.imageGood { background-color: #ECFDF5; }
+.imageFair { background-color: #FFFBEB; }
+.imagePoor { background-color: #FEF2F2; }
+
+.exampleLabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.labelGood { color: #059669; }
+.labelFair { color: #D97706; }
+.labelPoor { color: #DC2626; }
+
+.damageList {
+  background: #F9FAFB;
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.damageListTitle {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.damageListItems {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.damageListItems li {
+  font-size: 0.8rem;
+  color: #6B7280;
+  line-height: 1.4;
+}
+
+.damageListItems li::before {
+  content: '· ';
+  color: #9CA3AF;
+}

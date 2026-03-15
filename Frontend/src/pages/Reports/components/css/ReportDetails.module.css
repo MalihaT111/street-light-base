@@ -1,0 +1,157 @@
+.card {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.cardTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.cardBody {
+  padding: 20px;
+}
+
+.field {
+  margin-bottom: 18px;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 7px;
+}
+
+.checkboxGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 99px;
+  background: #F9FAFB;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.checkboxLabel:hover {
+  border-color: #2563EB;
+  background: #EEF3FD;
+}
+
+.checkbox {
+  display: none;
+}
+
+.checkboxText {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #374151;
+  line-height: 1;
+}
+
+/* Checked state — blue pill */
+.checkboxLabel:has(.checkbox:checked) {
+  border-color: #2563EB;
+  background: #EEF3FD;
+}
+
+.checkboxLabel:has(.checkbox:checked) .checkboxText {
+  color: #2563EB;
+  font-weight: 600;
+}
+
+.locationIcon {
+  color: #2563EB;
+  font-size: 0.75rem;
+}
+
+.locationRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 13px;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+}
+
+.locationDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.locationDotPending { background: #D1D5DB; }
+.locationDotActive  { background: #10B981; }
+.locationDotError   { background: #DC2626; }
+
+.locationText {
+  font-size: 0.8rem;
+  color: #6B7280;
+}
+
+.errorMessage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 13px;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #DC2626;
+  margin-bottom: 16px;
+}
+
+.errorIcon {
+  flex-shrink: 0;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 12px 24px;
+  background-color: #2563EB;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background-color: #1D4ED8;
+}
+
+.submitBtn:disabled {
+  background-color: #93C5FD;
+  cursor: not-allowed;
+}

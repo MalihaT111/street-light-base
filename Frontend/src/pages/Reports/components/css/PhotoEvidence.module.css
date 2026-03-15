@@ -1,0 +1,128 @@
+.card {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.cardTitleIcon {
+  color: #2563EB;
+  font-size: 0.9rem;
+}
+
+.requiredTag {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6B7280;
+}
+
+.cardBody {
+  padding: 20px;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.dropZone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 20px;
+  border: 1.5px dashed #E5E7EB;
+  border-radius: 10px;
+  background: #F9FAFB;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.dropZone:hover {
+  border-color: #2563EB;
+  background: #EEF3FD;
+}
+
+.dropIcon {
+  font-size: 2rem;
+  color: #2563EB;
+  margin-bottom: 12px;
+}
+
+.dropPrompt {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.dropHint {
+  font-size: 0.8rem;
+  color: #6B7280;
+  margin-bottom: 12px;
+}
+
+.dropNote {
+  font-size: 0.75rem;
+  color: #DC2626;
+  background: #FEF2F2;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.openCameraBtn {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2563EB;
+}
+
+.previewWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.preview {
+  width: 100%;
+  max-height: 280px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+}
+
+.retakeBtn {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #6B7280;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 7px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.retakeBtn:hover {
+  background: #F3F4F6;
+  color: #111827;
+}
