@@ -220,7 +220,6 @@
   font-weight: 600;
   font-size: 0.9rem;
 }
-
 .rankBadge.topRank1 {
   background: #fde245; 
   color: #6f5a02;
@@ -233,7 +232,6 @@
   background-color: #c38d29;  
   color: #774205;
 }
-
 .userCell {
   display: flex;
   align-items: center;

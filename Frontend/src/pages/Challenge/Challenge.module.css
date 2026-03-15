@@ -1,0 +1,18 @@
+.top-title{
+    margin-bottom: 2rem;
+}
+.challenge-wrapper{
+    padding: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.challenge-title{
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.challenge-subtitle{
+    font-size: 1rem;
+    opacity: 0.9;
+    max-width: 600px;
+}
