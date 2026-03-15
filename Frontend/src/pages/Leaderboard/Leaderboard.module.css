@@ -1,0 +1,349 @@
+.leaderboard-wrapper{
+    padding: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+/* For page title and subtitle */
+.top-title{
+    margin-bottom: 2rem;
+}
+.leaderboard-title{
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.leaderboard-subtitle{
+    font-size: 1rem;
+    opacity: 0.9;
+    max-width: 600px;
+}
+/* For stat section */
+.stat-section{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 24px;
+}
+.stat-card{
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 24px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+.stat-card .stat-label{
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #6B7280;
+    margin: 0;
+}
+.stat-card .stat-value{
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 4px;
+}
+.stat-card .stat-sub{
+    font-size: 0.85rem;
+    color: #10B981;
+    font-weight: 500;
+}
+.podium{
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    background-color: white;
+    padding: 32px;
+    margin-bottom: 32px;
+    gap: 12px;
+    border-radius: 16px;
+}
+.podium .podium-item{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.podium .podium-item .podium-name{
+    font-size: 1rem;
+    font-weight: 600;
+}
+.podium .podium-item .podium-pts{
+    font-size: 0.9rem;
+    color:#6B7280;
+}
+.podium .podium-item .podium-avatar{
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #DBEAFE;
+    color: #1E40AF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+.podium-platform {
+  width: 90px;
+  border-radius: 14px 14px 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  font-weight: bold;
+  font-size: 20px;
+  padding-top: 10px;
+  color: white;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+
+}
+/*1st place */
+.podium-item0{
+    order: 2;
+}
+.platform0 {   
+  height: 120px;
+  background: linear-gradient(#facc15, #eab308);
+}
+
+/*2nd place */ 
+.podium-item1{
+    order: 1;
+}
+.platform1 {
+  height: 100px;
+  background: linear-gradient(#d1d5db, #9ca3af);
+}
+/*3rd place */
+.podium-item2{
+    order: 3;
+}
+.platform2 {
+  height: 80px;
+  background: linear-gradient(#cd7f32, #92400e);
+}
+
+/* Leaderboard Section */
+.leaderboardSection {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 32px;
+  border: 1px solid #E5E7EB;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.sectionHeader h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.viewAllLink {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #2563EB;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.viewAllLink:hover {
+  text-decoration: underline;
+}
+
+.leaderboardTable {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #E5E7EB;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 80px 1fr 120px 120px;
+  background-color: #F9FAFB;
+  padding: 16px 20px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.headerCell {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 80px 1fr 120px 120px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #E5E7EB;
+  align-items: center;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.tableRow:hover {
+  background-color: #F9FAFB;
+}
+
+.rankCell {
+  display: flex;
+  align-items: center;
+}
+
+.rankBadge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #F3F4F6;
+  color: #6B7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.rankBadge.topRank {
+  background-color: #FEF3C7;
+  color: #D97706;
+}
+
+.userCell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.userAvatarSmall {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #DBEAFE;
+  color: #1E40AF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.pointsCell,
+.reportsCell {
+  font-weight: 600;
+  color: #111827;
+}
+.leaderboard-btn {
+  display: flex;
+  gap: 8px;
+}
+.filter-tab {
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid #D1D5DB;
+  background-color: #FFFFFF;
+  color: #374151;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  white-space: nowrap;
+}
+.filter-tab:hover {
+  background-color: #111827;
+  color: #FFFFFF;
+  border-color: #111827;
+  transform: translateY(-1px);
+}
+
+.filter-tab:active {
+  transform: translateY(0);
+}
+
+.filter-tab:focus-visible {
+  outline: 2px solid #93C5FD;
+  outline-offset: 2px;
+}
+.section-wrapper{
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 24px;
+    align-items: start;
+}
+/* For borough filter  */
+.borough-filter{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background-color: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;    
+    padding: 24px;
+    
+}
+.borough-filter .borough-filter-title{
+    font-size: 1.5rem;
+    border-bottom: 1px solid #E5E7EB ;
+    font-weight: 700;
+
+}
+.borough-field select{
+    appearance: none;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #E2E0DA;
+    font-size: 0.9rem;
+    background-color: #f5f5f5;
+    cursor: pointer;
+}
+.borough-info-card{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background-color: #f5f5f5;
+    border: 1px solid #E2E0DA;
+    border-radius: 8px;
+    padding: 16px;
+}
+.borough-info-card .borough-name{
+    font-size: 1rem;
+    font-weight: 600;
+}
+.borough-info-label , .borough-info-city{
+    font-size: 0.85rem;
+    color:#6B7280;
+}
+.borough-info-rank{
+    font-size: 2rem;
+    color: #2563EB;
+    font-weight: 700;
+}
+
+@media (max-width: 768px){
+    .sectionHeader{
+        flex-direction: column;
+    }
+    .leaderboard-btn{
+        flex-wrap: wrap;
+    }
+}
