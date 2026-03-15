@@ -114,7 +114,7 @@
 
 .userDropdown {
   position: absolute;
-  top: calc(100% + 10px);
+  top: 100%;
   right: 0;
   min-width: 170px;
   background: #fff;
