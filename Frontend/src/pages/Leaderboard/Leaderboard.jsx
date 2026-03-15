@@ -56,6 +56,45 @@ const Leaderboard = () => {
                         </div>
                     ))}
                 </section>   
+                {/* Leaderboard Section */}
+                <div className={styles.leaderboardSection}>
+                    <div className={styles.sectionHeader}>
+                        <h2>Top Contributors</h2>
+                        <div className={styles["leaderboard-btn"]}>
+                            <button className = {styles["filter-tab"]}>All Time</button>
+                            <button className = {styles["filter-tab"]}>Monthly</button>
+                            <button className = {styles["filter-tab"]}>Weekly</button>
+                            <button className = {styles["filter-tab"]}>Daily</button>
+                        </div>
+                    </div>
+                    
+                    <div className={styles.leaderboardTable}>
+                    <div className={styles.tableHeader}>
+                        <div className={styles.headerCell}>Rank</div>
+                        <div className={styles.headerCell}>User</div>
+                        <div className={styles.headerCell}>Points</div>
+                        <div className={styles.headerCell}>Reports</div>
+                    </div>
+                    
+                    {mockLeaderboard.map((item) => (
+                        <div key={item.rank} className={styles.tableRow}>
+                        <div className={styles.rankCell}>
+                            <span className={`${styles.rankBadge} ${item.rank <= 3 ? styles.topRank : ''}`}>
+                            {item.rank}
+                            </span>
+                        </div>
+                        <div className={styles.userCell}>
+                            <div className={styles.userAvatarSmall}>
+                            {item.name.charAt(0).toUpperCase()}
+                            </div>
+                            <span>{item.name}</span>
+                        </div>
+                        <div className={styles.pointsCell}>{item.points}</div>
+                        <div className={styles.reportsCell}>{item.reports}</div>
+                        </div>
+                    ))}
+                    </div>
+                </div>
             </div>
         </>
     );
