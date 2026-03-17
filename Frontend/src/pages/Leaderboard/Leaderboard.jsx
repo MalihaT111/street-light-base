@@ -1,9 +1,38 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { FaTrophy, FaArrowRight } from "react-icons/fa";
 import Navbar from "../../components/Navbar/Navbar.jsx";
 import styles from "./leaderboard.module.css";
 
 const Leaderboard = () => {
+    const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const savedUser = localStorage.getItem("user");
+
+        if (!savedUser) {
+            navigate("/");
+            return;
+        }
+
+        try {
+            setUser(JSON.parse(savedUser));
+        } catch (error) {
+            console.error("Error parsing user data:", error);
+            navigate("/");
+        } finally {
+            setLoading(false);
+        }
+    }, [navigate]);
+
+    const username = user?.username || "Citizen";
+
+    if(loading){
+        return null;
+    }
+
     const mockChallenges = [
     { title: 'Report 5 streetlights', progress: 3, total: 5, reward: 100 },
     { title: 'Maintain 7-day streak', progress: 7, total: 7, reward: 150 },
@@ -18,7 +47,7 @@ const Leaderboard = () => {
   ];
     return (
         <>
-            <Navbar username="Guest" activeTab="leaderboard" />
+            <Navbar username= {username} activeTab="leaderboard" />
 
             <div className={styles["leaderboard-wrapper"]}>
                 <div className={styles["top-title"]}>
@@ -80,7 +109,12 @@ const Leaderboard = () => {
                         {mockLeaderboard.map((item) => (
                             <div key={item.rank} className={styles.tableRow}>
                             <div className={styles.rankCell}>
-                                <span className={`${styles.rankBadge} ${item.rank <= 3 ? styles.topRank : ''}`}>
+                                <span className=
+                                                  {`${styles.rankBadge} 
+                                                    ${item.rank === 1 ? styles.topRank1 : ''}
+                                                    ${item.rank === 2 ? styles.topRank2 : ''}
+                                                    ${item.rank === 3 ? styles.topRank3 : ''}`}
+                                >
                                 {item.rank}
                                 </span>
                             </div>

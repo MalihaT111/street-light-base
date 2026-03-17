@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { FaHome, FaFileAlt, FaChartBar, FaUser, FaCog, FaSignOutAlt } from 'react-icons/fa';
+import { FaHome, FaFileAlt, FaChartBar, FaUser, FaCog, FaSignOutAlt, FaMedal } from 'react-icons/fa';
 import styles from './Navbar.module.css';
 
 const Navbar = ({ username, activeTab = 'home' }) => {
@@ -37,6 +37,10 @@ const Navbar = ({ username, activeTab = 'home' }) => {
         <Link to="/leaderboard" className={`${styles.navLink} ${activeTab === 'leaderboard' ? styles.active : ''}`}>
           <FaChartBar className={styles.navIcon} />
           <span>Leaderboard</span>
+        </Link>
+        <Link to="/challenge" className={`${styles.navLink} ${activeTab === 'challenge' ? styles.active : ''}`}>
+          <FaMedal className={styles.navIcon} />
+          <span>Challenge</span>
         </Link>
         <Link to="/profile" className={`${styles.navLink} ${activeTab === 'profile' ? styles.active : ''}`}>
           <FaUser className={styles.navIcon} />

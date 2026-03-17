@@ -417,10 +417,17 @@
   font-weight: 600;
   font-size: 0.9rem;
 }
-
-.rankBadge.topRank {
-  background-color: #FEF3C7;
-  color: #D97706;
+.rankBadge.topRank1 {
+  background: #fde245; 
+  color: #6f5a02;
+}
+.rankBadge.topRank2 {
+  background: #d0cccc;  
+  color: #2F2F2F;
+}
+.rankBadge.topRank3 {
+  background-color: #c38d29;  
+  color: #774205;
 }
 
 .userCell {
@@ -525,7 +532,7 @@
     padding: 0 16px;
     height: 56px;
   }
-  
+
   .navLinks {
     display: none;
   }
