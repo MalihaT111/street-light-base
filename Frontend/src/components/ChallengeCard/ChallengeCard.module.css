@@ -1,0 +1,85 @@
+
+.content-wrapper{
+    width: 100%;
+}
+.challengeCard {
+  background: #F9FAFB;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #E5E7EB;
+  display: flex;
+  column-gap: 20px;
+}
+
+.challengeHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.challengeIcon {
+  font-size: 1.25rem;
+  color: #F59E0B;
+}
+
+.challengeHeader h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.progressBar {
+  height: 8px;
+  background-color: #E5E7EB;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: #10B981;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progressText {
+  font-size: 0.85rem;
+  color: #6B7280;
+  margin-bottom: 12px;
+}
+
+.reward {
+  font-size: 1rem;
+  color: #6B7280;
+}
+
+.rewardPoints {
+  color: #10B981;
+  font-weight: 600;
+}
+.challenge-type{
+    background-color: #EEF3FD;
+    color: #2563EB;
+    font-weight: 600;
+    font-size: 0.8rem;
+    display: inline-block;
+    padding: 2px 8px;
+    margin-bottom: 6px;
+    border-radius: 8px;
+}
+.challenge-type.weekly{
+    color: #D97706;
+    background-color:#FFFBEB;
+}
+.challenge-type.special{
+    color: #7C3AED;
+    background-color: #F3E8FF;
+}
+.challenge-description{
+    color:#6B7280;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+}
