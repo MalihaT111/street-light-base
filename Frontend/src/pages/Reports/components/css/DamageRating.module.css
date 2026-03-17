@@ -1,0 +1,104 @@
+.card {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.cardTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.requiredTag {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6B7280;
+}
+
+.cardBody {
+  padding: 20px;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: #6B7280;
+  margin-bottom: 14px;
+}
+
+.ratingGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.ratingCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 10px;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 10px;
+  background: #F9FAFB;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.ratingCard:hover {
+  transform: translateY(-1px);
+}
+
+.ratingLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #6B7280;
+}
+
+.ratingDesc {
+  font-size: 0.7rem;
+  color: #6B7280;
+  line-height: 1.3;
+}
+
+/* Good */
+.cardGoodActive {
+  border-color: #10B981;
+  background: #ECFDF5;
+}
+
+.cardGoodActive .ratingLabel {
+  color: #059669;
+}
+
+/* Fair */
+.cardFairActive {
+  border-color: #F59E0B;
+  background: #FFFBEB;
+}
+
+.cardFairActive .ratingLabel {
+  color: #D97706;
+}
+
+/* Poor */
+.cardPoorActive {
+  border-color: #DC2626;
+  background: #FEF2F2;
+}
+
+.cardPoorActive .ratingLabel {
+  color: #DC2626;
+}
