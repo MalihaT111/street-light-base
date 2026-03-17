@@ -7,13 +7,13 @@
     margin: 0 auto;
 }
 .challenge-title{
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 700;
     margin-bottom: 8px;
 }
 .challenge-subtitle{
-    font-size: 1rem;
-    opacity: 0.9;
+    font-size: 0.9rem;
+    color: #6B7280;
     max-width: 600px;
     margin-bottom: 2rem;
 }
