@@ -8,7 +8,7 @@ const Leaderboard = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    
+
     useEffect(() => {
         const savedUser = localStorage.getItem("user");
 
@@ -28,6 +28,10 @@ const Leaderboard = () => {
     }, [navigate]);
 
     const username = user?.username || "Citizen";
+
+    if(loading){
+        return null;
+    }
 
     const mockChallenges = [
     { title: 'Report 5 streetlights', progress: 3, total: 5, reward: 100 },

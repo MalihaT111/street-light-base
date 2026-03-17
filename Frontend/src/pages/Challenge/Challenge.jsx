@@ -20,7 +20,7 @@ import {
 
 
 const Challenge = () => {
-        const navigate = useNavigate();
+    const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     
@@ -43,6 +43,11 @@ const Challenge = () => {
     }, [navigate]);
 
     const username = user?.username || "Citizen";
+
+    if(loading){
+        return null;
+    }
+
     const mockChallenges = [
         //Mock data for daily challenge
         { type: 'daily',title: 'Daily Reporter', description: "Submit your first report today", progress: 1, total: 1, reward: 20 },
