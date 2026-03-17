@@ -1,5 +1,8 @@
+import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import styles from "./Challenge.module.css";
 import ChallengeCard from "../../components/ChallengeCard/ChallengeCard";
+import Navbar from "../../components/Navbar/Navbar.jsx";
 import { 
   FaChartLine, 
   FaFlag, 
@@ -17,6 +20,29 @@ import {
 
 
 const Challenge = () => {
+        const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    
+    useEffect(() => {
+        const savedUser = localStorage.getItem("user");
+
+        if (!savedUser) {
+            navigate("/");
+            return;
+        }
+
+        try {
+            setUser(JSON.parse(savedUser));
+        } catch (error) {
+            console.error("Error parsing user data:", error);
+            navigate("/");
+        } finally {
+            setLoading(false);
+        }
+    }, [navigate]);
+
+    const username = user?.username || "Citizen";
     const mockChallenges = [
         //Mock data for daily challenge
         { type: 'daily',title: 'Daily Reporter', description: "Submit your first report today", progress: 1, total: 1, reward: 20 },
@@ -32,39 +58,42 @@ const Challenge = () => {
         { type: 'special',title: 'Network leader', description: "Submit a report for three different boroughs", progress: 0, total: 1, reward: 200 }
     ];
     return(
-        <div className = {styles["challenge-wrapper"]}>
-            <div className={styles["top-title"]}>
-                <h1 className = {styles["challenge-title"]}>Challenge</h1>
-                <p className = {styles["challenge-subtitle"]}>Complete challenges to earn bonus points and climb the leaderboard</p>
-                {/* Daily Challenge section */}
-                <section className = {styles["daily-challenge"]}>
-                    <div className={styles["challenge-type"]}>DAILY CHALLENGES</div>
-                    <div className={styles["challenge-wrapper"]}>
-                        {mockChallenges.filter(challenge => challenge.type === 'daily').map((challenge, index) => (
-                            <ChallengeCard key = {index} challenge = {challenge} />
-                        ))}
-                    </div>
-                </section>
-                {/* Weekly Challenge section */}
-                <section className = {styles["weekly-challenge"]}>
-                    <div className={styles["challenge-type"]}>WEEKLY CHALLENGES</div>
-                    <div className={styles["challenge-wrapper"]}>
-                        {mockChallenges.filter(challenge => challenge.type === 'weekly').map((challenge, index) => (
-                            <ChallengeCard key = {index} challenge = {challenge} />
-                        ))}
-                    </div>
-                </section>
-                {/* Special Challenge section */}
-                <section className = {styles["special-challenge"]}>
-                    <div className={styles["challenge-type"]}>SPECIAL CHALLENGES</div>
-                    <div className={styles["challenge-wrapper"]}>
-                        {mockChallenges.filter(challenge => challenge.type === 'special').map((challenge, index) => (
-                            <ChallengeCard key = {index} challenge = {challenge} />
-                        ))}
-                    </div>
-                </section>
+        <>
+            <Navbar username= {username} activeTab="challenge" />
+            <div className = {styles["challenge-wrapper"]}>
+                <div className={styles["top-title"]}>
+                    <h1 className = {styles["challenge-title"]}>Challenge</h1>
+                    <p className = {styles["challenge-subtitle"]}>Complete challenges to earn bonus points and climb the leaderboard</p>
+                    {/* Daily Challenge section */}
+                    <section className = {styles["daily-challenge"]}>
+                        <div className={styles["challenge-type"]}>DAILY CHALLENGES</div>
+                        <div className={styles["challenge-wrapper"]}>
+                            {mockChallenges.filter(challenge => challenge.type === 'daily').map((challenge, index) => (
+                                <ChallengeCard key = {index} challenge = {challenge} />
+                            ))}
+                        </div>
+                    </section>
+                    {/* Weekly Challenge section */}
+                    <section className = {styles["weekly-challenge"]}>
+                        <div className={styles["challenge-type"]}>WEEKLY CHALLENGES</div>
+                        <div className={styles["challenge-wrapper"]}>
+                            {mockChallenges.filter(challenge => challenge.type === 'weekly').map((challenge, index) => (
+                                <ChallengeCard key = {index} challenge = {challenge} />
+                            ))}
+                        </div>
+                    </section>
+                    {/* Special Challenge section */}
+                    <section className = {styles["special-challenge"]}>
+                        <div className={styles["challenge-type"]}>SPECIAL CHALLENGES</div>
+                        <div className={styles["challenge-wrapper"]}>
+                            {mockChallenges.filter(challenge => challenge.type === 'special').map((challenge, index) => (
+                                <ChallengeCard key = {index} challenge = {challenge} />
+                            ))}
+                        </div>
+                    </section>
+                </div>
             </div>
-        </div>
+        </>
     )
 }   
 export default Challenge;
