@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Street Systems — Wireframe Prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #F5F4F0; --surface: #FFFFFF; --border: #E2E0DA; --text: #1A1917; --muted: #8A8880;
+    --accent: #2563EB; --accent-light: #EEF3FD; --warn: #E85D2F; --warn-light: #FEF0EB;
+    --green: #16A34A; --green-light: #EDFBF1; --yellow: #D97706; --yellow-light: #FFFBEB;
+    --radius: 10px; --shadow: 0 1px 4px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.05);
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* NAV */
+  .proto-nav { background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; height: 52px; position: sticky; top: 0; z-index: 100; }
+  .logo { font-size: 13px; font-weight: 700; letter-spacing: 0.04em; color: var(--text); margin-right: 32px; display: flex; align-items: center; gap: 8px; cursor: pointer; text-decoration: none; }
+  .logo:hover { opacity: 0.75; }
+  .logo-mark { width: 28px; height: 28px; background: var(--accent); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+  .logo-mark svg { width: 15px; height: 15px; fill: #fff; }
+  .nav-tabs { display: flex; gap: 2px; }
+  .nav-tabs.hidden { visibility: hidden; pointer-events: none; }
+  .nav-tab { padding: 6px 14px; font-size: 12px; font-weight: 500; border: none; background: none; cursor: pointer; border-radius: 6px; color: var(--muted); transition: all 0.15s; font-family: inherit; }
+  .nav-tab:hover { background: var(--bg); color: var(--text); }
+  .nav-tab.active { background: var(--accent); color: #fff; }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .badge { padding: 2px 7px; border-radius: 99px; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+  .dot-badge { padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: 600; background: var(--warn-light); color: var(--warn); border: 1px solid #f5c3b3; display: none; }
+  .dot-badge.visible { display: inline-flex; align-items: center; gap: 4px; }
+
+  /* SCREENS */
+  .screen { display: none; padding: 32px 24px; max-width: 1100px; margin: 0 auto; }
+  .screen.active { display: block; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+
+  /* CARDS */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .card-header { padding: 18px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .card-title { font-size: 13px; font-weight: 600; }
+  .card-body { padding: 24px; }
+
+  /* BUTTONS */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-family: inherit; font-size: 13px; font-weight: 500; border-radius: 7px; border: none; cursor: pointer; transition: all 0.15s; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #1d4ed8; }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .btn-outline:hover { background: var(--bg); }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .btn-full { width: 100%; justify-content: center; }
+  .btn-lg { padding: 13px 28px; font-size: 15px; font-weight: 600; border-radius: 9px; }
+
+  /* INPUTS */
+  .field { margin-bottom: 18px; }
+  .label { font-size: 12px; font-weight: 500; color: var(--muted); display: block; margin-bottom: 6px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .input { width: 100%; padding: 10px 13px; font-family: inherit; font-size: 13px; border: 1px solid var(--border); border-radius: 7px; background: var(--bg); color: var(--text); transition: border 0.15s; outline: none; }
+  .input:focus { border-color: var(--accent); background: var(--surface); }
+  .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  select.input { appearance: none; }
+  textarea.input { resize: none; height: 80px; }
+
+  /* TYPOGRAPHY */
+  .page-header { margin-bottom: 28px; }
+  .page-header h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+  .page-header p { font-size: 13px; color: var(--muted); }
+  .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+
+  /* AUTH */
+  .auth-wrap { min-height: calc(100vh - 52px); display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
+  .auth-card { width: 100%; max-width: 400px; }
+  .auth-logo { text-align: center; margin-bottom: 32px; }
+  .auth-logo-mark { width: 52px; height: 52px; background: var(--accent); border-radius: 13px; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; }
+  .auth-logo-mark svg { width: 26px; height: 26px; fill: #fff; }
+  .auth-logo h2 { font-size: 20px; font-weight: 700; }
+  .auth-logo p { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; font-size: 11px; color: var(--muted); }
+  .divider::before, .divider::after { content:''; flex:1; height:1px; background:var(--border); }
+  .auth-switch { text-align: center; font-size: 12px; color: var(--muted); margin-top: 16px; }
+  .auth-switch a { color: var(--accent); cursor: pointer; font-weight: 500; }
+  .role-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+  .role-btn { padding: 10px; text-align: center; border: 1px solid var(--border); border-radius: 7px; cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.15s; background: var(--bg); }
+  .role-btn.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+  .role-btn .role-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+
+  /* HOME */
+  .home-welcome { background: var(--accent); color: #fff; border-radius: var(--radius); padding: 28px 32px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; }
+  .home-welcome h2 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  .home-welcome p { font-size: 13px; opacity: 0.8; }
+  .home-welcome-pts { font-size: 36px; font-weight: 700; font-family: 'DM Mono', monospace; text-align: right; }
+  .home-welcome-pts-label { font-size: 11px; opacity: 0.7; margin-top: 2px; text-align: right; }
+  .achievement-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 28px; }
+  .ach-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+  .ach-icon { font-size: 26px; margin-bottom: 10px; }
+  .ach-value { font-size: 28px; font-weight: 700; font-family: 'DM Mono', monospace; margin-bottom: 3px; }
+  .ach-label { font-size: 11px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
+  .ach-sub { font-size: 11px; color: var(--muted); margin-top: 6px; }
+  .report-cta { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 32px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow); }
+  .report-cta h3 { font-size: 16px; font-weight: 600; margin-bottom: 5px; }
+  .report-cta p { font-size: 13px; color: var(--muted); max-width: 420px; }
+
+  /* LEADERBOARD ROWS */
+  .lb-row { display: flex; align-items: center; padding: 11px 20px; border-bottom: 1px solid var(--border); gap: 14px; transition: background 0.1s; cursor: pointer; }
+  .lb-row:hover { background: var(--bg); }
+  .lb-row:last-child { border-bottom: none; }
+  .lb-rank { width: 24px; font-size: 12px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--muted); text-align: center; }
+  .lb-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .lb-info { flex: 1; }
+  .lb-name { font-size: 13px; font-weight: 500; }
+  .lb-meta { font-size: 11px; color: var(--muted); }
+  .lb-pts { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--accent); text-align: right; }
+
+  /* REPORT */
+  .report-wrap { display: grid; grid-template-columns: 1fr 360px; gap: 24px; align-items: start; }
+  .photo-drop { border: 1.5px dashed var(--border); border-radius: var(--radius); padding: 28px 20px; text-align: center; cursor: pointer; transition: all 0.15s; background: var(--bg); }
+  .photo-drop:hover { border-color: var(--accent); background: var(--accent-light); }
+  .photo-note { font-size: 11px; color: var(--warn); margin-top: 10px; font-weight: 500; background: var(--warn-light); padding: 8px 12px; border-radius: 6px; display: inline-block; line-height: 1.5; }
+  .rating-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .rating-card { border: 1.5px solid var(--border); border-radius: 8px; padding: 12px 10px; text-align: center; cursor: pointer; transition: all 0.15s; background: var(--bg); }
+  .rating-card:hover { transform: translateY(-1px); }
+  .rating-card.good.active { border-color: var(--green); background: var(--green-light); }
+  .rating-card.fair.active { border-color: var(--yellow); background: var(--yellow-light); }
+  .rating-card.poor.active { border-color: var(--warn); background: var(--warn-light); }
+  .rating-card .rating-emoji { font-size: 22px; display: block; margin-bottom: 5px; }
+  .rating-card .rating-label { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; }
+  .rating-card.good .rating-label { color: var(--green); }
+  .rating-card.fair .rating-label { color: var(--yellow); }
+  .rating-card.poor .rating-label { color: var(--warn); }
+  .location-row { display: flex; align-items: center; gap: 10px; padding: 10px 13px; background: var(--bg); border: 1px solid var(--border); border-radius: 7px; font-size: 12px; color: var(--muted); }
+  .location-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; flex-shrink: 0; }
+  .ref-images { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .ref-img { border-radius: 6px; border: 1px solid var(--border); aspect-ratio: 1; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: all 0.15s; }
+  .ref-img:hover { border-color: var(--accent); }
+  .ref-img-label { font-size: 10px; text-align: center; margin-top: 4px; font-weight: 600; }
+  .step-indicator { display: flex; gap: 8px; align-items: center; margin-bottom: 24px; }
+  .step { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+  .step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--bg); border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
+  .step.active .step-num { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .step.active { color: var(--text); font-weight: 500; }
+  .step.done .step-num { background: var(--green); border-color: var(--green); color: #fff; }
+  .step-sep { height: 1px; width: 20px; background: var(--border); }
+
+  /* FULL LEADERBOARD */
+  .lb-full-wrap { display: grid; grid-template-columns: 1fr 280px; gap: 24px; align-items: start; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); }
+  .stat-label { font-size: 11px; color: var(--muted); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; }
+  .stat-value { font-size: 26px; font-weight: 600; font-family: 'DM Mono', monospace; }
+  .stat-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .podium { display: flex; align-items: flex-end; justify-content: center; gap: 12px; margin-bottom: 24px; padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .podium-item { text-align: center; flex: 1; max-width: 140px; }
+  .podium-avatar { border-radius: 50%; background: var(--bg); border: 2px solid var(--border); margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; }
+  .podium-item:nth-child(1) .podium-avatar { border-color:#C0C0C0; width:42px; height:42px; font-size:16px; }
+  .podium-item:nth-child(2) .podium-avatar { border-color:#FFD700; width:54px; height:54px; font-size:22px; }
+  .podium-item:nth-child(3) .podium-avatar { border-color:#CD7F32; width:42px; height:42px; font-size:16px; }
+  .podium-name { font-size: 12px; font-weight: 600; }
+  .podium-pts { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .podium-rank { font-size: 18px; margin-bottom: 4px; }
+  .podium-bar { height: 6px; border-radius: 3px; margin-top: 8px; }
+  .podium-item:nth-child(1) .podium-bar { background: #C0C0C0; }
+  .podium-item:nth-child(2) .podium-bar { background: #FFD700; }
+  .podium-item:nth-child(3) .podium-bar { background: #CD7F32; }
+  .filter-tabs { display: flex; gap: 4px; }
+  .filter-tab { padding: 5px 12px; border-radius: 99px; font-size: 11px; font-weight: 500; border: 1px solid var(--border); background: none; cursor: pointer; font-family: inherit; color: var(--muted); transition: all 0.15s; }
+  .filter-tab.active { background: var(--text); color: #fff; border-color: var(--text); }
+  .progress-bar { height: 4px; border-radius: 2px; background: var(--border); overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 2px; background: var(--accent); }
+
+  /* CHALLENGES */
+  .challenge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .challenge-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); display: flex; gap: 16px; align-items: flex-start; }
+  .challenge-icon { font-size: 28px; flex-shrink: 0; }
+  .challenge-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .challenge-desc { font-size: 12px; color: var(--muted); margin-bottom: 10px; line-height: 1.5; }
+  .challenge-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  .challenge-pts { font-size: 12px; font-weight: 600; color: var(--accent); }
+  .challenge-prog { font-size: 11px; color: var(--muted); }
+  .challenge-tag { display: inline-flex; padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 10px; }
+  .tag-daily { background: var(--accent-light); color: var(--accent); }
+  .tag-weekly { background: var(--yellow-light); color: var(--yellow); }
+  .tag-special { background: #F3E8FF; color: #7C3AED; }
+  .tag-locked { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+
+  /* ANALYTICS */
+  .dot-access { display: inline-flex; align-items: center; gap: 6px; background: var(--warn-light); color: var(--warn); font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 99px; margin-bottom: 20px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .analytics-top { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
+  .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .heatmap-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 6px; }
+  .heatmap-cell { aspect-ratio:1; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:600; color:white; cursor:pointer; transition:transform 0.1s; }
+  .heatmap-cell:hover { transform: scale(1.08); }
+  .h-0{background:#EEF3FD;color:var(--muted)}.h-1{background:#BFDBFE;color:#1e40af}.h-2{background:#93C5FD;color:#1e40af}.h-3{background:#3B82F6}.h-4{background:#1D4ED8}.h-5{background:#1E3A8A}
+  .bar-chart { display:flex; align-items:flex-end; gap:8px; height:120px; padding:0 0 8px; }
+  .bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; height:100%; justify-content:flex-end; }
+  .bar { width:100%; border-radius:4px 4px 0 0; background:var(--accent); min-height:4px; cursor:pointer; }
+  .bar:hover { background:#1d4ed8; }
+  .bar-label { font-size:9px; color:var(--muted); font-weight:500; }
+  .bar-val { font-size:10px; color:var(--muted); font-family:'DM Mono',monospace; }
+  .donut-wrap { display:flex; align-items:center; gap:20px; }
+  .donut-legend { flex:1; }
+  .legend-item { display:flex; align-items:center; gap:8px; margin-bottom:8px; font-size:12px; }
+  .legend-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+  @media(max-width:700px) {
+    .report-wrap,.lb-full-wrap,.analytics-grid,.analytics-top,.achievement-cards,.challenge-grid { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="proto-nav">
+  <a class="logo" onclick="goHome()">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+    </div>
+    Street Systems
+  </a>
+  <div class="nav-tabs hidden" id="main-nav">
+    <button class="nav-tab" onclick="show('home',0)">Home</button>
+    <button class="nav-tab" onclick="show('report',1)">Report</button>
+    <button class="nav-tab" onclick="show('leaderboard',2)">Leaderboard</button>
+    <button class="nav-tab" onclick="show('challenges',3)">Challenges</button>
+  </div>
+  <div class="nav-right">
+    <span class="dot-badge" id="dot-badge">🏛️ DOT Admin</span>
+    <span class="badge">Wireframe Prototype</span>
+  </div>
+</nav>
+
+
+<!-- ══ LOGIN / REGISTER ══ -->
+<div id="screen-login" class="screen active" style="padding:0;">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="auth-logo-mark">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+        </div>
+        <h2>Street Systems</h2>
+        <p>NYC Streetlight Base Damage Reporting</p>
+      </div>
+
+      <div id="login-form" class="card">
+        <div class="card-body">
+          <div class="role-toggle">
+            <div class="role-btn active" onclick="setRole(this)"><span class="role-icon">👤</span>Citizen</div>
+            <div class="role-btn" onclick="setRole(this)"><span class="role-icon">🏛️</span>DOT Admin</div>
+          </div>
+          <div class="field"><label class="label">Email</label><input class="input" type="email" placeholder="you@example.com"></div>
+          <div class="field"><label class="label">Password</label><input class="input" type="password" placeholder="••••••••"></div>
+          <a style="font-size:11px;color:var(--accent);cursor:pointer;display:block;text-align:right;margin-top:-10px;margin-bottom:16px;">Forgot password?</a>
+          <button class="btn btn-primary btn-full" onclick="handleLogin('login')">Sign In →</button>
+          <div class="divider">or</div>
+          <div class="auth-switch">Don't have an account? <a onclick="toggleAuthForm()">Create one</a></div>
+        </div>
+      </div>
+
+      <div id="register-form" class="card" style="display:none;">
+        <div class="card-body">
+          <div class="role-toggle">
+            <div class="role-btn active" onclick="setRole(this)"><span class="role-icon">👤</span>Citizen</div>
+            <div class="role-btn" onclick="setRole(this)"><span class="role-icon">🏛️</span>DOT Admin</div>
+          </div>
+          <div class="input-row">
+            <div class="field"><label class="label">First Name</label><input class="input" placeholder="Jane"></div>
+            <div class="field"><label class="label">Last Name</label><input class="input" placeholder="Smith"></div>
+          </div>
+          <div class="field"><label class="label">Username</label><input class="input" placeholder="@janesmith"></div>
+          <div class="field"><label class="label">Email</label><input class="input" type="email" placeholder="jane@example.com"></div>
+          <div class="field"><label class="label">Password</label><input class="input" type="password" placeholder="Min. 8 characters"></div>
+          <button class="btn btn-primary btn-full" onclick="handleLogin('register')">Create Account →</button>
+          <div class="divider">or</div>
+          <div class="auth-switch">Already have an account? <a onclick="toggleAuthForm()">Sign in</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ HOME ══ -->
+<div id="screen-home" class="screen">
+  <div class="home-welcome">
+    <div>
+      <h2>Welcome back, jsmith_nyc 👋</h2>
+      <p>You're ranked #12 city-wide. Keep reporting to climb the leaderboard!</p>
+    </div>
+    <div>
+      <div class="home-welcome-pts">340</div>
+      <div class="home-welcome-pts-label">TOTAL POINTS</div>
+    </div>
+  </div>
+
+  <div class="section-label">Your Overview</div>
+  <div class="achievement-cards">
+    <div class="ach-card">
+      <div class="ach-icon">📋</div>
+      <div class="ach-value">17</div>
+      <div class="ach-label">Reports Submitted</div>
+      <div class="ach-sub">↑ 3 this week</div>
+    </div>
+    <div class="ach-card">
+      <div class="ach-icon">⭐</div>
+      <div class="ach-value">340</div>
+      <div class="ach-label">Total Points</div>
+      <div class="ach-sub">+30 pts this week</div>
+    </div>
+    <div class="ach-card">
+      <div class="ach-icon">🔥</div>
+      <div class="ach-value">3</div>
+      <div class="ach-label">Day Streak</div>
+      <div class="ach-sub">Best: 7 days</div>
+    </div>
+    <div class="ach-card">
+      <div class="ach-icon">🏅</div>
+      <div class="ach-value">4</div>
+      <div class="ach-label">Badges Earned</div>
+      <div class="ach-sub">2 challenges active</div>
+    </div>
+  </div>
+
+  <div class="report-cta">
+    <div>
+      <h3>See a damaged streetlight base?</h3>
+      <p>Take a photo, rate the damage, and submit your location. Every report helps NYC DOT prioritize repairs and keeps our streets safer.</p>
+    </div>
+    <button class="btn btn-primary btn-lg" onclick="show('report',1)">📷 Submit a Report →</button>
+  </div>
+
+  <div class="section-label">Top 10 Reporters This Month</div>
+  <div class="card">
+    <div style="display:grid;grid-template-columns:44px 38px 1fr 90px;padding:10px 20px;font-size:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">
+      <span>Rank</span><span></span><span>User</span><span style="text-align:right;">Points</span>
+    </div>
+    <div class="lb-row"><div class="lb-rank">🥇</div><div class="lb-avatar">😎</div><div class="lb-info"><div class="lb-name">ny_reporter1</div><div class="lb-meta">Manhattan · 98 reports</div></div><div class="lb-pts">3,890</div></div>
+    <div class="lb-row" style="background:var(--bg)"><div class="lb-rank">🥈</div><div class="lb-avatar">😊</div><div class="lb-info"><div class="lb-name">klopez_bx</div><div class="lb-meta">Bronx · 81 reports</div></div><div class="lb-pts">2,140</div></div>
+    <div class="lb-row"><div class="lb-rank">🥉</div><div class="lb-avatar">🧑</div><div class="lb-info"><div class="lb-name">qns_watch</div><div class="lb-meta">Queens · 74 reports</div></div><div class="lb-pts">1,970</div></div>
+    <div class="lb-row" style="background:var(--bg)"><div class="lb-rank">4</div><div class="lb-avatar">👩</div><div class="lb-info"><div class="lb-name">maria_bklyn 🔥</div><div class="lb-meta">Brooklyn · 89 reports</div></div><div class="lb-pts">1,820</div></div>
+    <div class="lb-row"><div class="lb-rank">5</div><div class="lb-avatar">👦</div><div class="lb-info"><div class="lb-name">streetwatcher99</div><div class="lb-meta">Manhattan · 75 reports</div></div><div class="lb-pts">1,540</div></div>
+    <div class="lb-row" style="background:var(--bg)"><div class="lb-rank">6</div><div class="lb-avatar">🧑</div><div class="lb-info"><div class="lb-name">bx_patrol</div><div class="lb-meta">Bronx · 68 reports</div></div><div class="lb-pts">1,380</div></div>
+    <div class="lb-row"><div class="lb-rank">7</div><div class="lb-avatar">👩</div><div class="lb-info"><div class="lb-name">si_reporter</div><div class="lb-meta">Staten Island · 61 reports</div></div><div class="lb-pts">1,230</div></div>
+    <div class="lb-row" style="background:var(--bg)"><div class="lb-rank">8</div><div class="lb-avatar">👨</div><div class="lb-info"><div class="lb-name">fixnyc_dave</div><div class="lb-meta">Queens · 55 reports</div></div><div class="lb-pts">1,110</div></div>
+    <div class="lb-row"><div class="lb-rank">9</div><div class="lb-avatar">🧑</div><div class="lb-info"><div class="lb-name">uptown_eyes</div><div class="lb-meta">Manhattan · 48 reports</div></div><div class="lb-pts">980</div></div>
+    <div class="lb-row" style="background:var(--bg)"><div class="lb-rank">10</div><div class="lb-avatar">👧</div><div class="lb-info"><div class="lb-name">bk_scout</div><div class="lb-meta">Brooklyn · 41 reports</div></div><div class="lb-pts">820</div></div>
+  </div>
+  <div style="margin-top:12px;text-align:center;">
+    <button class="btn btn-outline btn-sm" onclick="show('leaderboard',2)">View Full Leaderboard →</button>
+  </div>
+</div>
+
+
+<!-- ══ REPORT ══ -->
+<div id="screen-report" class="screen">
+  <div class="page-header">
+    <h1>Submit a Report</h1>
+    <p>Document a damaged streetlight base in your area</p>
+  </div>
+  <div class="step-indicator">
+    <div class="step done"><div class="step-num">✓</div> Location</div>
+    <div class="step-sep"></div>
+    <div class="step active"><div class="step-num">2</div> Photo & Rating</div>
+    <div class="step-sep"></div>
+    <div class="step"><div class="step-num">3</div> Details</div>
+    <div class="step-sep"></div>
+    <div class="step"><div class="step-num">4</div> Submit</div>
+  </div>
+  <div class="report-wrap">
+    <div>
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-header"><span class="card-title">📷 Photo Evidence</span><span style="font-size:11px;color:var(--muted);">Required</span></div>
+        <div class="card-body">
+          <div class="photo-drop">
+            <div style="font-size:32px;margin-bottom:10px;">📸</div>
+            <p style="font-weight:500;margin-bottom:6px;">Take a photo through the app</p>
+            <p style="font-size:12px;color:var(--muted);">GPS data is captured automatically from image metadata.</p>
+            <div class="photo-note">📍 Make sure your location is ON when you take the photo from your phone.</div>
+            <br>
+            <span style="font-size:12px;color:var(--accent);font-weight:600;">Open Camera</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-header"><span class="card-title">⭐ Damage Rating</span></div>
+        <div class="card-body">
+          <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Select the condition that best matches what you see</p>
+          <div class="rating-grid">
+            <div class="rating-card good" onclick="selectRating(this)">
+              <span class="rating-emoji">✅</span><span class="rating-label">GOOD</span>
+              <p style="font-size:10px;color:var(--muted);margin-top:4px;">Minor wear, no damage</p>
+            </div>
+            <div class="rating-card fair active" onclick="selectRating(this)">
+              <span class="rating-emoji">⚠️</span><span class="rating-label">FAIR</span>
+              <p style="font-size:10px;color:var(--muted);margin-top:4px;">Visible damage, functional</p>
+            </div>
+            <div class="rating-card poor" onclick="selectRating(this)">
+              <span class="rating-emoji">🔴</span><span class="rating-label">POOR</span>
+              <p style="font-size:10px;color:var(--muted);margin-top:4px;">Severe damage or missing</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">📝 Details</span></div>
+        <div class="card-body">
+          <div class="field">
+            <label class="label">Damage Type</label>
+            <select class="input">
+              <option>Select damage type…</option>
+              <option>Cracked base</option><option>Missing cover</option><option>Corrosion / rust</option>
+              <option>Graffiti</option><option>Physical impact damage</option><option>Leaning / unstable</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label">Description (optional)</label>
+            <textarea class="input" placeholder="Describe the damage in a few words…"></textarea>
+          </div>
+          <div class="field">
+            <label class="label">📍 Your Location</label>
+            <div class="location-row"><div class="location-dot"></div><span>GPS active — 40.7128° N, 74.0060° W · Manhattan</span></div>
+          </div>
+          <button class="btn btn-primary btn-full" onclick="showSubmitToast()">Submit Report →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reference panel -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">Reference Guide</span></div>
+      <div class="card-body">
+        <p style="font-size:12px;color:var(--muted);margin-bottom:14px;">Compare your photo to these condition examples</p>
+        <div class="ref-images">
+          <div><div class="ref-img" style="background:var(--green-light);">🟢</div><div class="ref-img-label" style="color:var(--green);">GOOD</div></div>
+          <div><div class="ref-img" style="background:var(--yellow-light);">🟡</div><div class="ref-img-label" style="color:var(--yellow);">FAIR</div></div>
+          <div><div class="ref-img" style="background:var(--warn-light);">🔴</div><div class="ref-img-label" style="color:var(--warn);">POOR</div></div>
+        </div>
+        <div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:7px;">
+          <div style="font-size:11px;font-weight:600;margin-bottom:6px;">Common Damage Types</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.8;">
+            • Cracked or fractured base<br>• Missing inspection cover<br>• Corrosion or rust staining<br>
+            • Graffiti or vandalism<br>• Impact damage (vehicle)<br>• Leaning or unstable pole
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ LEADERBOARD ══ -->
+<div id="screen-leaderboard" class="screen">
+  <div class="page-header"><h1>Leaderboard</h1><p>Top reporters helping keep NYC's streets safe</p></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px;">
+    <div class="stat-card"><div class="stat-label">Total Reports</div><div class="stat-value">4,821</div><div class="stat-sub">↑ 12% this week</div></div>
+    <div class="stat-card"><div class="stat-label">Active Users</div><div class="stat-value">1,204</div><div class="stat-sub">This month</div></div>
+    <div class="stat-card"><div class="stat-label">Your Rank</div><div class="stat-value">#12</div><div class="stat-sub">340 pts · Top 1%</div></div>
+  </div>
+  <div class="podium">
+    <div class="podium-item"><div class="podium-rank">🥈</div><div class="podium-avatar">😊</div><div class="podium-name">klopez_bx</div><div class="podium-pts">2,140 pts</div><div class="podium-bar"></div></div>
+    <div class="podium-item"><div class="podium-rank">🥇</div><div class="podium-avatar">😎</div><div class="podium-name">ny_reporter1</div><div class="podium-pts">3,890 pts</div><div class="podium-bar"></div></div>
+    <div class="podium-item"><div class="podium-rank">🥉</div><div class="podium-avatar">🧑</div><div class="podium-name">qns_watch</div><div class="podium-pts">1,970 pts</div><div class="podium-bar"></div></div>
+  </div>
+  <div class="lb-full-wrap">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Rankings</span>
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="setFilter(this)">All Time</button>
+          <button class="filter-tab" onclick="setFilter(this)">Monthly</button>
+          <button class="filter-tab" onclick="setFilter(this)">Weekly</button>
+          <button class="filter-tab" onclick="setFilter(this)">Daily</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:44px 38px 1fr 90px;padding:10px 20px;font-size:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">
+        <span>Rank</span><span></span><span>User</span><span style="text-align:right;">Points</span>
+      </div>
+      <div class="lb-row"><div class="lb-rank">4</div><div class="lb-avatar">👩</div><div class="lb-info"><div class="lb-name">maria_bklyn 🔥</div><div class="lb-meta">Brooklyn · 89 reports</div></div><div class="lb-pts">1,820</div></div>
+      <div class="lb-row" style="background:var(--bg)"><div class="lb-rank">5</div><div class="lb-avatar">👦</div><div class="lb-info"><div class="lb-name">streetwatcher99</div><div class="lb-meta">Manhattan · 75 reports</div></div><div class="lb-pts">1,540</div></div>
+      <div class="lb-row"><div class="lb-rank">6</div><div class="lb-avatar">🧑</div><div class="lb-info"><div class="lb-name">bx_patrol</div><div class="lb-meta">Bronx · 68 reports</div></div><div class="lb-pts">1,380</div></div>
+      <div class="lb-row" style="background:var(--bg)"><div class="lb-rank">7</div><div class="lb-avatar">👩</div><div class="lb-info"><div class="lb-name">si_reporter</div><div class="lb-meta">Staten Island · 61 reports</div></div><div class="lb-pts">1,230</div></div>
+      <div class="lb-row"><div class="lb-rank">8</div><div class="lb-avatar">👨</div><div class="lb-info"><div class="lb-name">fixnyc_dave</div><div class="lb-meta">Queens · 55 reports</div></div><div class="lb-pts">1,110</div></div>
+      <div class="lb-row" style="background:var(--bg)"><div class="lb-rank">9</div><div class="lb-avatar">🧑</div><div class="lb-info"><div class="lb-name">uptown_eyes</div><div class="lb-meta">Manhattan · 48 reports</div></div><div class="lb-pts">980</div></div>
+      <div class="lb-row"><div class="lb-rank">10</div><div class="lb-avatar">👧</div><div class="lb-info"><div class="lb-name">bk_scout</div><div class="lb-meta">Brooklyn · 41 reports</div></div><div class="lb-pts">820</div></div>
+      <div class="lb-row" style="background:var(--accent-light)"><div class="lb-rank" style="color:var(--accent)">12</div><div class="lb-avatar" style="border-color:var(--accent)">👤</div><div class="lb-info"><div class="lb-name" style="color:var(--accent)">jsmith_nyc (You)</div><div class="lb-meta">Manhattan · 17 reports</div></div><div class="lb-pts">340</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Filter by Borough</span></div>
+      <div class="card-body">
+        <div class="field">
+          <select class="input"><option>All Boroughs</option><option>Manhattan</option><option>Brooklyn</option><option>Queens</option><option>Bronx</option><option>Staten Island</option></select>
+        </div>
+        <div style="padding:16px;background:var(--bg);border-radius:7px;text-align:center;">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">Your borough rank</div>
+          <div style="font-size:30px;font-weight:700;font-family:'DM Mono',monospace;color:var(--accent)">#4</div>
+          <div style="font-size:11px;color:var(--muted);">in Manhattan</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ CHALLENGES ══ -->
+<div id="screen-challenges" class="screen">
+  <div class="page-header"><h1>Challenges</h1><p>Complete challenges to earn bonus points and climb the leaderboard</p></div>
+
+  <div class="section-label" style="margin-bottom:16px;">Daily Challenges</div>
+  <div class="challenge-grid" style="margin-bottom:28px;">
+    <div class="challenge-card">
+      <div class="challenge-icon">📅</div>
+      <div style="flex:1">
+        <div class="challenge-tag tag-daily">Daily</div>
+        <div class="challenge-title">Daily Reporter</div>
+        <div class="challenge-desc">Submit at least 1 report today to keep your streak alive and earn points.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+        <div class="challenge-footer"><span class="challenge-pts">+10 pts</span><span class="challenge-prog">0 / 1 · Resets in 6h</span></div>
+      </div>
+    </div>
+    <div class="challenge-card">
+      <div class="challenge-icon">⚡</div>
+      <div style="flex:1">
+        <div class="challenge-tag tag-daily">Daily</div>
+        <div class="challenge-title">Speed Scout</div>
+        <div class="challenge-desc">Submit 3 reports in a single day to earn a speed bonus.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:33%"></div></div>
+        <div class="challenge-footer"><span class="challenge-pts">+20 pts</span><span class="challenge-prog">1 / 3 · Resets in 6h</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-bottom:16px;">Weekly Challenges</div>
+  <div class="challenge-grid" style="margin-bottom:28px;">
+    <div class="challenge-card">
+      <div class="challenge-icon">🔥</div>
+      <div style="flex:1">
+        <div class="challenge-tag tag-weekly">Weekly</div>
+        <div class="challenge-title">On a Streak</div>
+        <div class="challenge-desc">Report 5 days in a row this week to earn a streak bonus.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div>
+        <div class="challenge-footer"><span class="challenge-pts">+30 pts</span><span class="challenge-prog">3 / 5 days</span></div>
+      </div>
+    </div>
+    <div class="challenge-card">
+      <div class="challenge-icon">📍</div>
+      <div style="flex:1">
+        <div class="challenge-tag tag-weekly">Weekly</div>
+        <div class="challenge-title">City Scout</div>
+        <div class="challenge-desc">Report damage in 2 different NYC boroughs this week.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div>
+        <div class="challenge-footer"><span class="challenge-pts">+25 pts</span><span class="challenge-prog">1 / 2 boroughs</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-bottom:16px;">Special Challenges</div>
+  <div class="challenge-grid">
+    <div class="challenge-card">
+      <div class="challenge-icon">🗺️</div>
+      <div style="flex:1">
+        <div class="challenge-tag tag-special">Special</div>
+        <div class="challenge-title">Borough Hopper</div>
+        <div class="challenge-desc">Submit at least one report in all 5 NYC boroughs.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div>
+        <div class="challenge-footer"><span class="challenge-pts">+100 pts</span><span class="challenge-prog">2 / 5 boroughs</span></div>
+      </div>
+    </div>
+    <div class="challenge-card">
+      <div class="challenge-icon">🌧️</div>
+      <div style="flex:1">
+        <div class="challenge-tag tag-special">Special</div>
+        <div class="challenge-title">Storm Chaser</div>
+        <div class="challenge-desc">Report 3 damaged bases within 24 hours after a rain event.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+        <div class="challenge-footer"><span class="challenge-pts">+75 pts</span><span class="challenge-prog">0 / 3</span></div>
+      </div>
+    </div>
+    <div class="challenge-card" style="opacity:0.55">
+      <div class="challenge-icon">🏆</div>
+      <div style="flex:1">
+        <div class="challenge-tag tag-locked">Locked</div>
+        <div class="challenge-title">Top 10 Climber</div>
+        <div class="challenge-desc">Reach the top 10 on the leaderboard to unlock this achievement.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+        <div class="challenge-footer"><span class="challenge-pts">+150 pts</span><span class="challenge-prog">Reach rank #10</span></div>
+      </div>
+    </div>
+    <div class="challenge-card" style="opacity:0.55">
+      <div class="challenge-icon">💯</div>
+      <div style="flex:1">
+        <div class="challenge-tag tag-locked">Locked</div>
+        <div class="challenge-title">Century Reporter</div>
+        <div class="challenge-desc">Submit your 100th report to earn the Century badge.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:17%"></div></div>
+        <div class="challenge-footer"><span class="challenge-pts">+200 pts</span><span class="challenge-prog">17 / 100 reports</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ DOT ANALYTICS (DOT only) ══ -->
+<div id="screen-analytics" class="screen">
+  <div class="dot-access">🏛️ DOT Admin Access Only</div>
+  <div class="page-header" style="margin-bottom:20px;"><h1>Analytics Dashboard</h1><p>Internal view for NYC Department of Transportation staff</p></div>
+  <div class="analytics-top">
+    <div class="stat-card"><div class="stat-label">Total Reports</div><div class="stat-value">4,821</div><div class="stat-sub">↑ 12% vs last month</div></div>
+    <div class="stat-card"><div class="stat-label">Poor Condition</div><div class="stat-value" style="color:var(--warn)">1,247</div><div class="stat-sub">25.9% of all reports</div></div>
+    <div class="stat-card"><div class="stat-label">Bases Inspected</div><div class="stat-value" style="color:var(--green)">892</div><div class="stat-sub">Since last update</div></div>
+    <div class="stat-card"><div class="stat-label">Active Reporters</div><div class="stat-value">1,204</div><div class="stat-sub">This month</div></div>
+  </div>
+  <div class="analytics-grid">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">🗺️ Geographic Heat Map</span>
+        <select class="input" style="width:auto;font-size:11px;padding:4px 8px;">
+          <option>All Boroughs</option><option>Manhattan</option><option>Brooklyn</option><option>Queens</option><option>Bronx</option><option>Staten Island</option>
+        </select>
+      </div>
+      <div class="card-body">
+        <p style="font-size:11px;color:var(--muted);margin-bottom:12px;">Cluster density of damage reports</p>
+        <div class="heatmap-grid">
+          <div class="heatmap-cell h-1">BX</div><div class="heatmap-cell h-3">BX</div><div class="heatmap-cell h-2">MH</div><div class="heatmap-cell h-5">MH</div><div class="heatmap-cell h-4">MH</div><div class="heatmap-cell h-2">QN</div>
+          <div class="heatmap-cell h-2">BX</div><div class="heatmap-cell h-4">BX</div><div class="heatmap-cell h-5">MH</div><div class="heatmap-cell h-3">MH</div><div class="heatmap-cell h-3">QN</div><div class="heatmap-cell h-1">QN</div>
+          <div class="heatmap-cell h-0">SI</div><div class="heatmap-cell h-1">BK</div><div class="heatmap-cell h-3">BK</div><div class="heatmap-cell h-4">BK</div><div class="heatmap-cell h-2">QN</div><div class="heatmap-cell h-2">QN</div>
+          <div class="heatmap-cell h-0">SI</div><div class="heatmap-cell h-2">BK</div><div class="heatmap-cell h-5">BK</div><div class="heatmap-cell h-3">BK</div><div class="heatmap-cell h-1">QN</div><div class="heatmap-cell h-0">QN</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;margin-top:12px;font-size:10px;color:var(--muted);">
+          <span>Low</span><div style="height:6px;flex:1;background:linear-gradient(to right,#EEF3FD,#1E3A8A);border-radius:3px;"></div><span>High</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">📈 Reports Over Time</span>
+        <select class="input" style="width:auto;font-size:11px;padding:4px 8px;">
+          <option>Last 6 Months</option><option>Last 12 Months</option><option>Last 30 Days</option>
+        </select>
+      </div>
+      <div class="card-body">
+        <p style="font-size:11px;color:var(--muted);margin-bottom:12px;">Total reports & poor-condition trend</p>
+        <div class="bar-chart">
+          <div class="bar-wrap"><div class="bar-val">620</div><div class="bar" style="height:50%"></div><div class="bar-label">Sep</div></div>
+          <div class="bar-wrap"><div class="bar-val">740</div><div class="bar" style="height:60%"></div><div class="bar-label">Oct</div></div>
+          <div class="bar-wrap"><div class="bar-val">580</div><div class="bar" style="height:47%"></div><div class="bar-label">Nov</div></div>
+          <div class="bar-wrap"><div class="bar-val">490</div><div class="bar" style="height:40%"></div><div class="bar-label">Dec</div></div>
+          <div class="bar-wrap"><div class="bar-val">860</div><div class="bar" style="height:70%"></div><div class="bar-label">Jan</div></div>
+          <div class="bar-wrap"><div class="bar-val">1230</div><div class="bar" style="height:100%;background:var(--warn)"></div><div class="bar-label">Feb</div></div>
+        </div>
+        <div style="display:flex;gap:14px;margin-top:12px;">
+          <div style="display:flex;align-items:center;gap:5px;font-size:11px;"><div style="width:10px;height:10px;background:var(--accent);border-radius:2px;"></div>All Reports</div>
+          <div style="display:flex;align-items:center;gap:5px;font-size:11px;"><div style="width:10px;height:10px;background:var(--warn);border-radius:2px;"></div>Poor Condition</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">🔧 Damage Type Breakdown</span></div>
+      <div class="card-body">
+        <div class="donut-wrap">
+          <svg width="100" height="100" viewBox="0 0 36 36">
+            <circle cx="18" cy="18" r="14" fill="none" stroke="#E2E0DA" stroke-width="4"/>
+            <circle cx="18" cy="18" r="14" fill="none" stroke="#2563EB" stroke-width="4" stroke-dasharray="35 65" stroke-dashoffset="25" transform="rotate(-90 18 18)"/>
+            <circle cx="18" cy="18" r="14" fill="none" stroke="#E85D2F" stroke-width="4" stroke-dasharray="25 75" stroke-dashoffset="-10" transform="rotate(-90 18 18)"/>
+            <circle cx="18" cy="18" r="14" fill="none" stroke="#D97706" stroke-width="4" stroke-dasharray="18 82" stroke-dashoffset="-35" transform="rotate(-90 18 18)"/>
+            <circle cx="18" cy="18" r="14" fill="none" stroke="#16A34A" stroke-width="4" stroke-dasharray="12 88" stroke-dashoffset="-53" transform="rotate(-90 18 18)"/>
+            <circle cx="18" cy="18" r="14" fill="none" stroke="#8B5CF6" stroke-width="4" stroke-dasharray="10 90" stroke-dashoffset="-65" transform="rotate(-90 18 18)"/>
+          </svg>
+          <div class="donut-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#2563EB"></div>Cracked base — 35%</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#E85D2F"></div>Impact damage — 25%</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#D97706"></div>Missing cover — 18%</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#16A34A"></div>Corrosion — 12%</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#8B5CF6"></div>Other — 10%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">🕐 Recent Reports</span><button class="btn btn-outline btn-sm">Export CSV</button></div>
+      <div>
+        <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;padding:10px 20px;font-size:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">
+          <span>Location</span><span>Rating</span><span>Type</span><span>Time</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;padding:11px 20px;font-size:12px;border-bottom:1px solid var(--border);align-items:center;"><span>W 42nd St, MH</span><span style="color:var(--warn);font-weight:600;">Poor</span><span style="color:var(--muted);">Cracked</span><span style="color:var(--muted);">2m ago</span></div>
+        <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;padding:11px 20px;font-size:12px;border-bottom:1px solid var(--border);align-items:center;background:var(--bg);"><span>Flatbush Ave, BK</span><span style="color:var(--yellow);font-weight:600;">Fair</span><span style="color:var(--muted);">Corrosion</span><span style="color:var(--muted);">8m ago</span></div>
+        <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;padding:11px 20px;font-size:12px;border-bottom:1px solid var(--border);align-items:center;"><span>Grand Concourse, BX</span><span style="color:var(--warn);font-weight:600;">Poor</span><span style="color:var(--muted);">Impact</span><span style="color:var(--muted);">15m ago</span></div>
+        <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;padding:11px 20px;font-size:12px;border-bottom:1px solid var(--border);align-items:center;background:var(--bg);"><span>Jamaica Ave, QN</span><span style="color:var(--green);font-weight:600;">Good</span><span style="color:var(--muted);">Minor</span><span style="color:var(--muted);">22m ago</span></div>
+        <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;padding:11px 20px;font-size:12px;align-items:center;"><span>Bay St, SI</span><span style="color:var(--yellow);font-weight:600;">Fair</span><span style="color:var(--muted);">Cover</span><span style="color:var(--muted);">31m ago</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- TOAST -->
+<div id="toast" style="position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:#1A1917;color:#fff;padding:12px 22px;border-radius:99px;font-size:13px;font-weight:500;opacity:0;transition:all 0.25s;pointer-events:none;z-index:999;">
+  ✅ Report submitted! +10 pts earned
+</div>
+
+<script>
+  function show(screen, tabIndex) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + screen).classList.add('active');
+    if (tabIndex !== undefined) {
+      document.querySelectorAll('#main-nav .nav-tab').forEach(t => t.classList.remove('active'));
+      const tabs = document.querySelectorAll('#main-nav .nav-tab');
+      if (tabs[tabIndex]) tabs[tabIndex].classList.add('active');
+    }
+    window.scrollTo(0,0);
+  }
+
+  function goHome() {
+    const loginActive = document.getElementById('screen-login').classList.contains('active');
+    if (!loginActive) show('home', 0);
+  }
+
+  function handleLogin(mode) {
+    const visibleForm = document.getElementById(mode === 'login' ? 'login-form' : 'register-form');
+    const activeRoleBtn = visibleForm.querySelector('.role-btn.active');
+    const isDot = activeRoleBtn && activeRoleBtn.textContent.includes('DOT');
+
+    // Show main nav
+    document.getElementById('main-nav').classList.remove('hidden');
+
+    if (isDot) {
+      document.getElementById('dot-badge').classList.add('visible');
+      // Add DOT Analytics tab if not already present
+      if (!document.getElementById('dot-nav-tab')) {
+        const nav = document.getElementById('main-nav');
+        const tab = document.createElement('button');
+        tab.className = 'nav-tab active';
+        tab.id = 'dot-nav-tab';
+        tab.textContent = '🏛️ DOT Analytics';
+        tab.onclick = function() {
+          document.querySelectorAll('#main-nav .nav-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          show('analytics');
+        };
+        nav.appendChild(tab);
+      }
+      // DOT users land on analytics
+      document.querySelectorAll('#main-nav .nav-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('dot-nav-tab').classList.add('active');
+      show('analytics');
+    } else {
+      show('home', 0);
+    }
+  }
+
+  function toggleAuthForm() {
+    const lf = document.getElementById('login-form');
+    const rf = document.getElementById('register-form');
+    if (lf.style.display === 'none') { lf.style.display = ''; rf.style.display = 'none'; }
+    else { lf.style.display = 'none'; rf.style.display = ''; }
+  }
+
+  function setRole(el) {
+    el.parentElement.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function selectRating(el) {
+    el.closest('.rating-grid').querySelectorAll('.rating-card').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function setFilter(el) {
+    el.closest('.filter-tabs').querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function showSubmitToast() {
+    const t = document.getElementById('toast');
+    t.style.opacity = '1';
+    t.style.transform = 'translateX(-50%) translateY(0)';
+    setTimeout(() => {
+      t.style.opacity = '0';
+      t.style.transform = 'translateX(-50%) translateY(20px)';
+      setTimeout(() => show('home', 0), 400);
+    }, 2000);
+  }
+</script>
+</body>
+</html>

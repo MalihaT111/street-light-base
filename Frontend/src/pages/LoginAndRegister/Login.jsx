@@ -51,29 +51,33 @@ const Login = () => {
 
         const errorMessages = validate();
         setErrors(errorMessages);
+        if (Object.keys(errorMessages).length > 0) return;
 
-        if (Object.keys(errorMessages).length > 0) {
-            return;
+        try {
+            const response = await fetch('http://localhost:5001/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: formInput.email,
+                    password: formInput.password,
+                    role: role
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setErrors({ password: data.error || 'Login failed' });
+                return;
+            }
+
+            localStorage.setItem('user', JSON.stringify(data.user));
+            localStorage.setItem('token', data.access_token);
+
+            navigate('/home');
+        } catch {
+            setErrors({ password: 'Unable to connect to server' });
         }
-    
-        // Simulate successful login
-        // In a real app, this would be an API call to the backend
-        const mockUserData = {
-            user: {
-                id: 123,
-                username: formInput.email.split('@')[0] + '_nyc', // Generate username from email
-                email: formInput.email,
-                role: role
-            },
-            access_token: 'mock_jwt_token_' + Date.now()
-        };
-        
-        // Save user data to localStorage as specified in requirements
-        localStorage.setItem("user", JSON.stringify(mockUserData.user));
-        localStorage.setItem("token", mockUserData.access_token);
-        
-        console.log("Login successful, redirecting to home page");
-        navigate('/home');
     }
   return (
     <>

@@ -118,11 +118,15 @@ const Reports = () => {
     setSubmitting(true);
     setSubmitError(null);
 
+    // The try block attempts to send the report to the backend API.
     try {
+      // Retrieve the authentication token from local storage.
       const token = localStorage.getItem('token');
+      // Create a FormData object to hold the report data.
       const formData = new FormData();
       formData.append('photo', photo);
       formData.append('rating', rating);
+      formData.append('borough', 'Queens'); // Placeholder: Logic needed to determine borough from coordinates
       // Send as JSON array string so the backend can parse TEXT[]
       formData.append('damage_types', JSON.stringify(damageTypes));
       if (location) {
@@ -133,18 +137,42 @@ const Reports = () => {
         formData.append('photo_timestamp', photoTimestamp.toISOString());
       }
 
-      const response = await fetch('http://localhost:5000/api/reports', {
+      // Debugging: Log the FormData contents to verify what is being sent
+      for (const [key, value] of formData.entries()) {
+        console.log(`FormData ${key}:`, value);
+      }
+
+      const apiUrl = 'http://localhost:5001/api/reports';
+      console.log('Submitting report to:', apiUrl);
+      // Make a POST request to the reports API endpoint.
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
         body: formData,
       });
 
+      // If the submission is successful, update the UI to show a success message.
       if (response.ok) {
+        // Debugging: Log the server response to verify the database entry and photo URL
+        // This assumes your backend returns the created report object as JSON
+        const savedData = await response.json();
+        console.log('Server response (Database Entry):', savedData);
         setSubmitSuccess(true);
+        // Redirect to the home page after a short delay.
         setTimeout(() => navigate('/home'), 2500);
       } else {
+        // If submission fails, parse the error and display it.
         const data = await response.json();
-        setSubmitError(data.error || 'Submission failed. Please try again.');
+        // Log the full error to console for debugging
+        console.error("Submission failed:", data);
+        // flask-jwt-extended uses 'msg' for errors; checking both ensures the user sees the real issue
+        const errorMessage = data.error || data.msg || 'Submission failed. Please try again.';
+        
+        if (errorMessage === 'Subject must be a string' || errorMessage === 'Not enough segments') {
+          setSubmitError('Invalid Session: Please Sign Out and Log In again.');
+        } else {
+          setSubmitError(errorMessage);
+        }
       }
     } catch {
       // Backend not yet wired — show success for demo
