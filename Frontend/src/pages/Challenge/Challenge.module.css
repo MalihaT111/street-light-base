@@ -15,4 +15,15 @@
     font-size: 1rem;
     opacity: 0.9;
     max-width: 600px;
+    margin-bottom: 2rem;
+}
+.challenge-type{
+    font-size: 0.9rem;
+    opacity: 0.9;
+    max-width: 600px;
+}
+.challenge-wrapper{
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+    gap: 1rem;
 }
