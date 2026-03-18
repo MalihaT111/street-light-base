@@ -132,6 +132,10 @@
   font-size: 0.9rem;
 }
 
+.minimalNavbar {
+  height: 52px;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .navLinks {

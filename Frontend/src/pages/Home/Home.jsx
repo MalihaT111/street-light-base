@@ -1,20 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './Home.module.css';
-import { 
-  FaChartLine, 
-  FaFlag, 
-  FaTrophy, 
-  FaFire, 
-  FaMedal, 
-  FaArrowRight,
-  FaHome,
-  FaFileAlt,
-  FaChartBar,
-  FaUser,
-  FaCog,
-  FaSignOutAlt
-} from 'react-icons/fa';
+import { FaChartLine, FaFlag, FaTrophy, FaFire, FaMedal, FaArrowRight } from 'react-icons/fa';
+import Navbar from '../../components/Navbar/Navbar';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -22,8 +10,6 @@ const Home = () => {
   // Get user from localStorage
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const userMenuRef = useRef(null);
   
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -42,36 +28,6 @@ const Home = () => {
   }, [navigate]);
 
   const username = user?.username || 'Citizen';
-
-  useEffect(() => {
-    const handleOutsidePress = (event) => {
-      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
-        setIsUserMenuOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleOutsidePress);
-    document.addEventListener('touchstart', handleOutsidePress);
-
-    return () => {
-      document.removeEventListener('mousedown', handleOutsidePress);
-      document.removeEventListener('touchstart', handleOutsidePress);
-    };
-  }, []);
-
-  const handleSignOut = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    navigate('/');
-  };
-
-  const toggleUserMenu = () => {
-    setIsUserMenuOpen((prevOpen) => !prevOpen);
-  };
-
-  const closeUserMenu = () => {
-    setIsUserMenuOpen(false);
-  };
 
   if (loading) return null;
   
@@ -99,70 +55,7 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
-      {/* Top Navigation Bar */}
-      <nav className={styles.navbar}>
-        <div className={styles.logo}>
-          <div className={styles.logoMark}>
-            <svg viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-            </svg>
-          </div>
-          <span>Street Systems</span>
-        </div>
-        
-        <div className={styles.navLinks}>
-          <Link to="/home" className={`${styles.navLink} ${styles.active}`}>
-            <FaHome className={styles.navIcon} />
-            <span>Home</span>
-          </Link>
-          <Link to="/reports" className={styles.navLink}>
-            <FaFileAlt className={styles.navIcon} />
-            <span>Reports</span>
-          </Link>
-          <Link to="/leaderboard" className={styles.navLink}>
-            <FaChartBar className={styles.navIcon} />
-            <span>Leaderboard</span>
-          </Link>
-        </div>
-        
-        <div
-          ref={userMenuRef}
-          className={`${styles.userInfo} ${isUserMenuOpen ? styles.userInfoOpen : ''}`}
-        >
-          <button
-            type="button"
-            className={styles.userMenuTrigger}
-            onClick={toggleUserMenu}
-            aria-haspopup="menu"
-            aria-expanded={isUserMenuOpen}
-          >
-            <div className={styles.userAvatar}>
-              {username.charAt(0).toUpperCase()}
-            </div>
-            <span className={styles.userName}>{username}</span>
-          </button>
-          <div className={styles.userDropdown}>
-            <Link to="/profile" className={styles.dropdownItem} onClick={closeUserMenu}>
-              <FaUser className={styles.dropdownIcon} />
-              <span>Profile</span>
-            </Link>
-            <Link to="/settings" className={styles.dropdownItem} onClick={closeUserMenu}>
-              <FaCog className={styles.dropdownIcon} />
-              <span>Settings</span>
-            </Link>
-            <button
-              onClick={() => {
-                closeUserMenu();
-                handleSignOut();
-              }}
-              className={styles.dropdownItemButton}
-            >
-              <FaSignOutAlt className={styles.dropdownIcon} />
-              <span>Sign Out</span>
-            </button>
-          </div>
-        </div>
-      </nav>
+      <Navbar username={username} activeTab="home" />
 
       {/* Main Content */}
       <main className={styles.mainContent}>

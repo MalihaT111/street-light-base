@@ -2,20 +2,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaHome, FaFileAlt, FaChartBar, FaUser, FaCog, FaSignOutAlt, FaMedal } from 'react-icons/fa';
 import styles from './Navbar.module.css';
 
-const Navbar = ({ username, activeTab = 'home' }) => {
+const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
   const navigate = useNavigate();
 
   const handleSignOut = () => {
-    // Clear localStorage
     localStorage.removeItem('user');
     localStorage.removeItem('token');
-    
-    console.log('User signed out');
     navigate('/');
   };
 
   return (
-    <nav className={styles.navbar}>
+    <nav className={`${styles.navbar} ${minimal ? styles.minimalNavbar : ''}`}>
       <div className={styles.logo}>
         <div className={styles.logoMark}>
           <svg viewBox="0 0 24 24">
@@ -24,46 +21,50 @@ const Navbar = ({ username, activeTab = 'home' }) => {
         </div>
         <span>Street Systems</span>
       </div>
-      
-      <div className={styles.navLinks}>
-        <Link to="/home" className={`${styles.navLink} ${activeTab === 'home' ? styles.active : ''}`}>
-          <FaHome className={styles.navIcon} />
-          <span>Home</span>
-        </Link>
-        <Link to="/reports" className={`${styles.navLink} ${activeTab === 'reports' ? styles.active : ''}`}>
-          <FaFileAlt className={styles.navIcon} />
-          <span>Reports</span>
-        </Link>
-        <Link to="/leaderboard" className={`${styles.navLink} ${activeTab === 'leaderboard' ? styles.active : ''}`}>
-          <FaChartBar className={styles.navIcon} />
-          <span>Leaderboard</span>
-        </Link>
-        <Link to="/challenge" className={`${styles.navLink} ${activeTab === 'challenge' ? styles.active : ''}`}>
-          <FaMedal className={styles.navIcon} />
-          <span>Challenge</span>
-        </Link>
-        <Link to="/profile" className={`${styles.navLink} ${activeTab === 'profile' ? styles.active : ''}`}>
-          <FaUser className={styles.navIcon} />
-          <span>Profile</span>
-        </Link>
-        <Link to="/settings" className={`${styles.navLink} ${activeTab === 'settings' ? styles.active : ''}`}>
-          <FaCog className={styles.navIcon} />
-          <span>Settings</span>
-        </Link>
-      </div>
-      
-      <div className={styles.userSection}>
-        <div className={styles.userInfo}>
-          <div className={styles.userAvatar}>
-            {username.charAt(0).toUpperCase()}
+
+      {!minimal && (
+        <>
+          <div className={styles.navLinks}>
+            <Link to="/home" className={`${styles.navLink} ${activeTab === 'home' ? styles.active : ''}`}>
+              <FaHome className={styles.navIcon} />
+              <span>Home</span>
+            </Link>
+            <Link to="/reports" className={`${styles.navLink} ${activeTab === 'reports' ? styles.active : ''}`}>
+              <FaFileAlt className={styles.navIcon} />
+              <span>Reports</span>
+            </Link>
+            <Link to="/leaderboard" className={`${styles.navLink} ${activeTab === 'leaderboard' ? styles.active : ''}`}>
+              <FaChartBar className={styles.navIcon} />
+              <span>Leaderboard</span>
+            </Link>
+            <Link to="/challenge" className={`${styles.navLink} ${activeTab === 'challenge' ? styles.active : ''}`}>
+              <FaMedal className={styles.navIcon} />
+              <span>Challenge</span>
+            </Link>
+            <Link to="/profile" className={`${styles.navLink} ${activeTab === 'profile' ? styles.active : ''}`}>
+              <FaUser className={styles.navIcon} />
+              <span>Profile</span>
+            </Link>
+            <Link to="/settings" className={`${styles.navLink} ${activeTab === 'settings' ? styles.active : ''}`}>
+              <FaCog className={styles.navIcon} />
+              <span>Settings</span>
+            </Link>
           </div>
-          <span className={styles.userName}>{username}</span>
-        </div>
-        <button onClick={handleSignOut} className={styles.signOutBtn} title="Sign Out">
-          <FaSignOutAlt className={styles.signOutIcon} />
-          <span>Sign Out</span>
-        </button>
-      </div>
+
+          <div className={styles.userSection}>
+            <div className={styles.userInfo}>
+              <div className={styles.userAvatar}>
+                {username.charAt(0).toUpperCase()}
+              </div>
+              <span className={styles.userName}>{username}</span>
+            </div>
+            <button onClick={handleSignOut} className={styles.signOutBtn} title="Sign Out">
+              <FaSignOutAlt className={styles.signOutIcon} />
+              <span>Sign Out</span>
+            </button>
+          </div>
+        </>
+      )}
     </nav>
   );
 };

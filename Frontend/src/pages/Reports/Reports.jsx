@@ -1,9 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import {
-  FaHome, FaFileAlt, FaChartBar,
-  FaUser, FaCog, FaSignOutAlt, FaCheckCircle,
-} from 'react-icons/fa';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FaCheckCircle } from 'react-icons/fa';
+import Navbar from '../../components/Navbar/Navbar';
 import PhotoEvidence from './components/PhotoEvidence';
 import DamageRating from './components/DamageRating';
 import ReportDetails from './components/ReportDetails';
@@ -14,8 +12,6 @@ const Reports = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const userMenuRef = useRef(null);
 
   // Form state
   const [photo, setPhoto] = useState(null);
@@ -44,20 +40,6 @@ const Reports = () => {
       setLoading(false);
     }
   }, [navigate]);
-
-  useEffect(() => {
-    const handleOutsidePress = (e) => {
-      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
-        setIsUserMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleOutsidePress);
-    document.addEventListener('touchstart', handleOutsidePress);
-    return () => {
-      document.removeEventListener('mousedown', handleOutsidePress);
-      document.removeEventListener('touchstart', handleOutsidePress);
-    };
-  }, []);
 
   // Browser geolocation fallback — only kicks in if no EXIF location was found
   useEffect(() => {
@@ -196,63 +178,7 @@ const Reports = () => {
 
   return (
     <div className={styles.container}>
-      <nav className={styles.navbar}>
-        <div className={styles.logo}>
-          <div className={styles.logoMark}>
-            <svg viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-            </svg>
-          </div>
-          <span>Street Systems</span>
-        </div>
-
-        <div className={styles.navLinks}>
-          <Link to="/home" className={styles.navLink}>
-            <FaHome className={styles.navIcon} /><span>Home</span>
-          </Link>
-          <Link to="/reports" className={`${styles.navLink} ${styles.active}`}>
-            <FaFileAlt className={styles.navIcon} /><span>Reports</span>
-          </Link>
-          <Link to="/leaderboard" className={styles.navLink}>
-            <FaChartBar className={styles.navIcon} /><span>Leaderboard</span>
-          </Link>
-        </div>
-
-        <div
-          ref={userMenuRef}
-          className={`${styles.userInfo} ${isUserMenuOpen ? styles.userInfoOpen : ''}`}
-        >
-          <button
-            type="button"
-            className={styles.userMenuTrigger}
-            onClick={() => setIsUserMenuOpen((prev) => !prev)}
-            aria-haspopup="menu"
-            aria-expanded={isUserMenuOpen}
-          >
-            <div className={styles.userAvatar}>{username.charAt(0).toUpperCase()}</div>
-            <span className={styles.userName}>{username}</span>
-          </button>
-          <div className={styles.userDropdown}>
-            <Link to="/profile" className={styles.dropdownItem} onClick={() => setIsUserMenuOpen(false)}>
-              <FaUser className={styles.dropdownIcon} /><span>Profile</span>
-            </Link>
-            <Link to="/settings" className={styles.dropdownItem} onClick={() => setIsUserMenuOpen(false)}>
-              <FaCog className={styles.dropdownIcon} /><span>Settings</span>
-            </Link>
-            <button
-              className={styles.dropdownItemButton}
-              onClick={() => {
-                setIsUserMenuOpen(false);
-                localStorage.removeItem('user');
-                localStorage.removeItem('token');
-                navigate('/');
-              }}
-            >
-              <FaSignOutAlt className={styles.dropdownIcon} /><span>Sign Out</span>
-            </button>
-          </div>
-        </div>
-      </nav>
+      <Navbar username={username} activeTab="reports" />
 
       <main className={styles.mainContent}>
         {submitSuccess ? (

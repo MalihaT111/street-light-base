@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from "react-router-dom";
 import styles from './LoginAndRegister.module.css';
+import Navbar from '../../components/Navbar/Navbar';
 import { CiMail, CiLock } from "react-icons/ci";
 import { FaUser, FaLandmark } from "react-icons/fa";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
@@ -81,17 +82,7 @@ const Login = () => {
     }
   return (
     <>
-        {/* Nav bar */}
-        <nav>
-            <div className= {styles["logo"]}>
-                <div className={styles["logo-mark"]}>
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                    </svg>
-                </div>
-                <span>Street Systems</span>
-            </div>
-        </nav>
+        <Navbar minimal />
         <div className={styles["auth-wrapper"]}>
             <div className={styles["auth-card"]}>
                 {/* Logo section displayed at the top of the login/register page */}
