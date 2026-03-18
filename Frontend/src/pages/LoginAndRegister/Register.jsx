@@ -28,28 +28,32 @@ const Register = () => {
         }));
     };
     
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        // Simulate successful registration
-        const mockUserData = {
-            user: {
-                id: 456,
-                username: formInput.username || formInput.email.split('@')[0] + '_nyc',
+        setErrors({ general: "" });
+
+        const response = await fetch('http://localhost:5001/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                username: formInput.username,
                 email: formInput.email,
-                firstName: formInput.firstName,
-                lastName: formInput.lastName,
+                password: formInput.password,
+                first_name: formInput.firstName,
+                last_name: formInput.lastName,
                 role: role
-            },
-            access_token: 'mock_jwt_token_' + Date.now()
-        };
-        
-        // Save user data to localStorage as specified in requirements
-        localStorage.setItem("user", JSON.stringify(mockUserData.user));
-        localStorage.setItem("token", mockUserData.access_token);
-        
-        console.log("Registration successful, redirecting to home page");
-        navigate('/home');
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            setErrors({ general: data.error || 'Registration failed' });
+            return;
+        }
+
+        localStorage.setItem('user', JSON.stringify(data.user));
+        navigate('/');
     };
     
     return (
