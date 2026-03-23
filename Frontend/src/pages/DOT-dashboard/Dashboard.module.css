@@ -1,0 +1,559 @@
+/* Basic reset */
+* {
+    box-sizing: border-box;
+  }
+  
+  .app {
+    min-height: 100vh;
+    background: #f5f4f0;
+    color: #1a1917;
+    font-family: "Dm sans", sans-serif;
+  }
+  
+  /* Sticky top bar */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.96);
+    border-bottom: 1px solid #e2e0da;
+  }
+  
+  /* ONLY for page content */
+.container {
+    max-width: 1380px;
+    margin: 0 auto;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  
+  /* Navbar should span FULL width */
+  .topbarInner {
+    width: 100%;
+    padding: 16px 24px; /* controls spacing from edge */
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  
+  .topbarInner {
+    height: 76px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  
+  /* Brand area */
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 220px;
+  }
+  
+  .logoMark {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3778e1;
+    border-radius: 8px;
+  }
+  
+  .logoMark svg {
+    width: 18px;
+    height: 18px;
+    fill: #fff;
+  }
+  
+  .brandTitle {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+  
+  .brandSubtitle {
+    font-size: 12px;
+    color: #8a8880;
+    margin-top: 2px;
+  }
+  
+  /* Navigation */
+  .nav {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .navItem {
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #8a8880;
+  }
+  
+  .active {
+    background-color: #EEF3FD;
+    color: #2563EB;
+  }
+  
+  .topbarRight {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  /* Pills / tags */
+  .pill,
+  .tag {
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid #e2e0da;
+    background: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  
+  .tag {
+    background: #faf9f6;
+    color: #8a8880;
+  }
+  
+  /* Main page container */
+  .container {
+    padding-top: 28px;
+    padding-bottom: 36px;
+  }
+  
+  /* Hero section */
+  .hero {
+    background: #3778E1;
+    color: #fff;
+    border-radius: 28px;
+    padding: 30px;
+    display: grid;
+    grid-template-columns: 1.4fr 0.8fr;
+    gap: 24px;
+    margin-bottom: 22px;
+  }
+  
+  .eyebrow {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 14px;
+  }
+  
+  .heroTitle {
+    margin: 0 0 10px;
+    font-size: 34px;
+    line-height: 1.1;
+  }
+  
+  .heroMetrics {
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 22px;
+    padding: 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-content: start;
+  }
+  
+  .heroMetricValue,
+  .metricValue,
+  .boroughCount,
+  .mono {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-weight: 700;
+  }
+  
+  .heroMetricValue,
+  .metricValue {
+    font-size: 30px;
+  }
+  
+  .heroMetricLabel {
+    margin-top: 4px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: rgba(255, 255, 255, 0.72);
+  }
+  
+  /* Summary stat cards */
+  .statsGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+  
+  .card {
+    background: #ffffff;
+    border: 1px solid #e2e0da;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  
+  .cardBody {
+    padding: 20px;
+  }
+  
+  .statTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  
+  .statLabel {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 700;
+    color: #8a8880;
+  }
+  
+  .metricValue {
+    line-height: 1;
+    margin-top: 10px;
+  }
+  
+  .orange {
+    color: #e85d2f;
+  }
+  
+  .green {
+    color: #2f8f5b;
+    font-size: 22px;
+    line-height: 1.15;
+  }
+  
+  .statSubtext {
+    font-size: 12px;
+    color: #8a8880;
+  }
+  
+  /* Main layout */
+  .mainGrid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.95fr;
+    gap: 18px;
+  }
+  
+  .stack {
+    display: grid;
+    gap: 18px;
+  }
+  
+  /* Card header */
+  .cardHeader {
+    padding: 18px 20px;
+    border-bottom: 1px solid #e2e0da;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .cardTitle {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .cardSubtitle {
+    margin-top: 5px;
+    font-size: 12px;
+    color: #8a8880;
+    line-height: 1.4;
+  }
+  
+  .softPill {
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: #eef3fd;
+    color: #2563eb;
+    border: 1px solid #d8e4fd;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+  
+  /* Borough cluster section */
+  .mapGrid {
+    padding: 20px;
+  }
+  
+  .heatGrid {
+    display: grid;
+    gap: 14px;
+  }
+  
+  .boroughGrid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  
+  .heatCell {
+    min-height: 110px;
+    border-radius: 14px;
+    border: 1px solid #e2e0da;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 10px;
+  }
+  
+  .boroughCode {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+  
+  .boroughName {
+    font-size: 13px;
+    font-weight: 600;
+  }
+  
+  .boroughCount {
+    font-size: 13px;
+    opacity: 0.92;
+  }
+  
+  /* Heat levels */
+  .l1 {
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+  
+  .l3 {
+    background: #60a5fa;
+    color: #fff;
+  }
+  
+  .l4 {
+    background: #2563eb;
+    color: #fff;
+  }
+  
+  .l5 {
+    background: #172554;
+    color: #fff;
+  }
+  
+  /* Legend */
+  .legend {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+    font-size: 12px;
+    color: #8a8880;
+  }
+  
+  .legendBar {
+    flex: 1;
+    height: 8px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #f1f5f9 0%, #93c5fd 50%, #172554 100%);
+  }
+  
+  /* Bar chart placeholder */
+  .chartPlaceholder {
+    padding: 22px 20px 20px;
+  }
+  
+  .bars {
+    height: 290px;
+    display: flex;
+    align-items: flex-end;
+    gap: 18px;
+    padding: 16px 6px 8px;
+    border-bottom: 1px solid #e2e0da;
+    background-image: linear-gradient(
+      to top,
+      transparent 24%,
+      #ece9e2 24%,
+      #ece9e2 25%,
+      transparent 25%,
+      transparent 49%,
+      #ece9e2 49%,
+      #ece9e2 50%,
+      transparent 50%,
+      transparent 74%,
+      #ece9e2 74%,
+      #ece9e2 75%,
+      transparent 75%
+    );
+  }
+  
+  .barGroup {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+  
+  .barPair {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 100%;
+  }
+  
+  .bar {
+    width: 18px;
+    border-radius: 8px 8px 0 0;
+    background: #2563eb;
+  }
+  
+  .severe {
+    background: #e85d2f;
+  }
+  
+  .monthLabel {
+    font-size: 12px;
+    color: #8a8880;
+  }
+  
+  /* Donut section */
+  .donutWrap {
+    padding: 22px 20px 20px;
+    display: grid;
+    grid-template-columns: 230px 1fr;
+    gap: 18px;
+    align-items: center;
+  }
+  
+  .donut {
+    width: 180px;
+    height: 180px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: conic-gradient(
+      #2563eb 0 28%,
+      #e85d2f 28% 46%,
+      #d97706 46% 62%,
+      #16a34a 62% 73%,
+      #8b5cf6 73% 90%,
+      #1d4ed8 90% 100%
+    );
+    position: relative;
+  }
+  
+  .donut::after {
+    content: "";
+    position: absolute;
+    inset: 34px;
+    background: white;
+    border-radius: 50%;
+    border: 1px solid #e2e0da;
+  }
+  
+  .donutLegend {
+    display: grid;
+    gap: 10px;
+  }
+  
+  .legendRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid #e2e0da;
+    border-radius: 12px;
+    background: #faf9f6;
+    font-size: 14px;
+  }
+  
+  .legendLeft {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  /* Donut legend dots */
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  
+  .b1 {
+    background: #2563eb;
+  }
+  
+  .b2 {
+    background: #e85d2f;
+  }
+  
+  .b3 {
+    background: #d97706;
+  }
+  
+  .b4 {
+    background: #16a34a;
+  }
+  
+  .b5 {
+    background: #8b5cf6;
+  }
+  
+  .b6 {
+    background: #1d4ed8;
+  }
+  
+  /* Responsive layout */
+  @media (max-width: 1180px) {
+    .hero,
+    .mainGrid,
+    .donutWrap {
+      grid-template-columns: 1fr;
+    }
+  
+    .statsGrid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 760px) {
+    .topbarInner {
+      height: auto;
+      padding-top: 14px;
+      padding-bottom: 14px;
+      flex-wrap: wrap;
+    }
+  
+    .hero {
+      padding: 22px;
+    }
+  
+    .heroTitle {
+      font-size: 28px;
+    }
+  
+    .statsGrid,
+    .boroughGrid {
+      grid-template-columns: 1fr;
+    }
+  }
