@@ -113,7 +113,7 @@ const Home = () => {
           <div className={styles.ctaContent}>
             <h2>See something wrong?</h2>
             <p>Report damaged streetlights, potholes, or other issues to help keep NYC streets safe.</p>
-            <Link to="/report" className={styles.ctaButton}>
+            <Link to="/reports" className={styles.ctaButton}>
               Submit a Report <FaArrowRight className={styles.ctaIcon} />
             </Link>
           </div>

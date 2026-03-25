@@ -135,7 +135,35 @@
 .minimalNavbar {
   height: 52px;
 }
-
+/* For drop down menu */
+.dropdown{
+  position: relative;
+}
+.dropdownMenu{
+  display: none;
+  position: absolute;
+  min-width: 180px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  z-index: 1001;
+  padding: 6px 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+.dropdownItem{
+  display: block;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.dropdown:hover .dropdownMenu{
+  display: flex;
+  flex-direction: column;
+}
+.dropdownItem:hover {
+  background-color: #F9FAFB;
+  color: #2563EB;
+}
 /* Responsive Design */
 @media (max-width: 1024px) {
   .navLinks {

@@ -29,10 +29,20 @@ const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
               <FaHome className={styles.navIcon} />
               <span>Home</span>
             </Link>
-            <Link to="/reports" className={`${styles.navLink} ${activeTab === 'reports' ? styles.active : ''}`}>
-              <FaFileAlt className={styles.navIcon} />
-              <span>Reports</span>
-            </Link>
+            <div className={styles.dropdown}>
+              <Link className={`${styles.navLink} ${activeTab === 'reports' ? styles.active : ''}`}>
+                <FaFileAlt className={styles.navIcon} />
+                <span>Reports ▾</span>
+              </Link>
+              <div className={styles.dropdownMenu}>
+                  <Link to="/reports" className={styles.dropdownItem}>
+                    <span>Submit Report</span>
+                  </Link>
+                  <Link to="/reports" className={styles.dropdownItem}>
+                    <span>View/Edit Reports</span>
+                  </Link>
+              </div>
+            </div>
             <Link to="/leaderboard" className={`${styles.navLink} ${activeTab === 'leaderboard' ? styles.active : ''}`}>
               <FaChartBar className={styles.navIcon} />
               <span>Leaderboard</span>
