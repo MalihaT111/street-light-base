@@ -57,5 +57,9 @@
     display: flex;
     margin-left: auto;
 }   
-
-
+/* For report cards */
+.reportCardWrapper{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+    gap: 16px;
+}

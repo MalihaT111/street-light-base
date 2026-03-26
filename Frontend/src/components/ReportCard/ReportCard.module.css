@@ -1,7 +1,5 @@
 .reportCard{
     border: 1px solid #E2E0DA;
-    /* For test */
-    max-width: 300px;
 }
 /* For the report thumb section */
 .reportCardThumb{
@@ -31,17 +29,6 @@
     padding: 14px 16px;
     background-color: white;
 }
-/* For footer section */
-.reportCardFooter{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;  
-}
-.btnWrapper{
-    display: flex;
-    gap: 6px;
-}   
 .reportCardAddress {
     font-size: 13px;
     font-weight: 600;
@@ -53,16 +40,27 @@
     color: #8A8880;
     margin-bottom: 10px;
 }
+/* For footer section */
+.reportCardFooter{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;  
+}
+.btnWrapper{
+    display: flex;
+    gap: 6px;
+}   
 
 .dmgTag {
     font-size: 11px;
     color: #8A8880;
     background: white;
-    border: 1px solid #f5f4f095;
+    border: 1px solid #E2E0DA;
     padding: 3px 8px;
     border-radius: 5px;
 }
-
+/* For buttons */
 .btn {
     padding: 6px 12px;
     font-size: 12px;
@@ -70,6 +68,13 @@
     font-weight: 500;
     color: #8A8880;
     cursor: pointer;
-    border: 1px solid #f5f4f095;
+    border: 1px solid #E2E0DA;
     background: white;
+}
+.btn:hover{
+    color:white;
+}
+.delete{
+    color: #E85D2F;
+    border: 1px solid #f5c3b3;
 }

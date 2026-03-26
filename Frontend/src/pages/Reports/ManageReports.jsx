@@ -25,39 +25,60 @@ function ManageReports(){
 
     const [reports, setReports] = useState([
     {
-      id: 1,
-      title: "W 42nd St Streetlight Base",
-      condition: "Poor",
-      borough: "Manhattan",
-      description: "Base shows visible cracking on the south-facing side.",
-      date: "Mar 22, 2026",
+        id: 1,
+        address: "W 42nd St, Manhattan",
+        date: "Mar 22, 2026",
+        time: "2:14 PM",
+        damageType: "Impact damage",
+        rating: "Poor",
+        points: 20,
+        borough: "Manhattan",
+        description: "Base shows visible cracking on the south-facing side.",
     },
     {
-      id: 2,
-      title: "Flatbush Ave Streetlight Base",
-      condition: "Fair",
-      borough: "Brooklyn",
-      description: "Rust staining along the base seam.",
-      date: "Mar 19, 2026",
+        id: 2,
+        address: "Flatbush Ave, Brooklyn",
+        date: "Mar 19, 2026",
+        time: "11:03 AM",
+        damageType: "Corrosion",
+        rating: "Fair",
+        points: 10,
+        borough: "Brooklyn",
+        description: "Rust staining along the base seam.",
     },
     {
-      id: 3,
-      title: "Jamaica Ave Streetlight Base",
-      condition: "Good",
-      borough: "Queens",
-      description: "Minor surface wear, but no major visible damage.",
-      date: "Mar 17, 2026",
+        id: 3,
+        address: "Jamaica Ave, Queens",
+        date: "Mar 17, 2026",
+        time: "9:45 AM",
+        damageType: "Minor wear",
+        rating: "Good",
+        points: 10,
+        borough: "Queens",
+        description: "Minor surface wear, but no major visible damage.",
     },
     {
-      id: 4,
-      title: "Grand Concourse Streetlight Base",
-      condition: "Poor",
-      borough: "Bronx",
-      description: "Large fracture on the east face, cover appears loose.",
-      date: "Mar 14, 2026",
+        id: 4,
+        address: "Grand Concourse, Bronx",
+        date: "Mar 14, 2026",
+        time: "4:22 PM",
+        damageType: "Cracked base",
+        rating: "Poor",
+        points: 20,
+        borough: "Bronx",
+        description: "Large fracture on the east face, cover appears loose.",
     },
-  ]);
-
+    ]);
+    const handleEdit = (report) =>{
+        console.log("Edit: ", report)
+    }
+    const handleDelete = (reportId) => {
+        setReports((prevReport) => (
+            prevReport.filter((report) => (
+                report.id != reportId
+            ))
+        ))
+    }
     useEffect(() => {
         const savedUser = localStorage.getItem("user");
 
@@ -106,7 +127,16 @@ function ManageReports(){
                         </select>
                     </div>
                 </div>
-                <ReportCard />
+                <div className={styles.reportCardWrapper}>
+                    {reports.map((report) => (
+                        <ReportCard
+                            key={report.id}
+                            report={report}
+                            onEdit={handleEdit}
+                            onDelete={handleDelete}
+                        />
+                    ))}
+                </div>
             </div>
         </>
     )
