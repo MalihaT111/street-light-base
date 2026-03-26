@@ -193,13 +193,6 @@ function ManageReports(){
                     <div className={styles.modal}>
                         <div className={styles.modalHeader}>
                             <h2>Edit Report</h2>
-                            <button
-                                className={styles.closeBtn}
-                                onClick={handleCloseEdit}
-                                type="button"
-                            >
-                                ×
-                            </button>
                         </div>
 
                         <div className={styles.modalBody}>

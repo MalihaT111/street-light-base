@@ -100,18 +100,6 @@
     font-size: 18px;
     margin: 0;
 }
-
-.closeBtn {
-    width: 32px;
-    height: 32px;
-    border: 1px solid #E2E0DA;
-    border-radius: 8px;
-    background: transparent;
-    cursor: pointer;
-    font-size: 20px;
-    line-height: 1;
-}
-
 .modalBody {
     padding: 24px;
     display: flex;
