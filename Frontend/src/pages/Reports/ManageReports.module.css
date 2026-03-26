@@ -60,6 +60,114 @@
 /* For report cards */
 .reportCardWrapper{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+    grid-template-columns: repeat(auto-fit, 350px);
     gap: 16px;
+    justify-content: start;
+}
+.active{
+    color: white;
+    background-color: #2563EB;
+}
+.modalBackdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 25, 23, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 2000;
+}
+
+.modal {
+    width: 100%;
+    max-width: 500px;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+}
+
+.modalHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px 16px;
+    border-bottom: 1px solid #E2E0DA;
+}
+
+.modalHeader h2 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.closeBtn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #E2E0DA;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.modalBody {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.modalLabel {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6B7280;
+    text-transform: uppercase;
+}
+
+.modalInput,
+.modalTextarea {
+    width: 100%;
+    border: 1px solid #E2E0DA;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    background: #F9FAFB;
+}
+
+.modalTextarea {
+    min-height: 100px;
+    resize: none;
+}
+
+.modalFooter {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 24px;
+    border-top: 1px solid #E2E0DA;
+}
+
+.cancelBtn,
+.saveBtn {
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.cancelBtn {
+    background: white;
+    border: 1px solid #E2E0DA;
+    color: #111827;
+}
+
+.saveBtn {
+    background: #2563EB;
+    border: 1px solid #2563EB;
+    color: white;
 }

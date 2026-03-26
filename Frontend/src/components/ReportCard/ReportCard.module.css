@@ -1,5 +1,7 @@
 .reportCard{
     border: 1px solid #E2E0DA;
+    width: 100%;
+    max-width: 350px;
 }
 /* For the report thumb section */
 .reportCardThumb{

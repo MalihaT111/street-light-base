@@ -70,7 +70,9 @@ function ManageReports(){
     },
     ]);
     const handleEdit = (report) =>{
-        console.log("Edit: ", report)
+        setEditingReport(report);
+        setEditForm(report);
+        setIsEditOpen(true);
     }
     const handleDelete = (reportId) => {
         setReports((prevReport) => (
@@ -79,6 +81,36 @@ function ManageReports(){
             ))
         ))
     }
+    const handleCloseEdit = () => {
+        setIsEditOpen(false);
+        setEditingReport(null);
+    };
+    const handleEditChange = (e) => {
+        const { name, value } = e.target;
+        setEditForm((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+    const handleSaveEdit = () => {
+        setReports((prevReports) =>
+            prevReports.map((report) =>
+                report.id === editingReport.id ? { ...report, ...editForm } : report
+            )
+        );
+
+        setIsEditOpen(false);
+        setEditingReport(null);
+    };
+    const filteredReports = reports.filter((report) => {
+        if (activeFilter === "All") return true;
+
+        if (["Poor", "Fair", "Good"].includes(activeFilter)) {
+            return report.rating === activeFilter;
+        }
+
+        return report.borough === activeFilter;
+    });
     useEffect(() => {
         const savedUser = localStorage.getItem("user");
 
@@ -99,6 +131,19 @@ function ManageReports(){
 
     const username = user?.username || "Citizen";
 
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [editingReport, setEditingReport] = useState(null);
+    const [editForm, setEditForm] = useState({
+        address: "",
+        date: "",
+        time: "",
+        damageType: "",
+        rating: "",
+        points: 0,
+        borough: "",
+        description: "",
+    });
+
     if(loading){
         return null;
     }
@@ -113,7 +158,11 @@ function ManageReports(){
                 <div className={styles.filterRow}>
                     <div className={styles.filterToggle}>
                         {toggleOptions.map((option,index) => (
-                            <button key ={index} className = {styles.toggleButton}>
+                            <button 
+                                key ={index} 
+                                className={`${styles.toggleButton} ${activeFilter === option ? styles.active : ""}`}
+                                onClick={() => setActiveFilter(option)}
+                            >
                                 {option}
                             </button>
                         ))}
@@ -128,7 +177,7 @@ function ManageReports(){
                     </div>
                 </div>
                 <div className={styles.reportCardWrapper}>
-                    {reports.map((report) => (
+                    {filteredReports.map((report) => (
                         <ReportCard
                             key={report.id}
                             report={report}
@@ -138,6 +187,80 @@ function ManageReports(){
                     ))}
                 </div>
             </div>
+            
+            {isEditOpen && (
+                <div className={styles.modalBackdrop}>
+                    <div className={styles.modal}>
+                        <div className={styles.modalHeader}>
+                            <h2>Edit Report</h2>
+                            <button
+                                className={styles.closeBtn}
+                                onClick={handleCloseEdit}
+                                type="button"
+                            >
+                                ×
+                            </button>
+                        </div>
+
+                        <div className={styles.modalBody}>
+                            <label className={styles.modalLabel}>Address</label>
+                            <input
+                                type="text"
+                                name="address"
+                                value={editForm.address}
+                                onChange={handleEditChange}
+                                className={styles.modalInput}
+                            />
+
+                            <label className={styles.modalLabel}>Damage Type</label>
+                            <input
+                                type="text"
+                                name="damageType"
+                                value={editForm.damageType}
+                                onChange={handleEditChange}
+                                className={styles.modalInput}
+                            />
+
+                            <label className={styles.modalLabel}>Rating</label>
+                            <select
+                                name="rating"
+                                value={editForm.rating}
+                                onChange={handleEditChange}
+                                className={styles.modalInput}
+                            >
+                                <option value="Poor">Poor</option>
+                                <option value="Fair">Fair</option>
+                                <option value="Good">Good</option>
+                            </select>
+
+                            <label className={styles.modalLabel}>Description</label>
+                            <textarea
+                                name="description"
+                                value={editForm.description}
+                                onChange={handleEditChange}
+                                className={styles.modalTextarea}
+                            />
+                        </div>
+
+                        <div className={styles.modalFooter}>
+                            <button
+                                type="button"
+                                className={styles.cancelBtn}
+                                onClick={handleCloseEdit}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                className={styles.saveBtn}
+                                onClick={handleSaveEdit}
+                            >
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                )}
         </>
     )
 }
