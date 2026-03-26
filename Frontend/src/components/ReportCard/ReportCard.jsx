@@ -1,30 +1,30 @@
-function ReportCard({ report, onEdit, onDelete }) {
+import styles from './ReportCard.module.css';
+import { FaCamera } from 'react-icons/fa';
+
+// { report, onEdit, onDelete }
+function ReportCard() {
   return (
-    <div className="report-card">
-      <div className="report-card-top">
-        <h3 className="report-card-title">{report.title}</h3>
-        <span className={`report-condition ${report.condition.toLowerCase()}`}>
-          {report.condition}
+    <div className={styles.reportCard}>
+      <div className={styles.reportCardThumb}>
+        <span className = {styles.thumbIcon}>
+          <FaCamera />
         </span>
+        <span className={styles.ratingPill}>Poor</span>
+          
       </div>
-
-      <p className="report-card-borough">{report.borough}</p>
-      <p className="report-card-description">{report.description}</p>
-      <p className="report-card-date">{report.date}</p>
-
-      <div className="report-card-actions">
-        <button
-          className="edit-button"
-          onClick={() => onEdit(report)}
-        >
-          Edit
-        </button>
-        <button
-          className="delete-button"
-          onClick={() => onDelete(report.id)}
-        >
-          Delete
-        </button>
+      {/* Content section */}
+      <div className={styles.reportCardContent}>
+        {/* Address */}
+        <div className={styles.reportCardAddress}>Address</div>
+        {/* Date */}
+        <div className ={styles.reportCardDate}>Date</div>
+        <div className = {styles.reportCardFooter}>
+          <span className ={styles.dmgTag}>Impact damage</span>
+          <div className = {styles.btnWrapper}>
+            <button className = {styles.btn}>Edit</button>
+            <button className = {styles.btn}>Delete</button>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,88 +1,75 @@
-.report-card {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+.reportCard{
+    border: 1px solid #E2E0DA;
+    /* For test */
+    max-width: 300px;
+}
+/* For the report thumb section */
+.reportCardThumb{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background-color: #f5f5f5;
+    aspect-ratio: 16 / 9;
+}
+.ratingPill{
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 3px 9px;
+    border-radius: 99px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background-color: white;
+    border: 1px solid #F5F4F0;
+}
+/* For content section */
+.reportCardContent {
+    padding: 14px 16px;
+    background-color: white;
+}
+/* For footer section */
+.reportCardFooter{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;  
+}
+.btnWrapper{
+    display: flex;
+    gap: 6px;
+}   
+.reportCardAddress {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
 }
 
-.report-card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
+.reportCardDate {
+    font-size: 11px;
+    color: #8A8880;
+    margin-bottom: 10px;
 }
 
-.report-card-title {
-  font-size: 1rem;
-  font-weight: 700;
-  margin: 0;
+.dmgTag {
+    font-size: 11px;
+    color: #8A8880;
+    background: white;
+    border: 1px solid #f5f4f095;
+    padding: 3px 8px;
+    border-radius: 5px;
 }
 
-.report-condition {
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.report-condition.poor {
-  background: #fee2e2;
-  color: #b91c1c;
-}
-
-.report-condition.fair {
-  background: #fef3c7;
-  color: #b45309;
-}
-
-.report-condition.good {
-  background: #dcfce7;
-  color: #15803d;
-}
-
-.report-card-borough {
-  font-size: 0.9rem;
-  color: #6b7280;
-  margin: 0 0 8px;
-}
-
-.report-card-description {
-  font-size: 0.95rem;
-  color: #374151;
-  margin: 0 0 10px;
-}
-
-.report-card-date {
-  font-size: 0.8rem;
-  color: #9ca3af;
-  margin: 0 0 14px;
-}
-
-.report-card-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.edit-button,
-.delete-button {
-  padding: 8px 14px;
-  border-radius: 10px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.edit-button {
-  border: 1px solid #2563eb;
-  background: white;
-  color: #2563eb;
-}
-
-.delete-button {
-  border: 1px solid #dc2626;
-  background: white;
-  color: #dc2626;
+.btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 7px;
+    font-weight: 500;
+    color: #8A8880;
+    cursor: pointer;
+    border: 1px solid #f5f4f095;
+    background: white;
 }
