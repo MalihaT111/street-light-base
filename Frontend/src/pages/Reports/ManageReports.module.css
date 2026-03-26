@@ -20,7 +20,41 @@
     max-width: 600px;
 }
 /* For filter toggle */
+.filterRow{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
 .filterToggle{
     display: flex;
-    gap: 6px;
+    flex-wrap: wrap;
+    gap: 6px;   
 }
+.toggleButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    flex: 0 0;
+    white-space: nowrap;
+    padding: 5px 13px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 600;
+    background: white;
+    color: black;
+    border: solid 0.5px #6B7280;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.toggleButton:hover{
+    color: white;
+}
+.reportSortWrapper{
+    display: flex;
+    margin-left: auto;
+}   
+
+

@@ -52,12 +52,22 @@ function ManageReports(){
                     <h1 className = {styles["manage-report-title"]}>My reports</h1>
                     <p className = {styles["manage-report-subtitle"]}>Review, edit, and manage all submitted reports</p>
                 </div>
-                <div className={styles.filterToggle}>
-                    {toggleOptions.map((option,index) => (
-                        <button key ={index} className = {styles.toggleButton}>
-                            {option}
-                        </button>
-                    ))}
+                <div className={styles.filterRow}>
+                    <div className={styles.filterToggle}>
+                        {toggleOptions.map((option,index) => (
+                            <button key ={index} className = {styles.toggleButton}>
+                                {option}
+                            </button>
+                        ))}
+                    </div>
+                    <div className={styles.reportSortWrapper}>
+                        <select className={styles.reportsSort}>
+                            <option>Newest first</option>
+                            <option>Oldest first</option>
+                            <option>Most points</option>
+                            <option>Rating: Poor first</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </>

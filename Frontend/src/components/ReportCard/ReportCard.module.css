@@ -1,0 +1,88 @@
+.report-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.report-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.report-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.report-condition {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.report-condition.poor {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.report-condition.fair {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.report-condition.good {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.report-card-borough {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0 0 8px;
+}
+
+.report-card-description {
+  font-size: 0.95rem;
+  color: #374151;
+  margin: 0 0 10px;
+}
+
+.report-card-date {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin: 0 0 14px;
+}
+
+.report-card-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-button,
+.delete-button {
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.edit-button {
+  border: 1px solid #2563eb;
+  background: white;
+  color: #2563eb;
+}
+
+.delete-button {
+  border: 1px solid #dc2626;
+  background: white;
+  color: #dc2626;
+}
