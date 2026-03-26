@@ -1,0 +1,26 @@
+.manage-report-wrapper{
+    padding: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+/* For page title and subtitle */
+.top-title{
+    margin-bottom: 2rem;
+}
+.manage-report-title{
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.manage-report-subtitle{
+    font-size: 0.9rem;
+    color: #6B7280;
+    max-width: 600px;
+}
+/* For filter toggle */
+.filterToggle{
+    display: flex;
+    gap: 6px;
+}

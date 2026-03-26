@@ -38,7 +38,7 @@ const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
                   <Link to="/reports" className={styles.dropdownItem}>
                     <span>Submit Report</span>
                   </Link>
-                  <Link to="/reports" className={styles.dropdownItem}>
+                  <Link to="/manage-reports" className={styles.dropdownItem}>
                     <span>View/Edit Reports</span>
                   </Link>
               </div>
