@@ -114,11 +114,11 @@ function ManageReports(){
         return report.borough === activeFilter;
     })
     .sort((a, b) => {
-        if (sortOption === "Newest first") {
+        if (sortOption === "Oldest first") {
             return new Date(b.date) - new Date(a.date);
         }
 
-        if (sortOption === "Oldest first") {
+        if (sortOption === "Newest first") {
             return new Date(a.date) - new Date(b.date);
         }
         if (sortOption === "Rating: Poor first") {
