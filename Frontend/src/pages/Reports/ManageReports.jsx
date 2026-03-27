@@ -9,6 +9,7 @@ function ManageReports(){
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [activeFilter, setActiveFilter] = useState("All");
+    const [sortOption, setSortOption] = useState("Newest first");
 
     // Filter Toggle
     const toggleOptions = [
@@ -102,7 +103,8 @@ function ManageReports(){
         setIsEditOpen(false);
         setEditingReport(null);
     };
-    const filteredReports = reports.filter((report) => {
+    const filteredReports = reports
+    .filter((report) => {
         if (activeFilter === "All") return true;
 
         if (["Poor", "Fair", "Good"].includes(activeFilter)) {
@@ -110,7 +112,23 @@ function ManageReports(){
         }
 
         return report.borough === activeFilter;
+    })
+    .sort((a, b) => {
+        if (sortOption === "Newest first") {
+            return new Date(b.date) - new Date(a.date);
+        }
+
+        if (sortOption === "Oldest first") {
+            return new Date(a.date) - new Date(b.date);
+        }
+        if (sortOption === "Rating: Poor first") {
+            const ratingOrder = { Poor: 0, Fair: 1, Good: 2 };
+            return ratingOrder[a.rating] - ratingOrder[b.rating];
+        }
+
+        return 0;
     });
+    
     useEffect(() => {
         const savedUser = localStorage.getItem("user");
 
@@ -168,10 +186,13 @@ function ManageReports(){
                         ))}
                     </div>
                     <div className={styles.reportSortWrapper}>
-                        <select className={styles.reportsSort}>
+                        <select 
+                            className={styles.reportsSort}
+                            value={sortOption}
+                            onChange={(e) => setSortOption(e.target.value)}
+                        >
                             <option>Newest first</option>
                             <option>Oldest first</option>
-                            <option>Most points</option>
                             <option>Rating: Poor first</option>
                         </select>
                     </div>
