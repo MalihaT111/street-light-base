@@ -19,11 +19,14 @@ const Reports = () => {
   const [rating, setRating] = useState(null);
   const [damageTypes, setDamageTypes] = useState([]);
 
-  // Location — prefer EXIF, fall back to browser geolocation
+  // Location — EXIF GPS only. No browser geolocation fallback.
+  // locationSource: null (pending) | 'exif' (success) | 'error' (no GPS in photo)
   const [location, setLocation] = useState(null);
   const [photoTimestamp, setPhotoTimestamp] = useState(null);
-  const [locationSource, setLocationSource] = useState(null); // 'exif' | 'browser' | 'error'
+  const [locationSource, setLocationSource] = useState(null);
   const [locationError, setLocationError] = useState(null);
+  // True when photoTimestamp was derived from system clock rather than EXIF DateTimeOriginal
+  const [timestampIsFallback, setTimestampIsFallback] = useState(false);
 
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -41,47 +44,33 @@ const Reports = () => {
     }
   }, [navigate]);
 
-  // Browser geolocation fallback — only kicks in if no EXIF location was found
-  useEffect(() => {
-    if (locationSource === 'exif') return;
-    if (!navigator.geolocation) {
-      setLocationSource('error');
-      setLocationError('Geolocation is not supported by your browser.');
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        if (locationSource !== 'exif') {
-          setLocation({
-            lat: pos.coords.latitude.toFixed(6),
-            lng: pos.coords.longitude.toFixed(6),
-          });
-          setLocationSource('browser');
-        }
-      },
-      () => {
-        if (locationSource !== 'exif') {
-          setLocationSource('error');
-          setLocationError('Unable to retrieve location. Please enable location access.');
-        }
-      }
-    );
-  }, [locationSource]);
-
   const handlePhotoChange = (file, previewUrl) => {
     setPhoto(file);
     setPhotoPreview(previewUrl);
   };
 
-  // Called by PhotoEvidence once EXIF is parsed
-  const handlePhotoMetadata = ({ lat, lng, timestamp }) => {
+  // Called by PhotoEvidence once EXIF parsing completes (with or without coords).
+  // If GPS coords are absent, we immediately set locationSource to 'error' — there
+  // is no browser fallback. The UI will show the Location Help modal trigger.
+  // If DateTimeOriginal is absent, we fall back to system time and flag it.
+  const handlePhotoMetadata = ({ lat, lng, timestamp, exifParsed: parsed }) => {
     if (lat != null && lng != null) {
       setLocation({ lat, lng });
       setLocationSource('exif');
       setLocationError(null);
+    } else if (parsed) {
+      // EXIF parsing finished with no GPS data — no fallback available
+      setLocationSource('error');
+      setLocationError('No GPS data found in this photo. See below for how to fix this.');
     }
+
     if (timestamp) {
       setPhotoTimestamp(timestamp instanceof Date ? timestamp : new Date(timestamp));
+      setTimestampIsFallback(false);
+    } else if (parsed) {
+      // No DateTimeOriginal tag — default to system time as a fallback
+      setPhotoTimestamp(new Date());
+      setTimestampIsFallback(true);
     }
   };
 
@@ -91,32 +80,80 @@ const Reports = () => {
     setPhotoTimestamp(null);
     setLocation(null);
     setLocationSource(null);
+    setLocationError(null);
+    setTimestampIsFallback(false);
+  };
+
+  // Resolves the NYC borough for the given coordinates via the OSM Nominatim
+  // reverse-geocoding API. Falls back to a bounding-box check if the network
+  // call fails so a transient error never blocks form submission.
+  const getBoroughFromCoords = async (lat, lng) => {
+    const COUNTY_TO_BOROUGH = {
+      'New York County': 'Manhattan',
+      'Kings County': 'Brooklyn',
+      'Queens County': 'Queens',
+      'Bronx County': 'Bronx',
+      'Richmond County': 'Staten Island',
+    };
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`,
+        { headers: { 'Accept-Language': 'en' } }
+      );
+      if (!res.ok) throw new Error(`Nominatim error: ${res.status}`);
+      const data = await res.json();
+      const borough = COUNTY_TO_BOROUGH[data.address?.county];
+      if (borough) return borough;
+      throw new Error('County not recognised as an NYC borough');
+    } catch (err) {
+      console.warn('Reverse geocoding failed, using bounding-box fallback:', err);
+      const la = parseFloat(lat);
+      const lo = parseFloat(lng);
+      if (la >= 40.48 && la <= 40.65 && lo >= -74.27 && lo <= -74.03) return 'Staten Island';
+      if (la >= 40.70 && la <= 40.88 && lo >= -74.02 && lo <= -73.91) return 'Manhattan';
+      if (la >= 40.78 && la <= 40.92 && lo >= -73.94 && lo <= -73.75) return 'Bronx';
+      if (la >= 40.57 && la <= 40.74 && lo >= -74.05 && lo <= -73.83) return 'Brooklyn';
+      if (la >= 40.54 && la <= 40.80 && lo >= -73.97 && lo <= -73.70) return 'Queens';
+      return 'Unknown';
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!photo || !rating || damageTypes.length === 0) return;
 
+    // Hard enforcement: only EXIF GPS is accepted. Browser location is not a
+    // valid source because the NYC DOT requires original photo metadata for
+    // incident verification.
+    if (locationSource !== 'exif') {
+      setSubmitError(
+        'Original GPS metadata from the photo is required for NYC DOT verification. ' +
+        'Please retake or re-upload a photo with location data enabled.'
+      );
+      return;
+    }
+
     setSubmitting(true);
     setSubmitError(null);
 
-    // The try block attempts to send the report to the backend API.
     try {
-      // Retrieve the authentication token from local storage.
       const token = localStorage.getItem('token');
-      // Create a FormData object to hold the report data.
+
+      // Resolve borough before building FormData so geocoding latency
+      // doesn't leave the user staring at a frozen submit button.
+      const borough = await getBoroughFromCoords(location.lat, location.lng);
+
       const formData = new FormData();
       formData.append('photo', photo);
       formData.append('rating', rating);
-      formData.append('borough', 'Queens'); // Placeholder: Logic needed to determine borough from coordinates
+      formData.append('borough', borough);
       // Send as JSON array string so the backend can parse TEXT[]
       formData.append('damage_types', JSON.stringify(damageTypes));
-      if (location) {
-        formData.append('latitude', location.lat);
-        formData.append('longitude', location.lng);
-      }
+      formData.append('latitude', location.lat);
+      formData.append('longitude', location.lng);
       if (photoTimestamp) {
         formData.append('photo_timestamp', photoTimestamp.toISOString());
+        formData.append('timestamp_is_fallback', timestampIsFallback ? 'true' : 'false');
       }
 
       // Debugging: Log the FormData contents to verify what is being sent
@@ -126,30 +163,22 @@ const Reports = () => {
 
       const apiUrl = 'http://localhost:5001/api/reports';
       console.log('Submitting report to:', apiUrl);
-      // Make a POST request to the reports API endpoint.
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
         body: formData,
       });
 
-      // If the submission is successful, update the UI to show a success message.
       if (response.ok) {
-        // Debugging: Log the server response to verify the database entry and photo URL
-        // This assumes your backend returns the created report object as JSON
         const savedData = await response.json();
         console.log('Server response (Database Entry):', savedData);
         setSubmitSuccess(true);
-        // Redirect to the home page after a short delay.
         setTimeout(() => navigate('/home'), 2500);
       } else {
-        // If submission fails, parse the error and display it.
         const data = await response.json();
-        // Log the full error to console for debugging
-        console.error("Submission failed:", data);
+        console.error('Submission failed:', data);
         // flask-jwt-extended uses 'msg' for errors; checking both ensures the user sees the real issue
         const errorMessage = data.error || data.msg || 'Submission failed. Please try again.';
-        
         if (errorMessage === 'Subject must be a string' || errorMessage === 'Not enough segments') {
           setSubmitError('Invalid Session: Please Sign Out and Log In again.');
         } else {
@@ -168,9 +197,10 @@ const Reports = () => {
   if (loading) return null;
 
   const username = user?.username || 'Citizen';
-  const isFormValid = !!(photo && rating && damageTypes.length > 0);
+  // Form is only valid when EXIF GPS coordinates have been confirmed
+  const isFormValid = !!(photo && rating && damageTypes.length > 0 && locationSource === 'exif');
 
-  const locationStatus = locationSource === 'exif' || locationSource === 'browser'
+  const locationStatus = locationSource === 'exif'
     ? 'active'
     : locationSource === 'error'
       ? 'error'
@@ -216,6 +246,7 @@ const Reports = () => {
                   submitError={submitError}
                   submitting={submitting}
                   isFormValid={isFormValid}
+                  photoUploaded={!!photo}
                 />
               </div>
 

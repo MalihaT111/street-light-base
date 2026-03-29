@@ -1,3 +1,8 @@
+/* REMOVE all blue highlight behavior globally */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
 .card {
   background: #fff;
   border: 1px solid #E5E7EB;
@@ -59,8 +64,7 @@
 }
 
 .checkboxLabel:hover {
-  border-color: #2563EB;
-  background: #EEF3FD;
+  background: #F9FAFB;
 }
 
 .checkbox {
@@ -74,19 +78,17 @@
   line-height: 1;
 }
 
-/* Checked state — blue pill */
+/* Checked state */
 .checkboxLabel:has(.checkbox:checked) {
-  border-color: #2563EB;
-  background: #EEF3FD;
+  background: #F9FAFB;
 }
 
 .checkboxLabel:has(.checkbox:checked) .checkboxText {
-  color: #2563EB;
   font-weight: 600;
+  color: #374151;
 }
 
 .locationIcon {
-  color: #2563EB;
   font-size: 0.75rem;
 }
 
@@ -98,6 +100,17 @@
   background: #F9FAFB;
   border: 1px solid #E5E7EB;
   border-radius: 8px;
+  outline: none;
+  box-shadow: none;
+}
+
+.locationRow:hover,
+.locationRow:focus,
+.locationRow:active {
+  background: #F9FAFB;
+  border-color: #E5E7EB;
+  outline: none;
+  box-shadow: none;
 }
 
 .locationDot {
@@ -154,4 +167,166 @@
 .submitBtn:disabled {
   background-color: #93C5FD;
   cursor: not-allowed;
+}
+
+/* ── Location help trigger ──────────────────────────────────────────────── */
+
+.helpTrigger {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 7px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #6B7280;
+  cursor: pointer;
+}
+
+.helpTrigger:hover,
+.helpTrigger:focus,
+.helpTrigger:active,
+.helpTrigger:focus-visible {
+  color: #6B7280;
+  background: transparent;
+  outline: none;
+  box-shadow: none;
+  text-decoration: none;
+}
+
+.helpTriggerIcon {
+  color: inherit;
+}
+
+/* Ensure the location field stacks its children vertically */
+.field:has(.helpTrigger) {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Location help modal ────────────────────────────────────────────────── */
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 16px;
+}
+
+.modalPanel {
+  background: #fff;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid #E5E7EB;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  border-radius: 14px 14px 0 0;
+}
+
+.modalTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.modalClose {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: #F3F4F6;
+  border: none;
+  border-radius: 50%;
+  color: #6B7280;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.modalClose:hover {
+  background: #E5E7EB;
+  color: #111827;
+}
+
+.modalBody {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modalIntro {
+  font-size: 0.85rem;
+  color: #374151;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.helpSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.helpPlatform {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.helpSteps {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.helpSteps li {
+  font-size: 0.82rem;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.helpNote {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  border-radius: 8px;
+}
+
+.helpNoteIcon {
+  color: #D97706;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.helpNote p {
+  font-size: 0.82rem;
+  color: #374151;
+  line-height: 1.5;
+  margin: 0;
 }

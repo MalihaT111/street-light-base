@@ -38,25 +38,32 @@ const handleChange = async (e) => {
         pick: ["GPSLatitude", "GPSLongitude", "GPSLatitudeRef", "GPSLongitudeRef", "DateTimeOriginal", "CreateDate"],
       });
 
-      if (exif && onMetadata) {
-        const toDecimal = (val) => {
+      if (onMetadata) {
+        // Converts EXIF "Rational" GPS values (DMS or plain decimal) to Decimal Degrees.
+        // exifr usually resolves DMS to a numeric already, but some parsers return
+        // a [degrees, minutes, seconds] array — handle both forms.
+        const dmsToDecimal = (val) => {
           if (val == null) return null;
           if (typeof val === "number") return val;
           if (Array.isArray(val) && val.length === 3) return val[0] + val[1] / 60 + val[2] / 3600;
           return null;
         };
 
-        const rawLat = toDecimal(exif.GPSLatitude);
-        const rawLng = toDecimal(exif.GPSLongitude);
+        const rawLat = exif ? dmsToDecimal(exif.GPSLatitude) : null;
+        const rawLng = exif ? dmsToDecimal(exif.GPSLongitude) : null;
 
+        // Always signal that EXIF parsing is done, whether or not coords were found
         onMetadata({
           lat: rawLat != null ? (exif.GPSLatitudeRef === "S" ? -rawLat : rawLat).toFixed(6) : null,
           lng: rawLng != null ? (exif.GPSLongitudeRef === "W" ? -rawLng : rawLng).toFixed(6) : null,
-          timestamp: exif.DateTimeOriginal || exif.CreateDate || null,
+          timestamp: exif ? (exif.DateTimeOriginal || exif.CreateDate || null) : null,
+          exifParsed: true,
         });
       }
     } catch (err) {
       console.warn("Could not read EXIF data:", err);
+      // Always signal completion so Reports.jsx can trigger the browser geo fallback
+      if (onMetadata) onMetadata({ lat: null, lng: null, timestamp: null, exifParsed: true });
     }
   };
 
