@@ -4,6 +4,7 @@ import Register from "./pages/LoginAndRegister/Register.jsx";
 import Home from "./pages/Home/Home.jsx";
 import Leaderboard from "./pages/Leaderboard/Leaderboard.jsx";
 import Reports from "./pages/Reports/Reports.jsx";
+import ManageReports from "./pages/Reports/ManageReports.jsx";
 import Challenge from "./pages/Challenge/Challenge.jsx";
 import Dashboard from "./pages/DOT-dashboard/dashboard.jsx";
 
@@ -16,6 +17,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/leaderboard" element={<Leaderboard/>} />
         <Route path="/reports" element={<Reports />} />
+        <Route path="/manage-reports" element ={<ManageReports/>}/>
         <Route path="/challenge" element={<Challenge/>} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>

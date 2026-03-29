@@ -16,21 +16,48 @@
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
   /* NAV */
-  .proto-nav { background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; height: 52px; position: sticky; top: 0; z-index: 100; }
-  .logo { font-size: 13px; font-weight: 700; letter-spacing: 0.04em; color: var(--text); margin-right: 32px; display: flex; align-items: center; gap: 8px; cursor: pointer; text-decoration: none; }
+  .proto-nav { background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; height: 52px; position: sticky; top: 0; z-index: 100; gap: 2px; }
+  .logo { font-size: 13px; font-weight: 700; letter-spacing: 0.04em; color: var(--text); margin-right: 24px; display: flex; align-items: center; gap: 8px; cursor: pointer; text-decoration: none; }
   .logo:hover { opacity: 0.75; }
   .logo-mark { width: 28px; height: 28px; background: var(--accent); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
   .logo-mark svg { width: 15px; height: 15px; fill: #fff; }
-  .nav-tabs { display: flex; gap: 2px; }
+  .nav-tabs { display: flex; gap: 2px; align-items: center; }
   .nav-tabs.hidden { visibility: hidden; pointer-events: none; }
-  .nav-tab { padding: 6px 14px; font-size: 12px; font-weight: 500; border: none; background: none; cursor: pointer; border-radius: 6px; color: var(--muted); transition: all 0.15s; font-family: inherit; }
+  .nav-tab { padding: 6px 14px; font-size: 12px; font-weight: 500; border: none; background: none; cursor: pointer; border-radius: 6px; color: var(--muted); transition: all 0.15s; font-family: inherit; white-space: nowrap; }
   .nav-tab:hover { background: var(--bg); color: var(--text); }
   .nav-tab.active { background: var(--accent); color: #fff; }
+
+  /* DROPDOWN NAV */
+  .nav-dropdown { position: relative; }
+ .nav-dropdown-menu { 
+  display: none; 
+  position: absolute; 
+  top: 100%;
+  margin-top: 6px;
+  left: 0; 
+  background: var(--surface); 
+  border: 1px solid var(--border); 
+  border-radius: var(--radius); 
+  box-shadow: var(--shadow); 
+  padding: 6px; 
+  min-width: 168px; 
+  z-index: 200; 
+}
+.nav-dropdown:hover .nav-dropdown-menu,
+  .nav-dropdown-menu:hover { display: block; }
+  .nav-dropdown-item { display: block; width: 100%; padding: 8px 12px; font-size: 12px; font-weight: 500; color: var(--muted); background: none; border: none; border-radius: 6px; cursor: pointer; font-family: inherit; text-align: left; transition: all 0.12s; }
+  .nav-dropdown-item:hover { background: var(--bg); color: var(--text); }
+  .nav-dropdown-item.active { color: var(--accent); background: var(--accent-light); }
+  .nav-dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
+
   .nav-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
   .badge { padding: 2px 7px; border-radius: 99px; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
   .dot-badge { padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: 600; background: var(--warn-light); color: var(--warn); border: 1px solid #f5c3b3; display: none; }
   .dot-badge.visible { display: inline-flex; align-items: center; gap: 4px; }
-
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown-menu:hover { 
+  display: block; 
+}
   /* SCREENS */
   .screen { display: none; padding: 32px 24px; max-width: 1100px; margin: 0 auto; }
   .screen.active { display: block; animation: fadeIn 0.2s ease; }
@@ -48,6 +75,8 @@
   .btn-primary:hover { background: #1d4ed8; }
   .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
   .btn-outline:hover { background: var(--bg); }
+  .btn-danger { background: transparent; border: 1px solid #f5c3b3; color: var(--warn); }
+  .btn-danger:hover { background: var(--warn-light); }
   .btn-sm { padding: 6px 12px; font-size: 12px; }
   .btn-full { width: 100%; justify-content: center; }
   .btn-lg { padding: 13px 28px; font-size: 15px; font-weight: 600; border-radius: 9px; }
@@ -111,7 +140,7 @@
   .lb-meta { font-size: 11px; color: var(--muted); }
   .lb-pts { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--accent); text-align: right; }
 
-  /* REPORT */
+  /* REPORT FORM */
   .report-wrap { display: grid; grid-template-columns: 1fr 360px; gap: 24px; align-items: start; }
   .photo-drop { border: 1.5px dashed var(--border); border-radius: var(--radius); padding: 28px 20px; text-align: center; cursor: pointer; transition: all 0.15s; background: var(--bg); }
   .photo-drop:hover { border-color: var(--accent); background: var(--accent-light); }
@@ -200,8 +229,65 @@
   .legend-item { display:flex; align-items:center; gap:8px; margin-bottom:8px; font-size:12px; }
   .legend-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
 
+  /* ── MY REPORTS ── */
+  .reports-filter-row { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .pill-filter { padding: 5px 13px; border-radius: 99px; font-size: 11px; font-weight: 600; border: 1px solid var(--border); background: none; cursor: pointer; font-family: inherit; color: var(--muted); transition: all 0.15s; }
+  .pill-filter:hover { background: var(--bg); color: var(--text); }
+  .pill-filter.active { background: var(--text); color: #fff; border-color: var(--text); }
+  .reports-sort { margin-left: auto; padding: 7px 10px; font-family: inherit; font-size: 12px; border: 1px solid var(--border); border-radius: 7px; background: var(--bg); color: var(--text); outline: none; cursor: pointer; appearance: none; }
+  .reports-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+  .report-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: box-shadow 0.15s; }
+  .report-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.10); }
+  .report-card-thumb { width: 100%; aspect-ratio: 16/9; background: var(--bg); display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid var(--border); }
+  .thumb-icon { font-size: 28px; opacity: 0.3; }
+  .rating-pill { position: absolute; top: 8px; left: 8px; padding: 3px 9px; border-radius: 99px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+  .rating-pill.poor { background: var(--warn-light); color: var(--warn); border: 1px solid #f5c3b3; }
+  .rating-pill.fair { background: var(--yellow-light); color: var(--yellow); border: 1px solid #fcd34d; }
+  .rating-pill.good { background: var(--green-light); color: var(--green); border: 1px solid #bbf7d0; }
+  .pts-pill { position: absolute; top: 8px; right: 8px; padding: 3px 9px; border-radius: 99px; font-size: 10px; font-weight: 700; background: var(--accent-light); color: var(--accent); border: 1px solid #bfdbfe; }
+  .report-card-body { padding: 14px 16px; }
+  .report-card-address { font-size: 13px; font-weight: 600; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .report-card-meta { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+  .report-card-footer { display: flex; align-items: center; justify-content: space-between; }
+  .dmg-tag { font-size: 11px; color: var(--muted); background: var(--bg); border: 1px solid var(--border); padding: 3px 8px; border-radius: 5px; }
+  .card-action-row { display: flex; gap: 6px; }
+
+  /* ── ALL REPORTS (DOT) ── */
+  .all-reports-wrap { display: grid; grid-template-columns: 1fr 260px; gap: 24px; align-items: start; }
+  .reports-table-header { display: grid; grid-template-columns: 80px 1fr 90px 110px 100px 90px; padding: 10px 20px; font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .reports-table-row { display: grid; grid-template-columns: 80px 1fr 90px 110px 100px 90px; padding: 12px 20px; font-size: 12px; border-bottom: 1px solid var(--border); align-items: center; cursor: pointer; transition: background 0.1s; }
+  .reports-table-row:hover { background: var(--bg); }
+  .reports-table-row:last-child { border-bottom: none; }
+  .r-rating-poor { color: var(--warn); font-weight: 600; }
+  .r-rating-fair { color: var(--yellow); font-weight: 600; }
+  .r-rating-good { color: var(--green); font-weight: 600; }
+
+  /* ── EDIT MODAL ── */
+  .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(26,25,23,0.45); z-index: 500; align-items: center; justify-content: center; padding: 20px; }
+  .modal-backdrop.open { display: flex; }
+  .modal { background: var(--surface); border-radius: var(--radius); box-shadow: 0 8px 40px rgba(0,0,0,0.18); width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
+  .modal-header { padding: 18px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--surface); z-index: 1; }
+  .modal-title { font-size: 15px; font-weight: 600; }
+  .modal-close { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border); background: none; cursor: pointer; font-size: 15px; color: var(--muted); display: flex; align-items: center; justify-content: center; font-family: inherit; }
+  .modal-close:hover { background: var(--bg); }
+  .modal-body { padding: 24px; }
+  .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 8px; justify-content: flex-end; }
+  .locked-field { display: flex; align-items: center; gap: 10px; padding: 10px 13px; background: var(--bg); border: 1px solid var(--border); border-radius: 7px; margin-bottom: 10px; }
+  .locked-field-label { font-size: 12px; color: var(--muted); flex: 1; }
+  .locked-field-val { font-size: 12px; font-weight: 500; color: var(--text); }
+  .locked-field-icon { font-size: 13px; }
+  .info-banner { display: flex; align-items: flex-start; gap: 8px; padding: 10px 13px; background: var(--accent-light); border: 1px solid #bfdbfe; border-radius: 7px; font-size: 12px; color: #1e40af; line-height: 1.5; margin-bottom: 18px; }
+
+  /* DELETE CONFIRM MODAL */
+  .delete-modal { max-width: 380px; }
+
   @media(max-width:700px) {
-    .report-wrap,.lb-full-wrap,.analytics-grid,.analytics-top,.achievement-cards,.challenge-grid { grid-template-columns:1fr; }
+    .report-wrap,.lb-full-wrap,.analytics-grid,.analytics-top,.achievement-cards,.challenge-grid,.all-reports-wrap { grid-template-columns:1fr; }
+    .reports-table-header,.reports-table-row { grid-template-columns: 70px 1fr 80px 80px; }
+    .reports-table-header span:nth-child(5),
+    .reports-table-header span:nth-child(6),
+    .reports-table-row span:nth-child(5),
+    .reports-table-row span:nth-child(6) { display: none; }
   }
 </style>
 </head>
@@ -217,7 +303,18 @@
   </a>
   <div class="nav-tabs hidden" id="main-nav">
     <button class="nav-tab" onclick="show('home',0)">Home</button>
-    <button class="nav-tab" onclick="show('report',1)">Report</button>
+
+    <!-- Reports dropdown -->
+    <div class="nav-dropdown" id="nav-reports-dropdown">
+      <button class="nav-tab" id="nav-reports-tab">Reports ▾</button>
+      <div class="nav-dropdown-menu">
+        <button class="nav-dropdown-item" onclick="show('report',1);setDropdownActive('Submit a Report')">Submit a Report</button>
+        <div class="nav-dropdown-divider"></div>
+        <button class="nav-dropdown-item" id="dd-my-reports" onclick="show('my-reports',1);setDropdownActive('My Reports')">My Reports</button>
+        <button class="nav-dropdown-item" id="dd-all-reports" onclick="show('all-reports',1);setDropdownActive('All Reports')">All Reports</button>
+      </div>
+    </div>
+
     <button class="nav-tab" onclick="show('leaderboard',2)">Leaderboard</button>
     <button class="nav-tab" onclick="show('challenges',3)">Challenges</button>
   </div>
@@ -239,7 +336,6 @@
         <h2>Street Systems</h2>
         <p>NYC Streetlight Base Damage Reporting</p>
       </div>
-
       <div id="login-form" class="card">
         <div class="card-body">
           <div class="role-toggle">
@@ -254,7 +350,6 @@
           <div class="auth-switch">Don't have an account? <a onclick="toggleAuthForm()">Create one</a></div>
         </div>
       </div>
-
       <div id="register-form" class="card" style="display:none;">
         <div class="card-body">
           <div class="role-toggle">
@@ -290,7 +385,6 @@
       <div class="home-welcome-pts-label">TOTAL POINTS</div>
     </div>
   </div>
-
   <div class="section-label">Your Overview</div>
   <div class="achievement-cards">
     <div class="ach-card">
@@ -318,7 +412,6 @@
       <div class="ach-sub">2 challenges active</div>
     </div>
   </div>
-
   <div class="report-cta">
     <div>
       <h3>See a damaged streetlight base?</h3>
@@ -326,7 +419,6 @@
     </div>
     <button class="btn btn-primary btn-lg" onclick="show('report',1)">📷 Submit a Report →</button>
   </div>
-
   <div class="section-label">Top 10 Reporters This Month</div>
   <div class="card">
     <div style="display:grid;grid-template-columns:44px 38px 1fr 90px;padding:10px 20px;font-size:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">
@@ -349,7 +441,7 @@
 </div>
 
 
-<!-- ══ REPORT ══ -->
+<!-- ══ REPORT FORM ══ -->
 <div id="screen-report" class="screen">
   <div class="page-header">
     <h1>Submit a Report</h1>
@@ -379,38 +471,23 @@
           </div>
         </div>
       </div>
-
       <div class="card" style="margin-bottom:20px;">
         <div class="card-header"><span class="card-title">⭐ Damage Rating</span></div>
         <div class="card-body">
           <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Select the condition that best matches what you see</p>
           <div class="rating-grid">
-            <div class="rating-card good" onclick="selectRating(this)">
-              <span class="rating-emoji">✅</span><span class="rating-label">GOOD</span>
-              <p style="font-size:10px;color:var(--muted);margin-top:4px;">Minor wear, no damage</p>
-            </div>
-            <div class="rating-card fair active" onclick="selectRating(this)">
-              <span class="rating-emoji">⚠️</span><span class="rating-label">FAIR</span>
-              <p style="font-size:10px;color:var(--muted);margin-top:4px;">Visible damage, functional</p>
-            </div>
-            <div class="rating-card poor" onclick="selectRating(this)">
-              <span class="rating-emoji">🔴</span><span class="rating-label">POOR</span>
-              <p style="font-size:10px;color:var(--muted);margin-top:4px;">Severe damage or missing</p>
-            </div>
+            <div class="rating-card good" onclick="selectRating(this)"><span class="rating-emoji">✅</span><span class="rating-label">GOOD</span><p style="font-size:10px;color:var(--muted);margin-top:4px;">Minor wear, no damage</p></div>
+            <div class="rating-card fair active" onclick="selectRating(this)"><span class="rating-emoji">⚠️</span><span class="rating-label">FAIR</span><p style="font-size:10px;color:var(--muted);margin-top:4px;">Visible damage, functional</p></div>
+            <div class="rating-card poor" onclick="selectRating(this)"><span class="rating-emoji">🔴</span><span class="rating-label">POOR</span><p style="font-size:10px;color:var(--muted);margin-top:4px;">Severe damage or missing</p></div>
           </div>
         </div>
       </div>
-
       <div class="card">
         <div class="card-header"><span class="card-title">📝 Details</span></div>
         <div class="card-body">
           <div class="field">
             <label class="label">Damage Type</label>
-            <select class="input">
-              <option>Select damage type…</option>
-              <option>Cracked base</option><option>Missing cover</option><option>Corrosion / rust</option>
-              <option>Graffiti</option><option>Physical impact damage</option><option>Leaning / unstable</option>
-            </select>
+            <select class="input"><option>Select damage type…</option><option>Cracked base</option><option>Missing cover</option><option>Corrosion / rust</option><option>Graffiti</option><option>Physical impact damage</option><option>Leaning / unstable</option></select>
           </div>
           <div class="field">
             <label class="label">Description (optional)</label>
@@ -424,8 +501,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Reference panel -->
     <div class="card">
       <div class="card-header"><span class="card-title">Reference Guide</span></div>
       <div class="card-body">
@@ -437,10 +512,7 @@
         </div>
         <div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:7px;">
           <div style="font-size:11px;font-weight:600;margin-bottom:6px;">Common Damage Types</div>
-          <div style="font-size:11px;color:var(--muted);line-height:1.8;">
-            • Cracked or fractured base<br>• Missing inspection cover<br>• Corrosion or rust staining<br>
-            • Graffiti or vandalism<br>• Impact damage (vehicle)<br>• Leaning or unstable pole
-          </div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.8;">• Cracked or fractured base<br>• Missing inspection cover<br>• Corrosion or rust staining<br>• Graffiti or vandalism<br>• Impact damage (vehicle)<br>• Leaning or unstable pole</div>
         </div>
       </div>
     </div>
@@ -472,9 +544,7 @@
           <button class="filter-tab" onclick="setFilter(this)">Daily</button>
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:44px 38px 1fr 90px;padding:10px 20px;font-size:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">
-        <span>Rank</span><span></span><span>User</span><span style="text-align:right;">Points</span>
-      </div>
+      <div style="display:grid;grid-template-columns:44px 38px 1fr 90px;padding:10px 20px;font-size:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);"><span>Rank</span><span></span><span>User</span><span style="text-align:right;">Points</span></div>
       <div class="lb-row"><div class="lb-rank">4</div><div class="lb-avatar">👩</div><div class="lb-info"><div class="lb-name">maria_bklyn 🔥</div><div class="lb-meta">Brooklyn · 89 reports</div></div><div class="lb-pts">1,820</div></div>
       <div class="lb-row" style="background:var(--bg)"><div class="lb-rank">5</div><div class="lb-avatar">👦</div><div class="lb-info"><div class="lb-name">streetwatcher99</div><div class="lb-meta">Manhattan · 75 reports</div></div><div class="lb-pts">1,540</div></div>
       <div class="lb-row"><div class="lb-rank">6</div><div class="lb-avatar">🧑</div><div class="lb-info"><div class="lb-name">bx_patrol</div><div class="lb-meta">Bronx · 68 reports</div></div><div class="lb-pts">1,380</div></div>
@@ -487,9 +557,7 @@
     <div class="card">
       <div class="card-header"><span class="card-title">Filter by Borough</span></div>
       <div class="card-body">
-        <div class="field">
-          <select class="input"><option>All Boroughs</option><option>Manhattan</option><option>Brooklyn</option><option>Queens</option><option>Bronx</option><option>Staten Island</option></select>
-        </div>
+        <div class="field"><select class="input"><option>All Boroughs</option><option>Manhattan</option><option>Brooklyn</option><option>Queens</option><option>Bronx</option><option>Staten Island</option></select></div>
         <div style="padding:16px;background:var(--bg);border-radius:7px;text-align:center;">
           <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">Your borough rank</div>
           <div style="font-size:30px;font-weight:700;font-family:'DM Mono',monospace;color:var(--accent)">#4</div>
@@ -504,102 +572,296 @@
 <!-- ══ CHALLENGES ══ -->
 <div id="screen-challenges" class="screen">
   <div class="page-header"><h1>Challenges</h1><p>Complete challenges to earn bonus points and climb the leaderboard</p></div>
-
   <div class="section-label" style="margin-bottom:16px;">Daily Challenges</div>
   <div class="challenge-grid" style="margin-bottom:28px;">
-    <div class="challenge-card">
-      <div class="challenge-icon">📅</div>
-      <div style="flex:1">
-        <div class="challenge-tag tag-daily">Daily</div>
-        <div class="challenge-title">Daily Reporter</div>
-        <div class="challenge-desc">Submit at least 1 report today to keep your streak alive and earn points.</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
-        <div class="challenge-footer"><span class="challenge-pts">+10 pts</span><span class="challenge-prog">0 / 1 · Resets in 6h</span></div>
-      </div>
-    </div>
-    <div class="challenge-card">
-      <div class="challenge-icon">⚡</div>
-      <div style="flex:1">
-        <div class="challenge-tag tag-daily">Daily</div>
-        <div class="challenge-title">Speed Scout</div>
-        <div class="challenge-desc">Submit 3 reports in a single day to earn a speed bonus.</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:33%"></div></div>
-        <div class="challenge-footer"><span class="challenge-pts">+20 pts</span><span class="challenge-prog">1 / 3 · Resets in 6h</span></div>
-      </div>
-    </div>
+    <div class="challenge-card"><div class="challenge-icon">📅</div><div style="flex:1"><div class="challenge-tag tag-daily">Daily</div><div class="challenge-title">Daily Reporter</div><div class="challenge-desc">Submit at least 1 report today to keep your streak alive and earn points.</div><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div><div class="challenge-footer"><span class="challenge-pts">+10 pts</span><span class="challenge-prog">0 / 1 · Resets in 6h</span></div></div></div>
+    <div class="challenge-card"><div class="challenge-icon">⚡</div><div style="flex:1"><div class="challenge-tag tag-daily">Daily</div><div class="challenge-title">Speed Scout</div><div class="challenge-desc">Submit 3 reports in a single day to earn a speed bonus.</div><div class="progress-bar"><div class="progress-fill" style="width:33%"></div></div><div class="challenge-footer"><span class="challenge-pts">+20 pts</span><span class="challenge-prog">1 / 3 · Resets in 6h</span></div></div></div>
   </div>
-
   <div class="section-label" style="margin-bottom:16px;">Weekly Challenges</div>
   <div class="challenge-grid" style="margin-bottom:28px;">
-    <div class="challenge-card">
-      <div class="challenge-icon">🔥</div>
-      <div style="flex:1">
-        <div class="challenge-tag tag-weekly">Weekly</div>
-        <div class="challenge-title">On a Streak</div>
-        <div class="challenge-desc">Report 5 days in a row this week to earn a streak bonus.</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div>
-        <div class="challenge-footer"><span class="challenge-pts">+30 pts</span><span class="challenge-prog">3 / 5 days</span></div>
-      </div>
-    </div>
-    <div class="challenge-card">
-      <div class="challenge-icon">📍</div>
-      <div style="flex:1">
-        <div class="challenge-tag tag-weekly">Weekly</div>
-        <div class="challenge-title">City Scout</div>
-        <div class="challenge-desc">Report damage in 2 different NYC boroughs this week.</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div>
-        <div class="challenge-footer"><span class="challenge-pts">+25 pts</span><span class="challenge-prog">1 / 2 boroughs</span></div>
-      </div>
-    </div>
+    <div class="challenge-card"><div class="challenge-icon">🔥</div><div style="flex:1"><div class="challenge-tag tag-weekly">Weekly</div><div class="challenge-title">On a Streak</div><div class="challenge-desc">Report 5 days in a row this week to earn a streak bonus.</div><div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div><div class="challenge-footer"><span class="challenge-pts">+30 pts</span><span class="challenge-prog">3 / 5 days</span></div></div></div>
+    <div class="challenge-card"><div class="challenge-icon">📍</div><div style="flex:1"><div class="challenge-tag tag-weekly">Weekly</div><div class="challenge-title">City Scout</div><div class="challenge-desc">Report damage in 2 different NYC boroughs this week.</div><div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div><div class="challenge-footer"><span class="challenge-pts">+25 pts</span><span class="challenge-prog">1 / 2 boroughs</span></div></div></div>
   </div>
-
   <div class="section-label" style="margin-bottom:16px;">Special Challenges</div>
   <div class="challenge-grid">
-    <div class="challenge-card">
-      <div class="challenge-icon">🗺️</div>
-      <div style="flex:1">
-        <div class="challenge-tag tag-special">Special</div>
-        <div class="challenge-title">Borough Hopper</div>
-        <div class="challenge-desc">Submit at least one report in all 5 NYC boroughs.</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div>
-        <div class="challenge-footer"><span class="challenge-pts">+100 pts</span><span class="challenge-prog">2 / 5 boroughs</span></div>
+    <div class="challenge-card"><div class="challenge-icon">🗺️</div><div style="flex:1"><div class="challenge-tag tag-special">Special</div><div class="challenge-title">Borough Hopper</div><div class="challenge-desc">Submit at least one report in all 5 NYC boroughs.</div><div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div><div class="challenge-footer"><span class="challenge-pts">+100 pts</span><span class="challenge-prog">2 / 5 boroughs</span></div></div></div>
+    <div class="challenge-card"><div class="challenge-icon">🌧️</div><div style="flex:1"><div class="challenge-tag tag-special">Special</div><div class="challenge-title">Storm Chaser</div><div class="challenge-desc">Report 3 damaged bases within 24 hours after a rain event.</div><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div><div class="challenge-footer"><span class="challenge-pts">+75 pts</span><span class="challenge-prog">0 / 3</span></div></div></div>
+    <div class="challenge-card" style="opacity:0.55"><div class="challenge-icon">🏆</div><div style="flex:1"><div class="challenge-tag tag-locked">Locked</div><div class="challenge-title">Top 10 Climber</div><div class="challenge-desc">Reach the top 10 on the leaderboard to unlock this achievement.</div><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div><div class="challenge-footer"><span class="challenge-pts">+150 pts</span><span class="challenge-prog">Reach rank #10</span></div></div></div>
+    <div class="challenge-card" style="opacity:0.55"><div class="challenge-icon">💯</div><div style="flex:1"><div class="challenge-tag tag-locked">Locked</div><div class="challenge-title">Century Reporter</div><div class="challenge-desc">Submit your 100th report to earn the Century badge.</div><div class="progress-bar"><div class="progress-fill" style="width:17%"></div></div><div class="challenge-footer"><span class="challenge-pts">+200 pts</span><span class="challenge-prog">17 / 100 reports</span></div></div></div>
+  </div>
+</div>
+
+
+<!-- ══ MY REPORTS (Citizen) ══ -->
+<div id="screen-my-reports" class="screen">
+  <div class="page-header">
+    <h1>My Reports</h1>
+    <p>17 reports submitted · 340 pts earned total</p>
+  </div>
+  <div class="reports-filter-row">
+    <button class="pill-filter active" onclick="setPill(this)">All</button>
+    <button class="pill-filter" onclick="setPill(this)">Poor</button>
+    <button class="pill-filter" onclick="setPill(this)">Fair</button>
+    <button class="pill-filter" onclick="setPill(this)">Good</button>
+    <button class="pill-filter" onclick="setPill(this)">Manhattan</button>
+    <button class="pill-filter" onclick="setPill(this)">Brooklyn</button>
+    <button class="pill-filter" onclick="setPill(this)">Queens</button>
+    <select class="reports-sort">
+      <option>Newest first</option>
+      <option>Oldest first</option>
+      <option>Most points</option>
+      <option>Rating: Poor first</option>
+    </select>
+  </div>
+  <div class="reports-grid">
+    <!-- Card 1 -->
+    <div class="report-card">
+      <div class="report-card-thumb">
+        <span class="thumb-icon">📷</span>
+        <span class="rating-pill poor">Poor</span>
+        <span class="pts-pill">+20 pts</span>
+      </div>
+      <div class="report-card-body">
+        <div class="report-card-address">W 42nd St, Manhattan</div>
+        <div class="report-card-meta">Mar 22, 2026 · 2:14 PM</div>
+        <div class="report-card-footer">
+          <span class="dmg-tag">Impact damage</span>
+          <div class="card-action-row">
+            <button class="btn btn-outline btn-sm" onclick="openEditModal('W 42nd St, Manhattan','Impact damage','poor','Base shows visible cracking on the south-facing side.')">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="openDeleteModal('W 42nd St, Manhattan')">Delete</button>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="challenge-card">
-      <div class="challenge-icon">🌧️</div>
-      <div style="flex:1">
-        <div class="challenge-tag tag-special">Special</div>
-        <div class="challenge-title">Storm Chaser</div>
-        <div class="challenge-desc">Report 3 damaged bases within 24 hours after a rain event.</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
-        <div class="challenge-footer"><span class="challenge-pts">+75 pts</span><span class="challenge-prog">0 / 3</span></div>
+    <!-- Card 2 -->
+    <div class="report-card">
+      <div class="report-card-thumb">
+        <span class="thumb-icon">📷</span>
+        <span class="rating-pill fair">Fair</span>
+        <span class="pts-pill">+10 pts</span>
+      </div>
+      <div class="report-card-body">
+        <div class="report-card-address">Flatbush Ave, Brooklyn</div>
+        <div class="report-card-meta">Mar 19, 2026 · 11:03 AM</div>
+        <div class="report-card-footer">
+          <span class="dmg-tag">Corrosion</span>
+          <div class="card-action-row">
+            <button class="btn btn-outline btn-sm" onclick="openEditModal('Flatbush Ave, Brooklyn','Corrosion / rust','fair','Rust staining along the base seam.')">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="openDeleteModal('Flatbush Ave, Brooklyn')">Delete</button>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="challenge-card" style="opacity:0.55">
-      <div class="challenge-icon">🏆</div>
-      <div style="flex:1">
-        <div class="challenge-tag tag-locked">Locked</div>
-        <div class="challenge-title">Top 10 Climber</div>
-        <div class="challenge-desc">Reach the top 10 on the leaderboard to unlock this achievement.</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
-        <div class="challenge-footer"><span class="challenge-pts">+150 pts</span><span class="challenge-prog">Reach rank #10</span></div>
+    <!-- Card 3 -->
+    <div class="report-card">
+      <div class="report-card-thumb">
+        <span class="thumb-icon">📷</span>
+        <span class="rating-pill good">Good</span>
+        <span class="pts-pill">+10 pts</span>
+      </div>
+      <div class="report-card-body">
+        <div class="report-card-address">Jamaica Ave, Queens</div>
+        <div class="report-card-meta">Mar 17, 2026 · 9:45 AM</div>
+        <div class="report-card-footer">
+          <span class="dmg-tag">Minor wear</span>
+          <div class="card-action-row">
+            <button class="btn btn-outline btn-sm" onclick="openEditModal('Jamaica Ave, Queens','Cracked base','good','Minor surface scuffing only.')">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="openDeleteModal('Jamaica Ave, Queens')">Delete</button>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="challenge-card" style="opacity:0.55">
-      <div class="challenge-icon">💯</div>
-      <div style="flex:1">
-        <div class="challenge-tag tag-locked">Locked</div>
-        <div class="challenge-title">Century Reporter</div>
-        <div class="challenge-desc">Submit your 100th report to earn the Century badge.</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:17%"></div></div>
-        <div class="challenge-footer"><span class="challenge-pts">+200 pts</span><span class="challenge-prog">17 / 100 reports</span></div>
+    <!-- Card 4 -->
+    <div class="report-card">
+      <div class="report-card-thumb">
+        <span class="thumb-icon">📷</span>
+        <span class="rating-pill poor">Poor</span>
+        <span class="pts-pill">+20 pts</span>
+      </div>
+      <div class="report-card-body">
+        <div class="report-card-address">Grand Concourse, Bronx</div>
+        <div class="report-card-meta">Mar 14, 2026 · 4:22 PM</div>
+        <div class="report-card-footer">
+          <span class="dmg-tag">Cracked base</span>
+          <div class="card-action-row">
+            <button class="btn btn-outline btn-sm" onclick="openEditModal('Grand Concourse, Bronx','Cracked base','poor','Large fracture on the east face, cover missing.')">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="openDeleteModal('Grand Concourse, Bronx')">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Card 5 -->
+    <div class="report-card">
+      <div class="report-card-thumb">
+        <span class="thumb-icon">📷</span>
+        <span class="rating-pill fair">Fair</span>
+        <span class="pts-pill">+10 pts</span>
+      </div>
+      <div class="report-card-body">
+        <div class="report-card-address">Bay St, Staten Island</div>
+        <div class="report-card-meta">Mar 10, 2026 · 1:07 PM</div>
+        <div class="report-card-footer">
+          <span class="dmg-tag">Missing cover</span>
+          <div class="card-action-row">
+            <button class="btn btn-outline btn-sm" onclick="openEditModal('Bay St, Staten Island','Missing cover','fair','Inspection cover is fully missing.')">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="openDeleteModal('Bay St, Staten Island')">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Card 6 -->
+    <div class="report-card">
+      <div class="report-card-thumb">
+        <span class="thumb-icon">📷</span>
+        <span class="rating-pill poor">Poor</span>
+        <span class="pts-pill">+20 pts</span>
+      </div>
+      <div class="report-card-body">
+        <div class="report-card-address">Atlantic Ave, Brooklyn</div>
+        <div class="report-card-meta">Mar 7, 2026 · 8:55 AM</div>
+        <div class="report-card-footer">
+          <span class="dmg-tag">Leaning / unstable</span>
+          <div class="card-action-row">
+            <button class="btn btn-outline btn-sm" onclick="openEditModal('Atlantic Ave, Brooklyn','Leaning / unstable','poor','Pole leaning noticeably, potential safety hazard.')">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="openDeleteModal('Atlantic Ave, Brooklyn')">Delete</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 
-<!-- ══ DOT ANALYTICS (DOT only) ══ -->
+<!-- ══ ALL REPORTS (DOT Admin) ══ -->
+<div id="screen-all-reports" class="screen">
+  <div class="dot-access">🏛️ DOT Admin Access Only</div>
+  <div class="page-header">
+    <h1>All Reports</h1>
+    <p>Read-only view of all citizen-submitted reports city-wide</p>
+  </div>
+  <div class="all-reports-wrap">
+    <div>
+      <!-- Summary stats -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
+        <div class="stat-card"><div class="stat-label">Total Reports</div><div class="stat-value">4,821</div><div class="stat-sub">All time</div></div>
+        <div class="stat-card"><div class="stat-label">Poor Condition</div><div class="stat-value" style="color:var(--warn)">1,247</div><div class="stat-sub">25.9% of total</div></div>
+        <div class="stat-card"><div class="stat-label">This Week</div><div class="stat-value">312</div><div class="stat-sub">↑ 8% vs last week</div></div>
+      </div>
+      <!-- Table -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Report Log</span>
+          <button class="btn btn-outline btn-sm">Export CSV</button>
+        </div>
+        <div class="reports-filter-row" style="padding:14px 20px 0;margin-bottom:0;">
+          <button class="pill-filter active" onclick="setPill(this)">All</button>
+          <button class="pill-filter" onclick="setPill(this)">Poor</button>
+          <button class="pill-filter" onclick="setPill(this)">Fair</button>
+          <button class="pill-filter" onclick="setPill(this)">Good</button>
+          <select class="reports-sort" style="margin-left:auto;">
+            <option>All Boroughs</option>
+            <option>Manhattan</option>
+            <option>Brooklyn</option>
+            <option>Queens</option>
+            <option>Bronx</option>
+            <option>Staten Island</option>
+          </select>
+        </div>
+        <div class="reports-table-header">
+          <span>Report ID</span><span>Location</span><span>Rating</span><span>Damage Type</span><span>Reporter</span><span>Submitted</span>
+        </div>
+        <div class="reports-table-row">
+          <span style="color:var(--muted);font-family:'DM Mono',monospace;">#4821</span>
+          <span>W 42nd St, MH</span>
+          <span class="r-rating-poor">Poor</span>
+          <span style="color:var(--muted);">Impact damage</span>
+          <span>jsmith_nyc</span>
+          <span style="color:var(--muted);">2m ago</span>
+        </div>
+        <div class="reports-table-row" style="background:var(--bg);">
+          <span style="color:var(--muted);font-family:'DM Mono',monospace;">#4820</span>
+          <span>Flatbush Ave, BK</span>
+          <span class="r-rating-fair">Fair</span>
+          <span style="color:var(--muted);">Corrosion</span>
+          <span>maria_bklyn</span>
+          <span style="color:var(--muted);">8m ago</span>
+        </div>
+        <div class="reports-table-row">
+          <span style="color:var(--muted);font-family:'DM Mono',monospace;">#4819</span>
+          <span>Grand Concourse, BX</span>
+          <span class="r-rating-poor">Poor</span>
+          <span style="color:var(--muted);">Cracked base</span>
+          <span>bx_patrol</span>
+          <span style="color:var(--muted);">15m ago</span>
+        </div>
+        <div class="reports-table-row" style="background:var(--bg);">
+          <span style="color:var(--muted);font-family:'DM Mono',monospace;">#4818</span>
+          <span>Jamaica Ave, QN</span>
+          <span class="r-rating-good">Good</span>
+          <span style="color:var(--muted);">Minor wear</span>
+          <span>qns_watch</span>
+          <span style="color:var(--muted);">22m ago</span>
+        </div>
+        <div class="reports-table-row">
+          <span style="color:var(--muted);font-family:'DM Mono',monospace;">#4817</span>
+          <span>Bay St, SI</span>
+          <span class="r-rating-fair">Fair</span>
+          <span style="color:var(--muted);">Missing cover</span>
+          <span>si_reporter</span>
+          <span style="color:var(--muted);">31m ago</span>
+        </div>
+        <div class="reports-table-row" style="background:var(--bg);">
+          <span style="color:var(--muted);font-family:'DM Mono',monospace;">#4816</span>
+          <span>Atlantic Ave, BK</span>
+          <span class="r-rating-poor">Poor</span>
+          <span style="color:var(--muted);">Leaning / unstable</span>
+          <span>maria_bklyn</span>
+          <span style="color:var(--muted);">45m ago</span>
+        </div>
+        <div class="reports-table-row">
+          <span style="color:var(--muted);font-family:'DM Mono',monospace;">#4815</span>
+          <span>5th Ave, MH</span>
+          <span class="r-rating-fair">Fair</span>
+          <span style="color:var(--muted);">Graffiti</span>
+          <span>ny_reporter1</span>
+          <span style="color:var(--muted);">1h ago</span>
+        </div>
+        <div style="padding:14px 20px;font-size:12px;color:var(--muted);text-align:center;border-top:1px solid var(--border);">Showing 7 of 4,821 reports — <a style="color:var(--accent);cursor:pointer;">Load more</a></div>
+      </div>
+    </div>
+    <!-- Sidebar filter -->
+    <div>
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-header"><span class="card-title">Search & Filter</span></div>
+        <div class="card-body">
+          <div class="field">
+            <label class="label">Reporter username</label>
+            <input class="input" placeholder="e.g. jsmith_nyc">
+          </div>
+          <div class="field">
+            <label class="label">Date range</label>
+            <select class="input"><option>All time</option><option>Today</option><option>This week</option><option>This month</option><option>Custom…</option></select>
+          </div>
+          <div class="field">
+            <label class="label">Damage type</label>
+            <select class="input"><option>All types</option><option>Cracked base</option><option>Missing cover</option><option>Corrosion / rust</option><option>Graffiti</option><option>Impact damage</option><option>Leaning / unstable</option></select>
+          </div>
+          <button class="btn btn-primary btn-full">Apply Filters</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Read-only Notice</span></div>
+        <div class="card-body">
+          <p style="font-size:12px;color:var(--muted);line-height:1.6;">DOT admins can view all reports but cannot edit or delete citizen submissions. Data integrity is maintained for accurate analysis.</p>
+          <div style="margin-top:14px;padding:10px 12px;background:var(--accent-light);border-radius:7px;font-size:11px;color:var(--accent);font-weight:600;">For data issues, contact the system administrator.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ DOT ANALYTICS ══ -->
 <div id="screen-analytics" class="screen">
   <div class="dot-access">🏛️ DOT Admin Access Only</div>
   <div class="page-header" style="margin-bottom:20px;"><h1>Analytics Dashboard</h1><p>Internal view for NYC Department of Transportation staff</p></div>
@@ -611,12 +873,7 @@
   </div>
   <div class="analytics-grid">
     <div class="card">
-      <div class="card-header">
-        <span class="card-title">🗺️ Geographic Heat Map</span>
-        <select class="input" style="width:auto;font-size:11px;padding:4px 8px;">
-          <option>All Boroughs</option><option>Manhattan</option><option>Brooklyn</option><option>Queens</option><option>Bronx</option><option>Staten Island</option>
-        </select>
-      </div>
+      <div class="card-header"><span class="card-title">🗺️ Geographic Heat Map</span><select class="input" style="width:auto;font-size:11px;padding:4px 8px;"><option>All Boroughs</option><option>Manhattan</option><option>Brooklyn</option><option>Queens</option><option>Bronx</option><option>Staten Island</option></select></div>
       <div class="card-body">
         <p style="font-size:11px;color:var(--muted);margin-bottom:12px;">Cluster density of damage reports</p>
         <div class="heatmap-grid">
@@ -625,18 +882,11 @@
           <div class="heatmap-cell h-0">SI</div><div class="heatmap-cell h-1">BK</div><div class="heatmap-cell h-3">BK</div><div class="heatmap-cell h-4">BK</div><div class="heatmap-cell h-2">QN</div><div class="heatmap-cell h-2">QN</div>
           <div class="heatmap-cell h-0">SI</div><div class="heatmap-cell h-2">BK</div><div class="heatmap-cell h-5">BK</div><div class="heatmap-cell h-3">BK</div><div class="heatmap-cell h-1">QN</div><div class="heatmap-cell h-0">QN</div>
         </div>
-        <div style="display:flex;gap:6px;align-items:center;margin-top:12px;font-size:10px;color:var(--muted);">
-          <span>Low</span><div style="height:6px;flex:1;background:linear-gradient(to right,#EEF3FD,#1E3A8A);border-radius:3px;"></div><span>High</span>
-        </div>
+        <div style="display:flex;gap:6px;align-items:center;margin-top:12px;font-size:10px;color:var(--muted);"><span>Low</span><div style="height:6px;flex:1;background:linear-gradient(to right,#EEF3FD,#1E3A8A);border-radius:3px;"></div><span>High</span></div>
       </div>
     </div>
     <div class="card">
-      <div class="card-header">
-        <span class="card-title">📈 Reports Over Time</span>
-        <select class="input" style="width:auto;font-size:11px;padding:4px 8px;">
-          <option>Last 6 Months</option><option>Last 12 Months</option><option>Last 30 Days</option>
-        </select>
-      </div>
+      <div class="card-header"><span class="card-title">📈 Reports Over Time</span><select class="input" style="width:auto;font-size:11px;padding:4px 8px;"><option>Last 6 Months</option><option>Last 12 Months</option><option>Last 30 Days</option></select></div>
       <div class="card-body">
         <p style="font-size:11px;color:var(--muted);margin-bottom:12px;">Total reports & poor-condition trend</p>
         <div class="bar-chart">
@@ -676,16 +926,14 @@
       </div>
     </div>
     <div class="card">
-      <div class="card-header"><span class="card-title">🕐 Recent Reports</span><button class="btn btn-outline btn-sm">Export CSV</button></div>
+      <div class="card-header"><span class="card-title">🕐 Recent Reports</span><button class="btn btn-outline btn-sm" onclick="show('all-reports')">View All →</button></div>
       <div>
-        <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;padding:10px 20px;font-size:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">
-          <span>Location</span><span>Rating</span><span>Type</span><span>Time</span>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;padding:11px 20px;font-size:12px;border-bottom:1px solid var(--border);align-items:center;"><span>W 42nd St, MH</span><span style="color:var(--warn);font-weight:600;">Poor</span><span style="color:var(--muted);">Cracked</span><span style="color:var(--muted);">2m ago</span></div>
-        <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;padding:11px 20px;font-size:12px;border-bottom:1px solid var(--border);align-items:center;background:var(--bg);"><span>Flatbush Ave, BK</span><span style="color:var(--yellow);font-weight:600;">Fair</span><span style="color:var(--muted);">Corrosion</span><span style="color:var(--muted);">8m ago</span></div>
-        <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;padding:11px 20px;font-size:12px;border-bottom:1px solid var(--border);align-items:center;"><span>Grand Concourse, BX</span><span style="color:var(--warn);font-weight:600;">Poor</span><span style="color:var(--muted);">Impact</span><span style="color:var(--muted);">15m ago</span></div>
-        <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;padding:11px 20px;font-size:12px;border-bottom:1px solid var(--border);align-items:center;background:var(--bg);"><span>Jamaica Ave, QN</span><span style="color:var(--green);font-weight:600;">Good</span><span style="color:var(--muted);">Minor</span><span style="color:var(--muted);">22m ago</span></div>
-        <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;padding:11px 20px;font-size:12px;align-items:center;"><span>Bay St, SI</span><span style="color:var(--yellow);font-weight:600;">Fair</span><span style="color:var(--muted);">Cover</span><span style="color:var(--muted);">31m ago</span></div>
+        <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;padding:10px 20px;font-size:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);"><span>Location</span><span>Rating</span><span>Type</span><span>Time</span></div>
+        <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;padding:11px 20px;font-size:12px;border-bottom:1px solid var(--border);align-items:center;"><span>W 42nd St, MH</span><span class="r-rating-poor">Poor</span><span style="color:var(--muted);">Cracked</span><span style="color:var(--muted);">2m ago</span></div>
+        <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;padding:11px 20px;font-size:12px;border-bottom:1px solid var(--border);align-items:center;background:var(--bg);"><span>Flatbush Ave, BK</span><span class="r-rating-fair">Fair</span><span style="color:var(--muted);">Corrosion</span><span style="color:var(--muted);">8m ago</span></div>
+        <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;padding:11px 20px;font-size:12px;border-bottom:1px solid var(--border);align-items:center;"><span>Grand Concourse, BX</span><span class="r-rating-poor">Poor</span><span style="color:var(--muted);">Impact</span><span style="color:var(--muted);">15m ago</span></div>
+        <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;padding:11px 20px;font-size:12px;border-bottom:1px solid var(--border);align-items:center;background:var(--bg);"><span>Jamaica Ave, QN</span><span class="r-rating-good">Good</span><span style="color:var(--muted);">Minor</span><span style="color:var(--muted);">22m ago</span></div>
+        <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;padding:11px 20px;font-size:12px;align-items:center;"><span>Bay St, SI</span><span class="r-rating-fair">Fair</span><span style="color:var(--muted);">Cover</span><span style="color:var(--muted);">31m ago</span></div>
       </div>
     </div>
   </div>
@@ -697,49 +945,122 @@
   ✅ Report submitted! +10 pts earned
 </div>
 
+
+<!-- ══ EDIT MODAL ══ -->
+<div class="modal-backdrop" id="edit-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Edit Report</span>
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label class="label">📷 Photo</label>
+        <div class="photo-drop" style="padding:16px 20px;">
+          <div style="font-size:24px;margin-bottom:8px;">📸</div>
+          <p style="font-size:12px;font-weight:500;margin-bottom:4px;">Tap to replace photo</p>
+          <p style="font-size:11px;color:var(--muted);">Current photo on file. Taking a new photo will update the GPS location automatically.</p>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label">📍 Location</label>
+        <div class="location-row"><div class="location-dot"></div><span id="modal-location">GPS active — detecting location…</span></div>
+      </div>
+      <div class="field">
+        <label class="label">Damage Rating</label>
+        <div class="rating-grid" id="modal-rating-grid">
+          <div class="rating-card good" onclick="selectRating(this)"><span class="rating-emoji">✅</span><span class="rating-label">GOOD</span></div>
+          <div class="rating-card fair" onclick="selectRating(this)"><span class="rating-emoji">⚠️</span><span class="rating-label">FAIR</span></div>
+          <div class="rating-card poor" onclick="selectRating(this)"><span class="rating-emoji">🔴</span><span class="rating-label">POOR</span></div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label">Damage Type</label>
+        <select class="input" id="modal-dmg-type">
+          <option>Cracked base</option>
+          <option>Missing cover</option>
+          <option>Corrosion / rust</option>
+          <option>Graffiti</option>
+          <option>Physical impact damage</option>
+          <option>Leaning / unstable</option>
+        </select>
+      </div>
+      <div class="field" style="margin-bottom:0;">
+        <label class="label">Description (optional)</label>
+        <textarea class="input" id="modal-desc" placeholder="Describe the damage in a few words…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeEditModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ DELETE CONFIRM MODAL ══ -->
+<div class="modal-backdrop" id="delete-modal">
+  <div class="modal delete-modal">
+    <div class="modal-header">
+      <span class="modal-title">Delete Report</span>
+      <button class="modal-close" onclick="closeDeleteModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;line-height:1.6;margin-bottom:10px;">Are you sure you want to delete the report for <strong id="delete-location-name">this location</strong>?</p>
+      <p style="font-size:12px;color:var(--muted);line-height:1.6;">This action cannot be undone. The points earned from this report will also be removed from your total.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeDeleteModal()">Cancel</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+
+
 <script>
   function show(screen, tabIndex) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen-' + screen).classList.add('active');
     if (tabIndex !== undefined) {
-      document.querySelectorAll('#main-nav .nav-tab').forEach(t => t.classList.remove('active'));
-      const tabs = document.querySelectorAll('#main-nav .nav-tab');
+      document.querySelectorAll('#main-nav .nav-tab:not(.nav-dropdown .nav-tab)').forEach(t => t.classList.remove('active'));
+      const tabs = document.querySelectorAll('#main-nav > .nav-tab, #main-nav > .nav-dropdown > .nav-tab');
       if (tabs[tabIndex]) tabs[tabIndex].classList.add('active');
     }
-    window.scrollTo(0,0);
+    window.scrollTo(0, 0);
   }
 
   function goHome() {
-    const loginActive = document.getElementById('screen-login').classList.contains('active');
-    if (!loginActive) show('home', 0);
+    if (!document.getElementById('screen-login').classList.contains('active')) show('home', 0);
+  }
+
+  function setDropdownActive(label) {
+    document.getElementById('nav-reports-tab').classList.add('active');
+    document.querySelectorAll('#nav-reports-dropdown .nav-dropdown-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('#nav-reports-dropdown .nav-dropdown-item').forEach(i => {
+      if (i.textContent.trim() === label) i.classList.add('active');
+    });
+    document.querySelectorAll('#main-nav > .nav-tab').forEach(t => {
+      if (!t.closest('.nav-dropdown')) t.classList.remove('active');
+    });
+    document.getElementById('nav-reports-tab').classList.add('active');
   }
 
   function handleLogin(mode) {
-    const visibleForm = document.getElementById(mode === 'login' ? 'login-form' : 'register-form');
-    const activeRoleBtn = visibleForm.querySelector('.role-btn.active');
-    const isDot = activeRoleBtn && activeRoleBtn.textContent.includes('DOT');
-
-    // Show main nav
+    const form = document.getElementById(mode === 'login' ? 'login-form' : 'register-form');
+    const isDot = form.querySelector('.role-btn.active').textContent.includes('DOT');
     document.getElementById('main-nav').classList.remove('hidden');
-
     if (isDot) {
       document.getElementById('dot-badge').classList.add('visible');
-      // Add DOT Analytics tab if not already present
+      document.getElementById('nav-reports-tab').textContent = 'Reports ▾';
       if (!document.getElementById('dot-nav-tab')) {
         const nav = document.getElementById('main-nav');
         const tab = document.createElement('button');
-        tab.className = 'nav-tab active';
-        tab.id = 'dot-nav-tab';
+        tab.className = 'nav-tab'; tab.id = 'dot-nav-tab';
         tab.textContent = '🏛️ DOT Analytics';
-        tab.onclick = function() {
-          document.querySelectorAll('#main-nav .nav-tab').forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          show('analytics');
-        };
+        tab.onclick = () => { document.querySelectorAll('#main-nav .nav-tab').forEach(t=>t.classList.remove('active')); tab.classList.add('active'); show('analytics'); };
         nav.appendChild(tab);
       }
-      // DOT users land on analytics
-      document.querySelectorAll('#main-nav .nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('#main-nav .nav-tab').forEach(t=>t.classList.remove('active'));
       document.getElementById('dot-nav-tab').classList.add('active');
       show('analytics');
     } else {
@@ -748,10 +1069,8 @@
   }
 
   function toggleAuthForm() {
-    const lf = document.getElementById('login-form');
-    const rf = document.getElementById('register-form');
-    if (lf.style.display === 'none') { lf.style.display = ''; rf.style.display = 'none'; }
-    else { lf.style.display = 'none'; rf.style.display = ''; }
+    const lf = document.getElementById('login-form'), rf = document.getElementById('register-form');
+    lf.style.display === 'none' ? (lf.style.display='', rf.style.display='none') : (lf.style.display='none', rf.style.display='');
   }
 
   function setRole(el) {
@@ -769,15 +1088,56 @@
     el.classList.add('active');
   }
 
+  function setPill(el) {
+    el.closest('.reports-filter-row').querySelectorAll('.pill-filter').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+  }
+
   function showSubmitToast() {
     const t = document.getElementById('toast');
-    t.style.opacity = '1';
-    t.style.transform = 'translateX(-50%) translateY(0)';
+    t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
     setTimeout(() => {
-      t.style.opacity = '0';
-      t.style.transform = 'translateX(-50%) translateY(20px)';
+      t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(20px)';
       setTimeout(() => show('home', 0), 400);
     }, 2000);
+  }
+
+  function openEditModal(loc, dmgType, rating, desc) {
+    document.getElementById('modal-location').textContent = 'GPS active — ' + loc;
+    document.getElementById('modal-desc').value = desc;
+    const sel = document.getElementById('modal-dmg-type');
+    for (let o of sel.options) { if (o.value === dmgType || o.text === dmgType) { sel.value = o.value; break; } }
+    const grid = document.getElementById('modal-rating-grid');
+    grid.querySelectorAll('.rating-card').forEach(c => {
+      c.classList.remove('active');
+      if (c.classList.contains(rating)) c.classList.add('active');
+    });
+    document.getElementById('edit-modal').classList.add('open');
+  }
+
+  function closeEditModal() { document.getElementById('edit-modal').classList.remove('open'); }
+
+  function saveEdit() {
+    closeEditModal();
+    const t = document.getElementById('toast');
+    t.textContent = '✅ Report updated successfully';
+    t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
+    setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(20px)'; t.textContent = '✅ Report submitted! +10 pts earned'; }, 2000);
+  }
+
+  function openDeleteModal(loc) {
+    document.getElementById('delete-location-name').textContent = loc;
+    document.getElementById('delete-modal').classList.add('open');
+  }
+
+  function closeDeleteModal() { document.getElementById('delete-modal').classList.remove('open'); }
+
+  function confirmDelete() {
+    closeDeleteModal();
+    const t = document.getElementById('toast');
+    t.textContent = '🗑️ Report deleted';
+    t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
+    setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(20px)'; t.textContent = '✅ Report submitted! +10 pts earned'; }, 2000);
   }
 </script>
 </body>

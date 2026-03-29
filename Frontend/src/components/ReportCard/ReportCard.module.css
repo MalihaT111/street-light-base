@@ -1,0 +1,82 @@
+.reportCard{
+    border: 1px solid #E2E0DA;
+    width: 100%;
+    max-width: 350px;
+}
+/* For the report thumb section */
+.reportCardThumb{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background-color: #f5f5f5;
+    aspect-ratio: 16 / 9;
+}
+.ratingPill{
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 3px 9px;
+    border-radius: 99px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background-color: white;
+    border: 1px solid #F5F4F0;
+}
+/* For content section */
+.reportCardContent {
+    padding: 14px 16px;
+    background-color: white;
+}
+.reportCardAddress {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.reportCardDate {
+    font-size: 11px;
+    color: #8A8880;
+    margin-bottom: 10px;
+}
+/* For footer section */
+.reportCardFooter{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;  
+}
+.btnWrapper{
+    display: flex;
+    gap: 6px;
+}   
+
+.dmgTag {
+    font-size: 11px;
+    color: #8A8880;
+    background: white;
+    border: 1px solid #E2E0DA;
+    padding: 3px 8px;
+    border-radius: 5px;
+}
+/* For buttons */
+.btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 7px;
+    font-weight: 500;
+    color: #8A8880;
+    cursor: pointer;
+    border: 1px solid #E2E0DA;
+    background: white;
+}
+.btn:hover{
+    color:white;
+}
+.delete{
+    color: #E85D2F;
+    border: 1px solid #f5c3b3;
+}
