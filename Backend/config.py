@@ -3,6 +3,11 @@ import os
 
 class Config:
     JWT_SECRET_KEY = os.getenv("SECRET_KEY")
+    DATABASE_URL = (
+        os.getenv("NEON_DATABASE_URL")
+        or os.getenv("DATABASE_URL")
+        or os.getenv("POSTGRES_URL")
+    )
     WTF_CSRF_ENABLED = False
     CORS_RESOURCES = {
         r"/*": {

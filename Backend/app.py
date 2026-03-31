@@ -10,6 +10,7 @@ from flask_jwt_extended import JWTManager
 
 from config import Config
 from routes.auth import auth_bp
+from routes.analytics import analytics_bp
 from routes.leaderboard import leaderboard_bp
 from routes.reports import reports_bp
 
@@ -21,6 +22,7 @@ def create_app():
     CORS(app, resources=app.config["CORS_RESOURCES"])
     JWTManager(app)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(analytics_bp)
     app.register_blueprint(leaderboard_bp)
     app.register_blueprint(reports_bp)
 
