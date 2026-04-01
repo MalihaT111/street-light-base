@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import styles from './ReportCard.module.css';
 import { FaCamera, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import ImageLightbox from '../ImageLightbox/ImageLightbox';
 
 function ReportCard({ report, onEdit, onDelete }) {
   const [imgIndex, setImgIndex] = useState(0);
   const [imgError, setImgError] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(null);
 
   // Build the photos array — prefer photo_urls if available, fall back to photo_url
   const photos = report.photo_urls && report.photo_urls.length > 0
@@ -42,6 +44,7 @@ function ReportCard({ report, onEdit, onDelete }) {
             alt="Report photo"
             className={styles.thumbImg}
             onError={() => setImgError(true)}
+            onClick={() => setLightboxIndex(imgIndex)}
           />
         ) : (
           <span className={styles.thumbIcon}>
@@ -62,6 +65,16 @@ function ReportCard({ report, onEdit, onDelete }) {
           </>
         )}
       </div>
+
+      {lightboxIndex !== null && photos.length > 0 && (
+        <ImageLightbox
+          photos={photos}
+          index={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+          onPrev={() => setLightboxIndex(i => (i - 1 + photos.length) % photos.length)}
+          onNext={() => setLightboxIndex(i => (i + 1) % photos.length)}
+        />
+      )}
 
       {/* Content section */}
       <div className={styles.reportCardContent}>

@@ -157,6 +157,7 @@
   border-radius: 8px;
   border: 1px solid #E5E7EB;
   display: block;
+  cursor: zoom-in;
 }
 
 .removeBtn {
@@ -182,6 +183,28 @@
 
 .removeBtn:hover {
   background: rgba(0, 0, 0, 0.8);
+}
+
+/* ---- Loading state ---- */
+.spinner {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border: 3px solid #E5E7EB;
+  border-top-color: #2563EB;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loadingText {
+  font-size: 0.85rem;
+  color: #6B7280;
+  font-weight: 500;
 }
 
 .primaryBadge {

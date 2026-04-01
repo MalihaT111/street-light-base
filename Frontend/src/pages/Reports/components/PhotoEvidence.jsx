@@ -1,6 +1,7 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { FaCamera, FaPlus, FaTimes } from 'react-icons/fa';
 import styles from './css/PhotoEvidence.module.css';
+import ImageLightbox from '../../../components/ImageLightbox/ImageLightbox';
 
 const MAX_PHOTOS = 3;
 
@@ -14,10 +15,24 @@ const PhotoEvidence = ({ photos, onAdd, onRemove, onMetadata }) => {
   const fileInput2 = useRef(null);
   const fileInputRefs = [fileInput0, fileInput1, fileInput2];
 
+  const [lightboxIndex, setLightboxIndex] = useState(null);
+  const [loadingSlots, setLoadingSlots] = useState(new Set());
+  const previewUrls = photos.map(p => p.preview);
+  const closeLightbox = () => setLightboxIndex(null);
+
+  const setSlotLoading = (index, isLoading) =>
+    setLoadingSlots(prev => {
+      const next = new Set(prev);
+      isLoading ? next.add(index) : next.delete(index);
+      return next;
+    });
+
   const handleChange = async (e, index) => {
     const file = e.target.files[0];
     if (!file) return;
     e.target.value = '';
+
+    setSlotLoading(index, true);
 
     let processedFile = file;
     if (file.type === 'image/heic' || file.type === 'image/heif' || file.name.toLowerCase().endsWith('.heic')) {
@@ -33,6 +48,7 @@ const PhotoEvidence = ({ photos, onAdd, onRemove, onMetadata }) => {
     const reader = new FileReader();
     reader.onload = (readerEvent) => {
       onAdd(index, processedFile, readerEvent.target.result);
+      setSlotLoading(index, false);
       if (index === 0) parseExif(file);
     };
     reader.readAsDataURL(processedFile);
@@ -105,9 +121,19 @@ const PhotoEvidence = ({ photos, onAdd, onRemove, onMetadata }) => {
           const isFirst = index === 0;
           return (
             <div key={index} className={isFirst ? styles.primarySlot : styles.additionalSlot}>
-              {photo ? (
+              {loadingSlots.has(index) ? (
+                <div className={isFirst ? styles.dropZone : styles.addSlot}>
+                  <span className={styles.spinner} />
+                  <span className={styles.loadingText}>Processing…</span>
+                </div>
+              ) : photo ? (
                 <div className={styles.previewWrapper}>
-                  <img src={photo.preview} alt={`Photo ${index + 1}`} className={styles.preview} />
+                  <img
+                    src={photo.preview}
+                    alt={`Photo ${index + 1}`}
+                    className={styles.preview}
+                    onClick={() => setLightboxIndex(index)}
+                  />
                   <button
                     type="button"
                     className={styles.removeBtn}
@@ -141,6 +167,16 @@ const PhotoEvidence = ({ photos, onAdd, onRemove, onMetadata }) => {
           );
         })}
       </div>
+
+      {lightboxIndex !== null && (
+        <ImageLightbox
+          photos={previewUrls}
+          index={lightboxIndex}
+          onClose={closeLightbox}
+          onPrev={() => setLightboxIndex(i => (i - 1 + previewUrls.length) % previewUrls.length)}
+          onNext={() => setLightboxIndex(i => (i + 1) % previewUrls.length)}
+        />
+      )}
     </div>
   );
 };
