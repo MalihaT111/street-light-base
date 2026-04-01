@@ -39,7 +39,11 @@ def _run_report_list_query(base_filters):
         total = cur.fetchone()[0]
 
         data_query = f"""
-            SELECT id, user_id, latitude, longitude, borough, rating, photo_url, damage_types, created_at
+            SELECT id, user_id, latitude, longitude, borough, rating, damage_types, created_at,
+                   COALESCE((
+                       SELECT array_agg(ri.image_url ORDER BY ri.id)
+                       FROM report_images ri WHERE ri.report_id = reports.id
+                   ), ARRAY[]::varchar[]) AS photo_urls
             FROM reports
             {where_sql}
             ORDER BY {order_by} {sort_order}, id DESC
@@ -175,9 +179,19 @@ def edit_report(report_id):
             UPDATE reports
             SET {', '.join(set_clauses)}
             WHERE id = %s
-            RETURNING id, user_id, latitude, longitude, borough, rating, photo_url, damage_types, created_at
             """,
             params,
+        )
+        cur.execute(
+            """
+            SELECT id, user_id, latitude, longitude, borough, rating, damage_types, created_at,
+                   COALESCE((
+                       SELECT array_agg(ri.image_url ORDER BY ri.id)
+                       FROM report_images ri WHERE ri.report_id = reports.id
+                   ), ARRAY[]::varchar[]) AS photo_urls
+            FROM reports WHERE id = %s
+            """,
+            (report_id,),
         )
         updated = serialize_report_row(cur.fetchone())
         conn.commit()
@@ -243,7 +257,6 @@ def submit_report():
         else:
             user_id = identity
 
-        photo = request.files.get("photo")
         latitude = request.form.get("latitude")
         longitude = request.form.get("longitude")
         borough = request.form.get("borough")
@@ -252,22 +265,41 @@ def submit_report():
             json.loads(request.form.get("damage_types", "[]"))
         )
 
-        photo_url = None
-        if photo:
-            photo_url = upload_image(photo)
-            print(f"Cloudinary URL: {photo_url}")
+        # Upload up to 3 photos (photo, photo_2, photo_3)
+        photo_files = [
+            request.files.get("photo"),
+            request.files.get("photo_2"),
+            request.files.get("photo_3"),
+        ]
+        uploaded_urls = []
+        for f in photo_files:
+            if f:
+                url = upload_image(f)
+                print(f"Cloudinary URL: {url}")
+                uploaded_urls.append(url)
 
         conn = db_connection()
         cur = conn.cursor()
         cur.execute(
             """
-            INSERT INTO reports (user_id, latitude, longitude, borough, rating, photo_url, damage_types)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO reports (user_id, latitude, longitude, borough, rating, damage_types)
+            VALUES (%s, %s, %s, %s, %s, %s)
             RETURNING id
             """,
-            (user_id, latitude, longitude, borough, rating, photo_url, damage_types),
+            (user_id, latitude, longitude, borough, rating, damage_types),
         )
         report_id = cur.fetchone()[0]
+
+        # Populate report_images for all uploaded photos
+        for url in uploaded_urls:
+            cur.execute(
+                """
+                INSERT INTO report_images (report_id, image_url)
+                VALUES (%s, %s)
+                """,
+                (report_id, url),
+            )
+
         conn.commit()
 
         return (
@@ -276,7 +308,6 @@ def submit_report():
                     "success": True,
                     "message": "Report submitted",
                     "report_id": report_id,
-                    "photo_url": photo_url,
                 }
             ),
             201,

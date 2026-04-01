@@ -112,6 +112,10 @@ def build_report_filters(filters, table_alias=""):
 
 
 def serialize_report_row(row):
+    # Column order (photo_url removed from reports table):
+    # 0: id, 1: user_id, 2: latitude, 3: longitude, 4: borough,
+    # 5: rating, 6: damage_types, 7: created_at, 8: photo_urls (subquery)
+    photo_urls = list(row[8]) if len(row) > 8 and row[8] else []
     return {
         "id": row[0],
         "user_id": row[1],
@@ -119,7 +123,8 @@ def serialize_report_row(row):
         "longitude": row[3],
         "borough": row[4],
         "rating": row[5],
-        "photo_url": row[6],
-        "damage_types": row[7] or [],
-        "created_at": row[8].isoformat() if row[8] else None,
+        "photo_url": photo_urls[0] if photo_urls else None,
+        "photo_urls": photo_urls,
+        "damage_types": row[6] or [],
+        "created_at": row[7].isoformat() if row[7] else None,
     }

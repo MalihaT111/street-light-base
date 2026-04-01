@@ -13,13 +13,12 @@ const Reports = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Form state
-  const [photo, setPhoto] = useState(null);
-  const [photoPreview, setPhotoPreview] = useState(null);
+  // Form state — photos is an array of { file, preview }, max 3
+  const [photos, setPhotos] = useState([]);
   const [rating, setRating] = useState(null);
   const [damageTypes, setDamageTypes] = useState([]);
 
-  // Location — EXIF GPS only. No browser geolocation fallback.
+  // Location — EXIF GPS only from the primary (first) photo.
   // locationSource: null (pending) | 'exif' (success) | 'error' (no GPS in photo)
   const [location, setLocation] = useState(null);
   const [photoTimestamp, setPhotoTimestamp] = useState(null);
@@ -44,22 +43,41 @@ const Reports = () => {
     }
   }, [navigate]);
 
-  const handlePhotoChange = (file, previewUrl) => {
-    setPhoto(file);
-    setPhotoPreview(previewUrl);
+  // Called by PhotoEvidence when a slot is filled
+  const handlePhotoAdd = (index, file, preview) => {
+    setPhotos(prev => {
+      const next = [...prev];
+      next[index] = { file, preview };
+      return next;
+    });
   };
 
-  // Called by PhotoEvidence once EXIF parsing completes (with or without coords).
-  // If GPS coords are absent, we immediately set locationSource to 'error' — there
-  // is no browser fallback. The UI will show the Location Help modal trigger.
-  // If DateTimeOriginal is absent, we fall back to system time and flag it.
+  // Called by PhotoEvidence when a slot is removed.
+  // Removing the primary photo also clears location/timestamp state.
+  const handlePhotoRemove = (index) => {
+    setPhotos(prev => {
+      const next = [...prev];
+      next.splice(index, 1);
+      return next;
+    });
+    if (index === 0) {
+      setLocation(null);
+      setLocationSource(null);
+      setLocationError(null);
+      setPhotoTimestamp(null);
+      setTimestampIsFallback(false);
+    }
+  };
+
+  // Called by PhotoEvidence once EXIF parsing completes on the primary photo.
+  // If GPS coords are absent, we immediately set locationSource to 'error' —
+  // there is no browser fallback.
   const handlePhotoMetadata = ({ lat, lng, timestamp, exifParsed: parsed }) => {
     if (lat != null && lng != null) {
       setLocation({ lat, lng });
       setLocationSource('exif');
       setLocationError(null);
     } else if (parsed) {
-      // EXIF parsing finished with no GPS data — no fallback available
       setLocationSource('error');
       setLocationError('No GPS data found in this photo. See below for how to fix this.');
     }
@@ -68,20 +86,9 @@ const Reports = () => {
       setPhotoTimestamp(timestamp instanceof Date ? timestamp : new Date(timestamp));
       setTimestampIsFallback(false);
     } else if (parsed) {
-      // No DateTimeOriginal tag — default to system time as a fallback
       setPhotoTimestamp(new Date());
       setTimestampIsFallback(true);
     }
-  };
-
-  const handleRetakePhoto = () => {
-    setPhoto(null);
-    setPhotoPreview(null);
-    setPhotoTimestamp(null);
-    setLocation(null);
-    setLocationSource(null);
-    setLocationError(null);
-    setTimestampIsFallback(false);
   };
 
   // Resolves the NYC borough for the given coordinates via the OSM Nominatim
@@ -120,7 +127,7 @@ const Reports = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!photo || !rating || damageTypes.length === 0) return;
+    if (photos.length === 0 || !rating || damageTypes.length === 0) return;
 
     // Hard enforcement: only EXIF GPS is accepted. Browser location is not a
     // valid source because the NYC DOT requires original photo metadata for
@@ -138,16 +145,14 @@ const Reports = () => {
 
     try {
       const token = localStorage.getItem('token');
-
-      // Resolve borough before building FormData so geocoding latency
-      // doesn't leave the user staring at a frozen submit button.
       const borough = await getBoroughFromCoords(location.lat, location.lng);
 
       const formData = new FormData();
-      formData.append('photo', photo);
+      formData.append('photo', photos[0].file);
+      if (photos[1]) formData.append('photo_2', photos[1].file);
+      if (photos[2]) formData.append('photo_3', photos[2].file);
       formData.append('rating', rating);
       formData.append('borough', borough);
-      // Send as JSON array string so the backend can parse TEXT[]
       formData.append('damage_types', JSON.stringify(damageTypes));
       formData.append('latitude', location.lat);
       formData.append('longitude', location.lng);
@@ -156,7 +161,6 @@ const Reports = () => {
         formData.append('timestamp_is_fallback', timestampIsFallback ? 'true' : 'false');
       }
 
-      // Debugging: Log the FormData contents to verify what is being sent
       for (const [key, value] of formData.entries()) {
         console.log(`FormData ${key}:`, value);
       }
@@ -177,7 +181,6 @@ const Reports = () => {
       } else {
         const data = await response.json();
         console.error('Submission failed:', data);
-        // flask-jwt-extended uses 'msg' for errors; checking both ensures the user sees the real issue
         const errorMessage = data.error || data.msg || 'Submission failed. Please try again.';
         if (errorMessage === 'Subject must be a string' || errorMessage === 'Not enough segments') {
           setSubmitError('Invalid Session: Please Sign Out and Log In again.');
@@ -197,8 +200,7 @@ const Reports = () => {
   if (loading) return null;
 
   const username = user?.username || 'Citizen';
-  // Form is only valid when EXIF GPS coordinates have been confirmed
-  const isFormValid = !!(photo && rating && damageTypes.length > 0 && locationSource === 'exif');
+  const isFormValid = !!(photos.length > 0 && rating && damageTypes.length > 0 && locationSource === 'exif');
 
   const locationStatus = locationSource === 'exif'
     ? 'active'
@@ -229,9 +231,9 @@ const Reports = () => {
             <form onSubmit={handleSubmit} className={styles.reportLayout}>
               <div className={styles.formColumn}>
                 <PhotoEvidence
-                  photoPreview={photoPreview}
-                  onChange={handlePhotoChange}
-                  onRetake={handleRetakePhoto}
+                  photos={photos}
+                  onAdd={handlePhotoAdd}
+                  onRemove={handlePhotoRemove}
                   onMetadata={handlePhotoMetadata}
                 />
                 <DamageRating rating={rating} onChange={setRating} />
@@ -246,7 +248,7 @@ const Reports = () => {
                   submitError={submitError}
                   submitting={submitting}
                   isFormValid={isFormValid}
-                  photoUploaded={!!photo}
+                  photoUploaded={photos.length > 0}
                 />
               </div>
 

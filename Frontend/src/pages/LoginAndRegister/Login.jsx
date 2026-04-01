@@ -26,7 +26,7 @@ const Login = () => {
         else if (formInput.email.length > 100){
             errorMessage.email = "Input is too long";
         }
-        else if (!emailRegex.test(formInput.email)){
+        else if (formInput.email.includes('@') && !emailRegex.test(formInput.email)){
             errorMessage.email = "Please enter a valid email address"
         }
         // Validation for password

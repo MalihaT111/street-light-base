@@ -9,6 +9,8 @@ class Config:
         or os.getenv("POSTGRES_URL")
     )
     WTF_CSRF_ENABLED = False
+    JWT_SKIP_REVOCATION_CHECKS = False
+    JWT_EXEMPT_METHODS = {"OPTIONS"}
     CORS_RESOURCES = {
         r"/*": {
             "origins": ["http://localhost:5173"],

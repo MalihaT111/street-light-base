@@ -38,6 +38,9 @@ function formatReport(r) {
         rating: r.rating.charAt(0).toUpperCase() + r.rating.slice(1),
         borough: r.borough,
         photo_url: r.photo_url || null,
+        photo_urls: r.photo_urls && r.photo_urls.length > 0
+            ? r.photo_urls
+            : r.photo_url ? [r.photo_url] : [],
         created_at: r.created_at,
         _raw: r,
     };

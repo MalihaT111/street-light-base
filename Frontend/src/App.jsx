@@ -7,6 +7,7 @@ import Reports from "./pages/Reports/Reports.jsx";
 import ManageReports from "./pages/Reports/ManageReports.jsx";
 import Challenge from "./pages/Challenge/Challenge.jsx";
 import Dashboard from "./pages/DOT-dashboard/Dashboard.jsx";
+import Settings from "./pages/Settings/Settings.jsx";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/manage-reports" element ={<ManageReports/>}/>
         <Route path="/challenge" element={<Challenge/>} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/settings" element={<Settings />} />
       </Routes>
     </>
   )

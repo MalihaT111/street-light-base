@@ -1,9 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { FaHome, FaFileAlt, FaChartBar, FaUser, FaCog, FaSignOutAlt, FaMedal, FaAward } from 'react-icons/fa';
+import { FaHome, FaFileAlt, FaChartBar, FaCog, FaSignOutAlt, FaAward } from 'react-icons/fa';
 import styles from './Navbar.module.css';
 
 const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
   const navigate = useNavigate();
+
+  const storedUser = (() => { try { return JSON.parse(localStorage.getItem('user') || '{}'); } catch { return {}; } })();
+  const homeRoute = storedUser?.role === 'admin' ? '/dashboard' : '/home';
 
   const handleSignOut = () => {
     localStorage.removeItem('user');
@@ -13,14 +16,14 @@ const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
 
   return (
     <nav className={`${styles.navbar} ${minimal ? styles.minimalNavbar : ''}`}>
-      <div className={styles.logo}>
+      <Link to={minimal ? '/' : homeRoute} className={styles.logo}>
         <div className={styles.logoMark}>
           <svg viewBox="0 0 24 24">
             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
           </svg>
         </div>
         <span>Street Light Base</span>
-      </div>
+      </Link>
 
       {!minimal && (
         <>
@@ -51,11 +54,7 @@ const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
               <FaAward className={styles.navIcon} />
               <span>Challenge</span>
             </Link>
-            <Link to="/profile" className={`${styles.navLink} ${activeTab === 'profile' ? styles.active : ''}`}>
-              <FaUser className={styles.navIcon} />
-              <span>Profile</span>
-            </Link>
-            <Link to="/settings" className={`${styles.navLink} ${activeTab === 'settings' ? styles.active : ''}`}>
+<Link to="/settings" className={`${styles.navLink} ${activeTab === 'settings' ? styles.active : ''}`}>
               <FaCog className={styles.navIcon} />
               <span>Settings</span>
             </Link>
