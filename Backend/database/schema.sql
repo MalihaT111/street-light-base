@@ -22,9 +22,16 @@ CREATE TABLE reports (
     longitude    FLOAT NOT NULL,
     borough      VARCHAR(50),
     rating       VARCHAR(10) NOT NULL CHECK (rating IN ('good', 'fair', 'poor')),
-    photo_url    VARCHAR(500) NOT NULL,
     damage_types TEXT[],
     created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Images for reports (supports up to 3 photos per report)
+CREATE TABLE IF NOT EXISTS report_images (
+    id          SERIAL PRIMARY KEY,
+    report_id   INTEGER NOT NULL REFERENCES reports(id) ON DELETE CASCADE,
+    image_url   VARCHAR(500) NOT NULL,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Gamification: points_log
