@@ -29,7 +29,7 @@ def register():
         email = user_info.get("email")
         first_name = user_info.get("first_name", "")
         last_name = user_info.get("last_name", "")
-        role = "user"
+        role = user_info.get("role", "user")
         password = user_info.get("password")
 
         if not email:
@@ -233,6 +233,70 @@ def reset_password():
             connection.rollback()
         print("RESET ERROR:", e)
         return jsonify({"success": False, "error": str(e)}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+def _send_verification_email(recipient_email, token):
+    sender_email = os.getenv('MAIL')
+    sender_password = os.getenv('MAIL_PASSWORD')
+    link = f"http://localhost:5173/verify-email?token={token}"
+    msg = EmailMessage()
+    msg["Subject"] = "Email Verification Request"
+    msg["From"] = sender_email
+    msg["To"] = recipient_email
+    msg.set_content(f'Click the link to verify your email:\n{link}\n\nExpires in 10 minutes.')
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+        server.login(sender_email, sender_password)
+        server.send_message(msg)
+@auth_bp.route("/api/send-verification", methods=['POST'])
+@jwt_required()
+def send_verification():
+    connection = None
+    cursor = None
+    try:
+        user_id = get_jwt_identity()
+        token = create_access_token(
+            identity=str(user_id),
+            additional_claims={"type": "verify_email"},
+            expires_delta=timedelta(minutes=30)
+        )
+        connection = db_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT email FROM users WHERE id = %s", (user_id,))
+        row = cursor.fetchone()
+        if not row:
+            return jsonify({"success": False, "error": "User not found"}), 404
+        _send_verification_email(row[0], token)
+        return jsonify({"success": True, "message": "Verification email sent"}), 200
+    except Exception as e:
+        return jsonify({"success": False, "error": "Failed to send"}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+@auth_bp.route("/api/email-verification", methods=['POST'])
+@jwt_required()
+def email_verification():
+    connection = None
+    cursor = None
+    try:
+        jwt_claim = get_jwt()
+        user_id = get_jwt_identity()
+        if jwt_claim.get("type") != "verify_email":
+            return jsonify({"success": False, "error": "Invalid token"}), 400
+        connection = db_connection()
+        cursor = connection.cursor()
+        cursor.execute("UPDATE users SET email_verified = TRUE WHERE id = %s", (int(user_id),))
+        connection.commit()
+        return jsonify({"success": True, "message": "Email verified"}), 200
+    except Exception as e:
+        print(f"Verify email error: {e}")
+        if connection:
+            connection.rollback()
+        return jsonify({"success": False, "error": "Verification failed"}), 500
     finally:
         if cursor:
             cursor.close()
