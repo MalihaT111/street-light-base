@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from db import db_connection
+from routes.damage_type_utils import normalize_damage_type_value
 from routes.report_query_utils import build_report_filters, parse_list_query_params
 
 analytics_bp = Blueprint("analytics", __name__)
@@ -84,6 +85,24 @@ def _fetch_damage_type_counts(cur, filters):
         params,
     )
     return cur.fetchall()
+
+
+def _normalize_damage_type_counts(rows):
+    merged_counts = {}
+
+    for raw_damage_type, count in rows:
+        normalized_damage_type = normalize_damage_type_value(raw_damage_type)
+        if not normalized_damage_type:
+            continue
+
+        merged_counts[normalized_damage_type] = (
+            merged_counts.get(normalized_damage_type, 0) + count
+        )
+
+    return sorted(
+        merged_counts.items(),
+        key=lambda item: (-item[1], item[0]),
+    )
 
 
 def _fetch_heatmap_buckets(cur, filters, grid_size):
@@ -185,7 +204,9 @@ def get_reports_analytics():
         poor_reports_over_time_rows = _fetch_reports_over_time(
             cursor, filters, rating="poor"
         )
-        damage_type_rows = _fetch_damage_type_counts(cursor, filters)
+        damage_type_rows = _normalize_damage_type_counts(
+            _fetch_damage_type_counts(cursor, filters)
+        )
 
         return jsonify(
             {

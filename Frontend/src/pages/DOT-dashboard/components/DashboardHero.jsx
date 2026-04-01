@@ -4,7 +4,6 @@ export default function DashboardHero({ metrics }) {
   return (
     <section className={styles.hero}>
       <div className={styles.heroContent}>
-        <div className={styles.eyebrow}>Internal operations view</div>
         <h1 className={styles.heroTitle}>Streetlight base damage analytics</h1>
         <p className={styles.heroSubtitle}>
           Review borough-level reporting volume, unresolved cases, and damage

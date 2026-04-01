@@ -1,21 +1,21 @@
 import styles from "./Dashboard.module.css";
 
 export const heroMetrics = [
-  { value: "4,821", label: "Total reports" },
-  { value: "1,247", label: "Poor reports" },
+  { value: "0", label: "Total reports" },
+  { value: "0", label: "Poor reports" },
 ];
 
 export const statCards = [
   {
     label: "Total Reports",
-    value: "4,821",
-    subtext: "↑ 12% vs last month",
+    value: "0",
+    subtext: "Live report count",
     valueClass: "",
   },
   {
     label: "Poor Condition",
-    value: "1,247",
-    subtext: "25.9% of all reports",
+    value: "0",
+    subtext: "0% of all reports",
     valueClass: styles.orange,
   },
   {
@@ -23,12 +23,6 @@ export const statCards = [
     value: "Cracked base",
     subtext: "Most reported issue category",
     valueClass: styles.green,
-  },
-  {
-    label: "Unresolved Cases",
-    value: "1,204",
-    subtext: "Awaiting review or inspection",
-    valueClass: "",
   },
 ];
 
