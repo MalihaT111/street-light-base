@@ -4,6 +4,7 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from db import db_connection
+from routes.damage_type_utils import normalize_damage_types
 from routes.report_query_utils import (
     ALLOWED_SORT_FIELDS,
     build_report_filters,
@@ -128,7 +129,9 @@ def submit_report():
         longitude = request.form.get("longitude")
         borough = request.form.get("borough")
         rating = request.form.get("rating")
-        damage_types = json.loads(request.form.get("damage_types", "[]"))
+        damage_types = normalize_damage_types(
+            json.loads(request.form.get("damage_types", "[]"))
+        )
 
         photo_url = None
         if photo:

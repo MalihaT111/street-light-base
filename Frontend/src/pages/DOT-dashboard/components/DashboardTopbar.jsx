@@ -12,11 +12,9 @@ export default function DashboardTopbar() {
           </div>
 
           <div>
-            <div className={styles.brandTitle}>Street Systems</div>
-            <div className={styles.brandSubtitle}>DOT Analytics Dashboard</div>
+            <div className={styles.brandTitle}>Street Light Base</div>
           </div>
         </div>
-
         <nav className={styles.nav}>
           <div className={`${styles.navItem} ${styles.active}`}>Analytics</div>
         </nav>

@@ -61,12 +61,14 @@ const Home = () => {
       <main className={styles.mainContent}>
         {/* Welcome Banner */}
         <div className={styles.welcomeBanner}>
+          <div className={styles.welcomeContent}> 
           <h1 className={styles.welcomeTitle}>
             Welcome back, {username} 👋
           </h1>
           <p className={styles.welcomeSubtitle}>
             Keep up the great work making NYC streets safer!
           </p>
+          </div>
         </div>
 
         {/* Overview Stats Cards */}
