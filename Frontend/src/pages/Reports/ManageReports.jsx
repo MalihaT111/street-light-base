@@ -5,8 +5,42 @@ import Navbar from '../../components/Navbar/Navbar';
 import ReportCard from '../../components/ReportCard/ReportCard';
 import styles from './ManageReports.module.css';
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5001";
+
 const CONDITION_OPTIONS = ["Poor", "Fair", "Good"];
 const BOROUGH_OPTIONS = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"];
+
+const DAMAGE_TYPE_LABELS = {
+    cracked_base: "Cracked base",
+    missing_cover: "Missing cover",
+    corrosion_rust: "Corrosion / Rust",
+    graffiti: "Graffiti",
+    physical_impact_damage: "Physical impact",
+    leaning_unstable: "Leaning / Unstable",
+};
+
+const DAMAGE_TYPES = Object.entries(DAMAGE_TYPE_LABELS).map(([key, label]) => ({ key, label }));
+
+function formatReport(r) {
+    const dt = new Date(r.created_at);
+    return {
+        id: r.id,
+        address: r.borough || "Unknown location",
+        date: dt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+        time: dt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
+        damageTags: r.damage_types && r.damage_types.length
+            ? r.damage_types.map(d => DAMAGE_TYPE_LABELS[d] || d)
+            : [],
+        damageType: r.damage_types && r.damage_types.length
+            ? r.damage_types.map(d => DAMAGE_TYPE_LABELS[d] || d).join(", ")
+            : "—",
+        rating: r.rating.charAt(0).toUpperCase() + r.rating.slice(1),
+        borough: r.borough,
+        photo_url: r.photo_url || null,
+        created_at: r.created_at,
+        _raw: r,
+    };
+}
 
 function MultiSelectDropdown({ label, options, selected, onChange }) {
     const [open, setOpen] = useState(false);
@@ -25,14 +59,12 @@ function MultiSelectDropdown({ label, options, selected, onChange }) {
     const toggleOption = (option) => {
         let newSelected;
         if (selected.length === 0) {
-            // All currently selected — deselect just this one
             newSelected = options.filter(o => o !== option);
         } else if (selected.includes(option)) {
             newSelected = selected.filter(o => o !== option);
         } else {
             newSelected = [...selected, option];
         }
-        // Normalize: if all explicitly selected, treat as "all" (empty)
         onChange(newSelected.length === options.length ? [] : newSelected);
     };
 
@@ -82,84 +114,118 @@ function ManageReports() {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [reports, setReports] = useState([]);
+    const [fetchError, setFetchError] = useState(null);
     const [selectedConditions, setSelectedConditions] = useState([]);
     const [selectedBoroughs, setSelectedBoroughs] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [sortOption, setSortOption] = useState("Newest");
 
-    const [reports, setReports] = useState([
-        {
-            id: 1,
-            address: "W 42nd St, Manhattan",
-            date: "Mar 22, 2026",
-            time: "2:14 PM",
-            damageType: "Impact damage",
-            rating: "Poor",
-            points: 20,
-            borough: "Manhattan",
-            description: "Base shows visible cracking on the south-facing side.",
-        },
-        {
-            id: 2,
-            address: "Flatbush Ave, Brooklyn",
-            date: "Mar 19, 2026",
-            time: "11:03 AM",
-            damageType: "Corrosion",
-            rating: "Fair",
-            points: 10,
-            borough: "Brooklyn",
-            description: "Rust staining along the base seam.",
-        },
-        {
-            id: 3,
-            address: "Jamaica Ave, Queens",
-            date: "Mar 17, 2026",
-            time: "9:45 AM",
-            damageType: "Minor wear",
-            rating: "Good",
-            points: 10,
-            borough: "Queens",
-            description: "Minor surface wear, but no major visible damage.",
-        },
-        {
-            id: 4,
-            address: "Grand Concourse, Bronx",
-            date: "Mar 14, 2026",
-            time: "4:22 PM",
-            damageType: "Cracked base",
-            rating: "Poor",
-            points: 20,
-            borough: "Bronx",
-            description: "Large fracture on the east face, cover appears loose.",
-        },
-    ]);
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [editingReport, setEditingReport] = useState(null);
+    const [editForm, setEditForm] = useState({ rating: "poor", damage_types: [] });
+    const [saving, setSaving] = useState(false);
+    const [saveError, setSaveError] = useState(null);
+
+    useEffect(() => {
+        const savedUser = localStorage.getItem("user");
+        if (!savedUser) {
+            navigate("/");
+            return;
+        }
+        try {
+            setUser(JSON.parse(savedUser));
+        } catch {
+            navigate("/");
+            return;
+        }
+        fetchReports();
+    }, [navigate]);
+
+    async function fetchReports() {
+        setFetchError(null);
+        try {
+            const token = localStorage.getItem("token");
+            const res = await fetch(`${API_BASE}/api/reports/mine`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Failed to load reports");
+            setReports(data.reports);
+        } catch (err) {
+            setFetchError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     const handleEdit = (report) => {
         setEditingReport(report);
-        setEditForm(report);
+        setEditForm({
+            rating: report._raw.rating,
+            damage_types: [...(report._raw.damage_types || [])],
+        });
+        setSaveError(null);
         setIsEditOpen(true);
     };
 
-    const handleDelete = (reportId) => {
-        setReports(prev => prev.filter(r => r.id !== reportId));
+    const handleDelete = async (reportId) => {
+        if (!window.confirm("Delete this report? This cannot be undone.")) return;
+        try {
+            const token = localStorage.getItem("token");
+            const res = await fetch(`${API_BASE}/api/reports/${reportId}`, {
+                method: "DELETE",
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Delete failed");
+            setReports(prev => prev.filter(r => r.id !== reportId));
+        } catch (err) {
+            alert(err.message);
+        }
     };
 
     const handleCloseEdit = () => {
         setIsEditOpen(false);
         setEditingReport(null);
+        setSaveError(null);
     };
 
-    const handleEditChange = (e) => {
-        const { name, value } = e.target;
-        setEditForm(prev => ({ ...prev, [name]: value }));
+    const toggleDamageType = (key) => {
+        setEditForm(prev => ({
+            ...prev,
+            damage_types: prev.damage_types.includes(key)
+                ? prev.damage_types.filter(d => d !== key)
+                : [...prev.damage_types, key],
+        }));
     };
 
-    const handleSaveEdit = () => {
-        setReports(prev =>
-            prev.map(r => r.id === editingReport.id ? { ...r, ...editForm } : r)
-        );
-        setIsEditOpen(false);
-        setEditingReport(null);
+    const handleSaveEdit = async () => {
+        setSaving(true);
+        setSaveError(null);
+        try {
+            const token = localStorage.getItem("token");
+            const res = await fetch(`${API_BASE}/api/reports/${editingReport.id}`, {
+                method: "PUT",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    rating: editForm.rating,
+                    damage_types: editForm.damage_types,
+                }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Save failed");
+            setReports(prev => prev.map(r => r.id === editingReport.id ? data.report : r));
+            setIsEditOpen(false);
+            setEditingReport(null);
+        } catch (err) {
+            setSaveError(err.message);
+        } finally {
+            setSaving(false);
+        }
     };
 
     const hasActiveFilters =
@@ -173,60 +239,36 @@ function ManageReports() {
         setSearchQuery('');
     };
 
-    const filteredReports = reports
+    const displayReports = reports.map(formatReport);
+
+    const filteredReports = displayReports
         .filter(report => {
             const conditionMatch = selectedConditions.length === 0 || selectedConditions.includes(report.rating);
             const boroughMatch = selectedBoroughs.length === 0 || selectedBoroughs.includes(report.borough);
-            const searchMatch = searchQuery.trim() === '' ||
-                report.address.toLowerCase().includes(searchQuery.toLowerCase());
+            const q = searchQuery.trim().toLowerCase();
+            const searchMatch = q === '' ||
+                (report.address || '').toLowerCase().includes(q) ||
+                (report.date || '').toLowerCase().includes(q) ||
+                (report.damageType || '').toLowerCase().includes(q);
             return conditionMatch && boroughMatch && searchMatch;
         })
         .sort((a, b) => {
-            if (sortOption === "Newest") return new Date(b.date) - new Date(a.date);
-            if (sortOption === "Oldest") return new Date(a.date) - new Date(b.date);
+            if (sortOption === "Newest") return new Date(b.created_at) - new Date(a.created_at);
+            if (sortOption === "Oldest") return new Date(a.created_at) - new Date(b.created_at);
             if (sortOption === "Rating: Poor to Good") {
-                const order = { Poor: 0, Fair: 1, Good: 2 };
-                return order[a.rating] - order[b.rating];
+                const order = { poor: 0, fair: 1, good: 2 };
+                return order[a._raw.rating] - order[b._raw.rating];
             }
             if (sortOption === "Rating: Good to Poor") {
-                const order = { Good: 2, Fair: 1 ,Poor: 0 };
-                return order[b.rating] - order[a.rating];
+                const order = { poor: 0, fair: 1, good: 2 };
+                return order[b._raw.rating] - order[a._raw.rating];
             }
             return 0;
         });
 
-    useEffect(() => {
-        const savedUser = localStorage.getItem("user");
-        if (!savedUser) {
-            navigate("/");
-            return;
-        }
-        try {
-            setUser(JSON.parse(savedUser));
-        } catch (error) {
-            console.error("Error parsing user data:", error);
-            navigate("/");
-        } finally {
-            setLoading(false);
-        }
-    }, [navigate]);
+    if (loading) return null;
 
     const username = user?.username || "Citizen";
-
-    const [isEditOpen, setIsEditOpen] = useState(false);
-    const [editingReport, setEditingReport] = useState(null);
-    const [editForm, setEditForm] = useState({
-        address: "",
-        date: "",
-        time: "",
-        damageType: "",
-        rating: "",
-        points: 0,
-        borough: "",
-        description: "",
-    });
-
-    if (loading) return null;
 
     return (
         <>
@@ -236,6 +278,8 @@ function ManageReports() {
                     <h1 className={styles["manage-report-title"]}>My reports</h1>
                     <p className={styles["manage-report-subtitle"]}>Review, edit, and manage all submitted reports</p>
                 </div>
+
+                {fetchError && <p className={styles.errorState}>{fetchError}</p>}
 
                 <div className={styles.filterBar}>
                     <div className={styles.filterGroup}>
@@ -295,7 +339,9 @@ function ManageReports() {
                             />
                         ))
                     ) : (
-                        <p className={styles.emptyState}>No reports match the current filters.</p>
+                        <p className={styles.emptyState}>
+                            {reports.length === 0 ? "You haven't submitted any reports yet." : "No reports match the current filters."}
+                        </p>
                     )}
                 </div>
             </div>
@@ -307,47 +353,44 @@ function ManageReports() {
                             <h2>Edit Report</h2>
                         </div>
                         <div className={styles.modalBody}>
-                            <label className={styles.modalLabel}>Address</label>
-                            <input
-                                type="text"
-                                name="address"
-                                value={editForm.address}
-                                onChange={handleEditChange}
-                                className={styles.modalInput}
-                            />
-                            <label className={styles.modalLabel}>Damage Type</label>
-                            <input
-                                type="text"
-                                name="damageType"
-                                value={editForm.damageType}
-                                onChange={handleEditChange}
-                                className={styles.modalInput}
-                            />
                             <label className={styles.modalLabel}>Rating</label>
                             <select
-                                name="rating"
                                 value={editForm.rating}
-                                onChange={handleEditChange}
+                                onChange={e => setEditForm(prev => ({ ...prev, rating: e.target.value }))}
                                 className={styles.modalInput}
                             >
-                                <option value="Poor">Poor</option>
-                                <option value="Fair">Fair</option>
-                                <option value="Good">Good</option>
+                                <option value="poor">Poor</option>
+                                <option value="fair">Fair</option>
+                                <option value="good">Good</option>
                             </select>
-                            <label className={styles.modalLabel}>Description</label>
-                            <textarea
-                                name="description"
-                                value={editForm.description}
-                                onChange={handleEditChange}
-                                className={styles.modalTextarea}
-                            />
+
+                            <label className={styles.modalLabel}>Damage Types</label>
+                            <div className={styles.damageTypesGrid}>
+                                {DAMAGE_TYPES.map(({ key, label }) => (
+                                    <label key={key} className={styles.checkboxLabel}>
+                                        <input
+                                            type="checkbox"
+                                            checked={editForm.damage_types.includes(key)}
+                                            onChange={() => toggleDamageType(key)}
+                                        />
+                                        <span>{label}</span>
+                                    </label>
+                                ))}
+                            </div>
+
+                            {saveError && <p className={styles.saveError}>{saveError}</p>}
                         </div>
                         <div className={styles.modalFooter}>
                             <button type="button" className={styles.cancelBtn} onClick={handleCloseEdit}>
                                 Cancel
                             </button>
-                            <button type="button" className={styles.saveBtn} onClick={handleSaveEdit}>
-                                Save Changes
+                            <button
+                                type="button"
+                                className={styles.saveBtn}
+                                onClick={handleSaveEdit}
+                                disabled={saving}
+                            >
+                                {saving ? "Saving..." : "Save Changes"}
                             </button>
                         </div>
                     </div>

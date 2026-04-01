@@ -320,3 +320,44 @@
     border: 1px solid #2563EB;
     color: white;
 }
+.saveBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Damage types checkboxes in edit modal */
+.damageTypesGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #374151;
+    cursor: pointer;
+    user-select: none;
+}
+.checkboxLabel input[type="checkbox"] {
+    accent-color: #2563EB;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+/* Error states */
+.saveError {
+    font-size: 13px;
+    color: #DC2626;
+    margin: 0;
+}
+
+.errorState {
+    font-size: 14px;
+    color: #DC2626;
+    padding: 12px 0;
+}
