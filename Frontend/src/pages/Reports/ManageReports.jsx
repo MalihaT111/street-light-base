@@ -236,7 +236,6 @@ function ManageReports() {
                     <h1 className={styles["manage-report-title"]}>My reports</h1>
                     <p className={styles["manage-report-subtitle"]}>Review, edit, and manage all submitted reports</p>
                 </div>
-
                 <div className={styles.filterBar}>
                     <div className={styles.filterGroup}>
                         <MultiSelectDropdown
