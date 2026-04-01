@@ -6,6 +6,7 @@ import ReportCard from '../../components/ReportCard/ReportCard';
 import styles from './ManageReports.module.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5001";
+const ITEMS_PER_PAGE = 12;
 
 const CONDITION_OPTIONS = ["Poor", "Fair", "Good"];
 const BOROUGH_OPTIONS = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"];
@@ -121,6 +122,8 @@ function ManageReports() {
     const [searchQuery, setSearchQuery] = useState('');
     const [sortOption, setSortOption] = useState("Newest");
 
+    const [currentPage, setCurrentPage] = useState(1);
+
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [editingReport, setEditingReport] = useState(null);
     const [editForm, setEditForm] = useState({ rating: "poor", damage_types: [] });
@@ -150,11 +153,11 @@ function ManageReports() {
                 navigate("/");
                 return;
             }
-            const res = await fetch(`${API_BASE}/api/reports/mine`, {
+            const res = await fetch(`${API_BASE}/api/reports/mine?limit=200`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error || "Failed to load reports");
+            if (!res.ok) throw new Error(data.error || data.msg || "Failed to load reports");
             setReports(data.reports);
         } catch (err) {
             setFetchError(err.message);
@@ -182,7 +185,7 @@ function ManageReports() {
                 headers: { Authorization: `Bearer ${token}` },
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error || "Delete failed");
+            if (!res.ok) throw new Error(data.error || data.msg || "Delete failed");
             setReports(prev => prev.filter(r => r.id !== reportId));
         } catch (err) {
             alert(err.message);
@@ -221,7 +224,7 @@ function ManageReports() {
                 }),
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error || "Save failed");
+            if (!res.ok) throw new Error(data.error || data.msg || "Save failed");
             setReports(prev => prev.map(r => r.id === editingReport.id ? data.report : r));
             setIsEditOpen(false);
             setEditingReport(null);
@@ -241,7 +244,12 @@ function ManageReports() {
         setSelectedConditions([]);
         setSelectedBoroughs([]);
         setSearchQuery('');
+        setCurrentPage(1);
     };
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [selectedConditions, selectedBoroughs, searchQuery, sortOption]);
 
     const displayReports = reports.map(formatReport);
 
@@ -269,6 +277,12 @@ function ManageReports() {
             }
             return 0;
         });
+
+    const totalPages = Math.ceil(filteredReports.length / ITEMS_PER_PAGE);
+    const pagedReports = filteredReports.slice(
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
+    );
 
     if (loading) return null;
 
@@ -333,8 +347,8 @@ function ManageReports() {
                 </div>
 
                 <div className={styles.reportCardWrapper}>
-                    {filteredReports.length > 0 ? (
-                        filteredReports.map(report => (
+                    {pagedReports.length > 0 ? (
+                        pagedReports.map(report => (
                             <ReportCard
                                 key={report.id}
                                 report={report}
@@ -348,6 +362,26 @@ function ManageReports() {
                         </p>
                     )}
                 </div>
+
+                {totalPages > 1 && (
+                    <div className={styles.pagination}>
+                        <button
+                            className={styles.pageBtn}
+                            onClick={() => setCurrentPage(p => p - 1)}
+                            disabled={currentPage === 1}
+                        >
+                            Previous
+                        </button>
+                        <span className={styles.pageInfo}>{currentPage} of {totalPages}</span>
+                        <button
+                            className={styles.pageBtn}
+                            onClick={() => setCurrentPage(p => p + 1)}
+                            disabled={currentPage === totalPages}
+                        >
+                            Next
+                        </button>
+                    </div>
+                )}
             </div>
 
             {isEditOpen && (

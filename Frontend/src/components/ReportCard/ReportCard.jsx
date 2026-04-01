@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './ReportCard.module.css';
 import { FaCamera } from 'react-icons/fa';
 
 // { report, onEdit, onDelete }
 function ReportCard({ report, onEdit, onDelete }) {
   const [imgError, setImgError] = useState(false);
+
+  useEffect(() => {
+    setImgError(false);
+  }, [report.photo_url]);
 
   return (
     <div className={styles.reportCard}>
