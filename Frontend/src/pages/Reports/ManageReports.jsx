@@ -146,6 +146,10 @@ function ManageReports() {
         setFetchError(null);
         try {
             const token = localStorage.getItem("token");
+            if (!token) {
+                navigate("/");
+                return;
+            }
             const res = await fetch(`${API_BASE}/api/reports/mine`, {
                 headers: { Authorization: `Bearer ${token}` },
             });

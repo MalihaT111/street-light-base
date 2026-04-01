@@ -114,56 +114,20 @@ def get_poor_reports():
 @reports_bp.route("/api/reports/mine", methods=["GET"])
 @jwt_required()
 def get_my_reports():
-    conn = None
-    cur = None
     try:
         identity = get_jwt_identity()
         user_id = identity.get("user_id") if isinstance(identity, dict) else identity
 
         filters = parse_list_query_params()
-        conn = db_connection()
-        cur = conn.cursor()
+        filters["user_id"] = user_id
 
-        where_clauses, filter_params = build_report_filters(filters)
-        where_clauses.append("user_id = %s")
-        filter_params.append(user_id)
-        where_sql = f"WHERE {' AND '.join(where_clauses)}"
-        order_by = ALLOWED_SORT_FIELDS[filters["sort_by"]]
-        sort_order = filters["sort_order"].upper()
-
-        cur.execute(f"SELECT COUNT(*) FROM reports {where_sql}", filter_params)
-        total = cur.fetchone()[0]
-
-        data_query = f"""
-            SELECT id, user_id, latitude, longitude, borough, rating, photo_url, damage_types, created_at
-            FROM reports
-            {where_sql}
-            ORDER BY {order_by} {sort_order}, id DESC
-            LIMIT %s OFFSET %s
-        """
-        cur.execute(data_query, [*filter_params, filters["limit"], filters["offset"]])
-        reports = [serialize_report_row(row) for row in cur.fetchall()]
-
-        return jsonify({
-            "success": True,
-            "reports": reports,
-            "pagination": {
-                "limit": filters["limit"],
-                "offset": filters["offset"],
-                "count": len(reports),
-                "total": total,
-            },
-        }), 200
+        response, status_code = _run_report_list_query(filters)
+        return jsonify(response), status_code
     except ValueError as error:
         return jsonify({"success": False, "error": str(error)}), 400
     except Exception as error:
         print("ERROR:", error)
         return jsonify({"success": False, "error": str(error)}), 500
-    finally:
-        if cur:
-            cur.close()
-        if conn:
-            conn.close()
 
 
 @reports_bp.route("/api/reports/<int:report_id>", methods=["PUT"])
@@ -177,10 +141,23 @@ def edit_report(report_id):
 
         data = request.get_json()
         rating = data.get("rating")
-        damage_types = normalize_damage_types(data.get("damage_types", []))
 
         if rating and rating not in {"good", "fair", "poor"}:
             return jsonify({"success": False, "error": "Invalid rating"}), 400
+
+        set_clauses = []
+        params = []
+
+        if rating is not None:
+            set_clauses.append("rating = %s")
+            params.append(rating)
+
+        if "damage_types" in data:
+            set_clauses.append("damage_types = %s")
+            params.append(normalize_damage_types(data["damage_types"]))
+
+        if not set_clauses:
+            return jsonify({"success": False, "error": "No fields to update"}), 400
 
         conn = db_connection()
         cur = conn.cursor()
@@ -192,15 +169,15 @@ def edit_report(report_id):
         if str(row[0]) != str(user_id):
             return jsonify({"success": False, "error": "Forbidden"}), 403
 
+        params.append(report_id)
         cur.execute(
-            """
+            f"""
             UPDATE reports
-            SET rating = COALESCE(%s, rating),
-                damage_types = %s
+            SET {', '.join(set_clauses)}
             WHERE id = %s
             RETURNING id, user_id, latitude, longitude, borough, rating, photo_url, damage_types, created_at
             """,
-            (rating, damage_types, report_id),
+            params,
         )
         updated = serialize_report_row(cur.fetchone())
         conn.commit()
