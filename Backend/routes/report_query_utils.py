@@ -88,6 +88,10 @@ def build_report_filters(filters, table_alias=""):
     where_clauses = []
     parameters = []
 
+    if filters.get("user_id") is not None:
+        where_clauses.append(f"{column_prefix}user_id = %s")
+        parameters.append(filters["user_id"])
+
     if filters.get("borough"):
         where_clauses.append(f"{column_prefix}borough = %s")
         parameters.append(filters["borough"])

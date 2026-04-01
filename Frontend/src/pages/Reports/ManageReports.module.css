@@ -320,3 +320,79 @@
     border: 1px solid #2563EB;
     color: white;
 }
+.saveBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Damage types checkboxes in edit modal */
+.damageTypesGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #374151;
+    cursor: pointer;
+    user-select: none;
+}
+.checkboxLabel input[type="checkbox"] {
+    accent-color: #2563EB;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+/* Error states */
+.saveError {
+    font-size: 13px;
+    color: #DC2626;
+    margin: 0;
+}
+
+.errorState {
+    font-size: 14px;
+    color: #DC2626;
+    padding: 12px 0;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.pageBtn {
+    padding: 8px 16px;
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    background: white;
+    color: #374151;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+}
+.pageBtn:hover:not(:disabled) {
+    border-color: #9CA3AF;
+    color: #111827;
+}
+.pageBtn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.pageInfo {
+    font-size: 13px;
+    color: #6B7280;
+}
