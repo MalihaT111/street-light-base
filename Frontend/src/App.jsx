@@ -6,7 +6,7 @@ import Leaderboard from "./pages/Leaderboard/Leaderboard.jsx";
 import Reports from "./pages/Reports/Reports.jsx";
 import ManageReports from "./pages/Reports/ManageReports.jsx";
 import Challenge from "./pages/Challenge/Challenge.jsx";
-import Dashboard from "./pages/DOT-dashboard/dashboard.jsx";
+import Dashboard from "./pages/DOT-dashboard/Dashboard.jsx";
 
 function App() {
   return (

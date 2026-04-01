@@ -94,7 +94,7 @@ const Login = () => {
                     </div>
                 </div>
                 {/* Application title and subtitle for the authentication container */}
-                <h1 className ={styles["auth-logo-title"]}>Street Systems</h1>
+                <h1 className ={styles["auth-logo-title"]}>Street Light Base</h1>
                 <p className ={styles["auth-logo-subtitle"]}>NYC Streetlight Base Damage Reporting</p>
                 <form 
                     className={`${styles["form-box"]} ${styles.login}`} 

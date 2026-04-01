@@ -40,14 +40,13 @@ body{
     gap: 8px;
 }
 .auth-logo-mark{
-    width: 52px;
-    height: 53px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #3778e1;
-    border-radius: 13px;
+    width: 56px;
+    height: 56px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #1d4ed8 0%, #0f766e 100%);
+    border-radius: 16px;
+    box-shadow: 0 10px 22px rgba(29, 78, 216, 0.24);
     margin: 0 auto 14px;
 }
 .auth-logo-mark svg{
@@ -57,9 +56,9 @@ body{
 }
 /* For auth title and subtitle */
 .auth-logo-title{
-    font-size: 1.25rem;
+    font-size: 1.35rem;
     font-weight: 700;
-    color: #111827;
+    color: #0f172a;
 }
 .auth-logo-subtitle{
     font-size: 0.75rem;
