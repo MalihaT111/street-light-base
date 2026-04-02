@@ -2,6 +2,7 @@ import json
 
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from routes.challenges import check_and_award_challenges
 
 from db import db_connection
 from routes.damage_type_utils import normalize_damage_types
@@ -299,6 +300,8 @@ def submit_report():
                 """,
                 (report_id, url),
             )
+        awarded = check_and_award_challenges(cur, user_id)
+
 
         conn.commit()
 
@@ -308,6 +311,7 @@ def submit_report():
                     "success": True,
                     "message": "Report submitted",
                     "report_id": report_id,
+                    "challenges_awarded": awarded,
                 }
             ),
             201,

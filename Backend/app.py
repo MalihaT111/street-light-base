@@ -14,7 +14,7 @@ from routes.analytics import analytics_bp
 from routes.leaderboard import leaderboard_bp
 from routes.reports import reports_bp
 from routes.user import user_bp
-
+from routes.challenges import challenges_bp
 
 def create_app():
     app = Flask(__name__)
@@ -27,6 +27,7 @@ def create_app():
     app.register_blueprint(leaderboard_bp)
     app.register_blueprint(reports_bp)
     app.register_blueprint(user_bp)
+    app.register_blueprint(challenges_bp)
 
     return app
 
