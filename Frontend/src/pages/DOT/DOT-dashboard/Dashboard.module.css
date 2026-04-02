@@ -10,107 +10,13 @@
     font-family: "Dm sans", sans-serif;
   }
   
-  /* Sticky top bar */
-  .topbar {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: rgba(255, 255, 255, 0.96);
-    border-bottom: 1px solid #e2e0da;
-  }
-  
   /* ONLY for page content */
 .container {
     max-width: 1380px;
     margin: 0 auto;
     padding-left: 24px;
     padding-right: 24px;
-  }
-  
-  /* Navbar should span FULL width */
-  .topbarInner {
-    width: 100%;
-    padding: 16px 24px; /* controls spacing from edge */
-    display: flex;
-    align-items: center;
-    gap: 24px;
-  }
-  
-  .topbarInner {
-    height: 76px;
-    display: flex;
-    align-items: center;
-    gap: 18px;
-  }
-  
-  /* Brand area */
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-width: 220px;
-  }
-  
-  .logoMark {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #3778e1;
-    border-radius: 8px;
-  }
-  
-  .logoMark svg {
-    width: 18px;
-    height: 18px;
-    fill: #fff;
-  }
-  
-  .brandTitle {
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-  }
-  
-  .brandSubtitle {
-    font-size: 12px;
-    color: #8a8880;
-    margin-top: 2px;
-  }
-  
-  /* Navigation */
-  .nav {
-    display: flex;
-    gap: 8px;
-  }
-  
-  .navItem {
-    padding: 10px 14px;
-    border-radius: 10px;
-    font-size: 13px;
-    color: #8a8880;
-  }
-  
-  .active {
-    background-color: #EEF3FD;
-    color: #2563EB;
-  }
-  
-  .topbarRight {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  /* Pills / tags */
-  .pill,
-  .tag {
     padding: 8px 12px;
-    border-radius: 999px;
-    border: 1px solid #e2e0da;
-    background: #ffffff;
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.05em;
