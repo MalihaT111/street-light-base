@@ -4,6 +4,10 @@ import { FaCamera, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import ImageLightbox from '../ImageLightbox/ImageLightbox';
 
 function ReportCard({ report, onEdit, onDelete }) {
+
+  // To make it usable in both AllReports and ManageReports, we check if onEdit or onDelete are provided.
+  const showActions = onEdit && onDelete;
+
   const [imgIndex, setImgIndex] = useState(0);
   const [imgError, setImgError] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(null);
@@ -88,10 +92,12 @@ function ReportCard({ report, onEdit, onDelete }) {
           </div>
         )}
         <div className={styles.reportCardFooter}>
-          <div className={styles.btnWrapper}>
-            <button className={styles.btn} onClick={() => onEdit(report)}>Edit</button>
-            <button className={`${styles.btn} ${styles.delete}`} onClick={() => onDelete(report.id)}>Delete</button>
-          </div>
+          {showActions && (
+            <div className={styles.btnWrapper}>
+              <button className={styles.btn} onClick={() => onEdit(report)}>Edit</button>
+              <button className={`${styles.btn} ${styles.delete}`} onClick={() => onDelete(report.id)}>Delete</button>
+            </div>
+          )}
         </div>
       </div>
     </div>
