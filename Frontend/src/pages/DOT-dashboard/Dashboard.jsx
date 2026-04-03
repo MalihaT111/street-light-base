@@ -1,4 +1,5 @@
 import DashboardTopbar from "./components/DashboardTopbar";
+import DOTnavbar from "../../components/DOTnavbar/DOTnavbar";
 import SummaryCards from "./components/SummaryCards";
 import ChartCard from "./components/ChartCard";
 import BarChart from "./components/BarChart";
@@ -47,7 +48,7 @@ export default function Dashboard() {
 
   return (
     <div className={styles.app}>
-      <DashboardTopbar />
+      <DOTnavbar activeTab="analytics" />
 
       <main className={styles.container}>
         <DashboardHero filters={filters} />
