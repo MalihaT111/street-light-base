@@ -5,6 +5,7 @@
   justify-content: space-between;
   padding: 0 24px;
   height: 64px;
+  width: 100%;
   background-color: #fff;
   border-bottom: 1px solid #E2E0DA;
   position: sticky;
@@ -177,7 +178,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  width: 100%;
+  width: 100vw;
   min-height: 100vh;
   background-color: rgba(0, 0, 0, 0.6);
   display: flex;
