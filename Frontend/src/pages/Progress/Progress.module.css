@@ -1,0 +1,243 @@
+.wrapper {
+    padding: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ── Page header ───────────────────────────────────────────── */
+.pageHeader {
+    margin-bottom: 2rem;
+}
+.pageTitle {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+.pageSubtitle {
+    font-size: 0.9rem;
+    color: #6B7280;
+}
+
+/* ── Section ───────────────────────────────────────────────── */
+.section {
+    margin-bottom: 2.5rem;
+}
+.sectionLabel {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #6B7280;
+    margin-bottom: 1rem;
+}
+
+/* ── Status / error ────────────────────────────────────────── */
+.statusMsg {
+    color: #6B7280;
+    font-size: 0.95rem;
+}
+.errorMsg {
+    color: #EF4444;
+    font-size: 0.95rem;
+}
+
+/* ── Tier banner ───────────────────────────────────────────── */
+.tierBanner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    border: 2px solid #E5E7EB;
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+.tierBannerLeft {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.tierBannerIcon {
+    font-size: 2.25rem;
+    flex-shrink: 0;
+}
+.tierBannerName {
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+.tierBannerPoints {
+    font-size: 0.9rem;
+    color: #6B7280;
+    margin-top: 2px;
+}
+.tierBannerRight {
+    flex: 1;
+    min-width: 200px;
+    max-width: 380px;
+}
+.tierProgressLabel {
+    font-size: 0.8rem;
+    color: #6B7280;
+    margin-bottom: 6px;
+}
+.tierProgressTrack {
+    height: 8px;
+    background: #E5E7EB;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+.tierProgressFill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.4s ease;
+}
+.tierProgressRemaining {
+    font-size: 0.78rem;
+    color: #9CA3AF;
+    text-align: right;
+}
+.tierMaxed {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #7C3AED;
+}
+
+/* ── Tier track ────────────────────────────────────────────── */
+.tierTrack {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+.tierStep {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 80px;
+    position: relative;
+}
+.tierStepIcon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid #E5E7EB;
+    background: #F9FAFB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    position: relative;
+    transition: all 0.2s;
+}
+.currentDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    border: 1.5px solid white;
+}
+.tierStepName {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-align: center;
+}
+.tierStepPts {
+    font-size: 0.7rem;
+    color: #9CA3AF;
+    text-align: center;
+}
+.tierConnector {
+    flex: 1;
+    height: 2px;
+    background: #E5E7EB;
+    margin-top: 23px;
+    min-width: 24px;
+}
+.tierConnectorFilled {
+    background: #10B981;
+}
+
+/* ── Badge grid ─────────────────────────────────────────────── */
+.badgeGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+}
+.badgeCard {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    border-radius: 12px;
+    padding: 18px;
+    border: 1px solid #E5E7EB;
+    background: #F9FAFB;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.badgeCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+}
+.badgeEarned {
+    border-color: #10B981;
+    background: #F0FDF4;
+}
+.badgeLocked {
+    opacity: 0.65;
+}
+.badgeIconWrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #E5E7EB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.badgeEarned .badgeIconWrap {
+    background: #D1FAE5;
+}
+.badgeIcon {
+    font-size: 1.15rem;
+    color: #10B981;
+}
+.badgeIconLocked {
+    font-size: 1rem;
+    color: #9CA3AF;
+}
+.badgeContent {
+    flex: 1;
+}
+.badgeName {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 3px;
+}
+.badgeDesc {
+    font-size: 0.82rem;
+    color: #6B7280;
+    margin-bottom: 6px;
+}
+.badgeDate {
+    font-size: 0.78rem;
+    color: #10B981;
+    font-weight: 500;
+}
+.badgeNotEarned {
+    font-size: 0.78rem;
+    color: #9CA3AF;
+}
+
+/* ── Challenge grid ─────────────────────────────────────────── */
+.challengeGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}

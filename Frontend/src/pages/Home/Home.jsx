@@ -170,7 +170,7 @@ const Home = () => {
         <div className={styles.challengesSection}>
           <div className={styles.sectionHeader}>
             <h2>Active Challenges</h2>
-            <Link to="/challenge" className={styles.viewAllLink}>
+            <Link to="/progress" className={styles.viewAllLink}>
               View All <FaArrowRight />
             </Link>
           </div>
