@@ -278,6 +278,119 @@ def run_read_tests(base_url):
     return results
 
 
+EXPECTED_CHALLENGE_KEYS = {
+    "daily_reporter", "active_reporter", "street_inspector",
+    "determined", "neighborhood_guardian", "streetlight_specialist",
+    "first_step", "connector", "network_leader",
+}
+
+VALID_CHALLENGE_TYPES = {"daily", "weekly", "special"}
+
+
+def validate_challenges_response(payload):
+    if payload.get("success") is not True:
+        return False, "response.success must be true"
+
+    challenges = payload.get("challenges")
+    if not isinstance(challenges, list):
+        return False, "response.challenges must be a list"
+
+    if len(challenges) != len(EXPECTED_CHALLENGE_KEYS):
+        return False, f"expected {len(EXPECTED_CHALLENGE_KEYS)} challenges, got {len(challenges)}"
+
+    returned_keys = set()
+    required_fields = {"key", "name", "description", "type", "target", "progress", "points", "completed"}
+
+    for i, c in enumerate(challenges):
+        missing = required_fields - set(c.keys())
+        if missing:
+            return False, f"challenges[{i}] missing fields: {missing}"
+
+        if c["type"] not in VALID_CHALLENGE_TYPES:
+            return False, f"challenges[{i}].type '{c['type']}' is not valid"
+
+        if not isinstance(c["target"], int) or c["target"] < 1:
+            return False, f"challenges[{i}].target must be a positive integer"
+
+        if not isinstance(c["progress"], int) or c["progress"] < 0:
+            return False, f"challenges[{i}].progress must be a non-negative integer"
+
+        if c["progress"] > c["target"]:
+            return False, f"challenges[{i}].progress ({c['progress']}) exceeds target ({c['target']})"
+
+        if not isinstance(c["completed"], bool):
+            return False, f"challenges[{i}].completed must be a boolean"
+
+        if not isinstance(c["points"], int) or c["points"] < 1:
+            return False, f"challenges[{i}].points must be a positive integer"
+
+        returned_keys.add(c["key"])
+
+    missing_keys = EXPECTED_CHALLENGE_KEYS - returned_keys
+    if missing_keys:
+        return False, f"missing expected challenge keys: {missing_keys}"
+
+    return True, None
+
+
+def print_challenges_result(name, status, payload, expected_statuses):
+    base_ok = print_result(name, status, payload, expected_statuses)
+    if not base_ok or status not in expected_statuses or status >= 400:
+        return base_ok
+
+    valid, reason = validate_challenges_response(payload)
+    if valid:
+        print("[PASS] Challenges response shape")
+        print()
+        return True
+
+    print(f"[FAIL] Challenges response shape: {reason}")
+    print()
+    return False
+
+
+def run_challenges_tests(base_url, token):
+    results = []
+
+    # 1. No token → 401
+    status, payload = perform_request("GET", build_url(base_url, "/api/challenges"))
+    results.append(print_result("GET /api/challenges (no token)", status, payload, {401}))
+
+    # 2. Invalid token → 422 (flask-jwt-extended rejects malformed tokens with 422)
+    status, payload = perform_request(
+        "GET",
+        build_url(base_url, "/api/challenges"),
+        headers={"Authorization": "Bearer not.a.real.token"},
+    )
+    results.append(print_result("GET /api/challenges (invalid token)", status, payload, {401, 422}))
+
+    if not token:
+        print("[SKIP] GET /api/challenges (authenticated): no token provided\n")
+        results.append(None)
+        return results
+
+    # 3. Valid token → 200 + shape validation
+    status, payload = perform_request(
+        "GET",
+        build_url(base_url, "/api/challenges"),
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    results.append(print_challenges_result("GET /api/challenges (authenticated)", status, payload, {200}))
+
+    # 4. Correct number of challenges per type
+    if status == 200 and payload.get("challenges"):
+        challenges = payload["challenges"]
+        for ctype, expected_count in [("daily", 3), ("weekly", 3), ("special", 3)]:
+            actual = sum(1 for c in challenges if c.get("type") == ctype)
+            ok = actual == expected_count
+            label = "PASS" if ok else "FAIL"
+            print(f"[{label}] GET /api/challenges: {ctype} count = {actual} (expected {expected_count})")
+            print()
+            results.append(ok)
+
+    return results
+
+
 def run_write_test(base_url, token, image_path):
     if not token:
         print("[SKIP] POST /api/reports: no JWT provided and login did not succeed\n")
@@ -332,6 +445,7 @@ def main():
 
     token = args.token or login_if_needed(args.base_url, args.username, args.password)
     results = run_read_tests(args.base_url)
+    results += run_challenges_tests(args.base_url, token)
 
     if args.run_write_tests:
         write_result = run_write_test(args.base_url, token, args.image)

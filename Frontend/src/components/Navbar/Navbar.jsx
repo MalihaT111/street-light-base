@@ -54,9 +54,9 @@ const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
               <FaChartBar className={styles.navIcon} />
               <span>Leaderboard</span>
             </Link>
-            <Link to="/challenge" className={`${styles.navLink} ${activeTab === 'challenge' ? styles.active : ''}`}>
+            <Link to="/progress" className={`${styles.navLink} ${activeTab === 'progress' ? styles.active : ''}`}>
               <FaAward className={styles.navIcon} />
-              <span>Challenge</span>
+              <span>Progress</span>
             </Link>
             <Link to="/settings" className={`${styles.navLink} ${activeTab === 'settings' ? styles.active : ''}`}>
               <FaCog className={styles.navIcon} />
@@ -86,8 +86,8 @@ const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
                   <Link to="/leaderboard" className={styles.navLink}>
                     <span>Leaderboard</span>
                   </Link>
-                  <Link to="/challenge" className={styles.navLink}>
-                    <span>Challenge</span>
+                  <Link to="/progress" className={styles.navLink}>
+                    <span>Progress</span>
                   </Link>
                   <Link to="/settings" className={styles.navLink}>
                     <span>Settings</span>
