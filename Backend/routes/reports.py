@@ -2,7 +2,9 @@ import json
 
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from routes.badges import check_and_award_badges
 from routes.challenges import check_and_award_challenges
+from routes.achievements import check_and_award_tier
 
 from db import db_connection
 from routes.damage_type_utils import normalize_damage_types
@@ -300,7 +302,9 @@ def submit_report():
                 """,
                 (report_id, url),
             )
+        badges_awarded = check_and_award_badges(cur, user_id)
         awarded = check_and_award_challenges(cur, user_id)
+        tier_reached = check_and_award_tier(cur, user_id)
 
 
         conn.commit()
@@ -311,7 +315,9 @@ def submit_report():
                     "success": True,
                     "message": "Report submitted",
                     "report_id": report_id,
+                    "badges_awarded": badges_awarded,
                     "challenges_awarded": awarded,
+                    "tier_reached": tier_reached,
                 }
             ),
             201,
