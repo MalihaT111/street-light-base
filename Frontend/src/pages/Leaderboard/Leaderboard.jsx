@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { FaTrophy, FaArrowRight } from "react-icons/fa";
 import Navbar from "../../components/Navbar/Navbar.jsx";
 import styles from "./leaderboard.module.css";
+import PageHero from "../../components/PageHero/PageHero.jsx";
 
 const Leaderboard = () => {
     const navigate = useNavigate();
@@ -50,10 +51,10 @@ const Leaderboard = () => {
             <Navbar username= {username} activeTab="leaderboard" />
 
             <div className={styles["leaderboard-wrapper"]}>
-                <div className={styles["top-title"]}>
-                    <h1 className = {styles["leaderboard-title"]}>Leaderboard</h1>
-                    <p className = {styles["leaderboard-subtitle"]}>Top reporters helping keep NYC's streets safe</p>
-                </div>
+                <PageHero
+                    title="Leaderboard"
+                    subtitle="See how you rank against other NYC citizens making the streets safer."
+                />
                 {/* Stat section */}
                 <section className={styles["stat-section"]}>    
                     <div className={styles["stat-card"]}>

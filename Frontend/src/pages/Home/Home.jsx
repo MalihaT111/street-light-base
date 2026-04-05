@@ -1,31 +1,11 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styles from './Home.module.css';
 import { FaChartLine, FaFlag, FaTrophy, FaFire, FaMedal, FaArrowRight } from 'react-icons/fa';
 import Navbar from '../../components/Navbar/Navbar';
+import useAuth from '../../hooks/useAuth';
 
 const Home = () => {
-  const navigate = useNavigate();
-  
-  // Get user from localStorage
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  
-  useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    if (!savedUser) {
-      navigate('/');
-      return;
-    }
-    try {
-      setUser(JSON.parse(savedUser));
-    } catch (error) {
-      console.error('Error parsing user data:', error);
-      navigate('/');
-    } finally {
-      setLoading(false);
-    }
-  }, [navigate]);
+  const { user, loading } = useAuth();
 
   const username = user?.username || 'Citizen';
 
@@ -114,7 +94,7 @@ const Home = () => {
         <div className={styles.ctaSection}>
           <div className={styles.ctaContent}>
             <h2>See something wrong?</h2>
-            <p>Report damaged streetlights, potholes, or other issues to help keep NYC streets safe.</p>
+            <p>Report damaged streetlight bases here and keep the city safe!</p>
             <Link to="/reports" className={styles.ctaButton}>
               Submit a Report <FaArrowRight className={styles.ctaIcon} />
             </Link>

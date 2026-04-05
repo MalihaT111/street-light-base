@@ -1,21 +1,65 @@
 .wrapper {
-    padding: 32px;
-    max-width: 1200px;
+    padding: 32px 28px 40px;
+    max-width: 1320px;
     margin: 0 auto;
 }
 
-/* ── Page header ───────────────────────────────────────────── */
-.pageHeader {
-    margin-bottom: 2rem;
+/* ── Stats row ─────────────────────────────────────────────── */
+.statsRow {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2.5rem;
 }
-.pageTitle {
-    font-size: 1.75rem;
+.statCard {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    border-radius: 18px;
+    padding: 20px 24px;
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.statCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+}
+.statCard:first-child {
+    border-color: #bfdbfe;
+}
+.statIconWrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    margin-bottom: 8px;
+}
+.statValue {
+    font-size: 1.85rem;
     font-weight: 700;
-    margin-bottom: 6px;
+    color: #111827;
+    line-height: 1.1;
 }
-.pageSubtitle {
-    font-size: 0.9rem;
+.statDenom {
+    font-size: 1.1rem;
+    color: #9CA3AF;
+    font-weight: 500;
+}
+.statLabel {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     color: #6B7280;
+    margin-top: 2px;
+}
+.statAccent {
+    color: #2563EB;
 }
 
 /* ── Section ───────────────────────────────────────────────── */
@@ -28,6 +72,7 @@
     letter-spacing: 0.08em;
     color: #6B7280;
     margin-bottom: 1rem;
+    text-transform: uppercase;
 }
 
 /* ── Status / error ────────────────────────────────────────── */
@@ -38,27 +83,75 @@
 .errorMsg {
     color: #EF4444;
     font-size: 0.95rem;
+    background: #FEF2F2;
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: inline-block;
 }
 
-/* ── Tier banner ───────────────────────────────────────────── */
-.tierBanner {
+/* ── Skeleton loaders ──────────────────────────────────────── */
+@keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+.skeleton {
+    background: linear-gradient(90deg, #F3F4F6 25%, #E9EAEC 50%, #F3F4F6 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease infinite;
+    border-radius: 8px;
+}
+.skeletonBanner {
+    height: 104px;
+    border-radius: 14px 14px 0 0;
+}
+.skeletonTrack {
+    height: 72px;
+    border-radius: 0 0 14px 14px;
+}
+.skeletonGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 300px));
+    gap: 1rem;
+    justify-content: center;
+}
+.skeletonCard {
+    height: 88px;
+    border-radius: 12px;
+}
+
+/* ── Tier card (unified) ───────────────────────────────────── */
+.tierCard {
+    border: 2px solid #E5E7EB;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+.tierCardTop {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 2rem;
-    border: 2px solid #E5E7EB;
-    border-radius: 14px;
     padding: 20px 24px;
-    margin-bottom: 1.25rem;
     flex-wrap: wrap;
+}
+.tierCardBottom {
+    padding: 16px 24px 20px;
+    background: #fff;
+    border-top: 1px solid #E5E7EB;
 }
 .tierBannerLeft {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 14px;
 }
-.tierBannerIcon {
-    font-size: 2.25rem;
+.tierIconCircle {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 2px solid #E5E7EB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
 }
 .tierBannerName {
@@ -67,7 +160,7 @@
     line-height: 1.2;
 }
 .tierBannerPoints {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     color: #6B7280;
     margin-top: 2px;
 }
@@ -82,16 +175,16 @@
     margin-bottom: 6px;
 }
 .tierProgressTrack {
-    height: 8px;
+    height: 10px;
     background: #E5E7EB;
-    border-radius: 4px;
+    border-radius: 999px;
     overflow: hidden;
     margin-bottom: 4px;
 }
 .tierProgressFill {
     height: 100%;
-    border-radius: 4px;
-    transition: width 0.4s ease;
+    border-radius: 999px;
+    transition: width 0.5s ease;
 }
 .tierProgressRemaining {
     font-size: 0.78rem;
@@ -101,17 +194,21 @@
 .tierMaxed {
     font-size: 0.9rem;
     font-weight: 600;
-    color: #7C3AED;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.6);
 }
 
-/* ── Tier track ────────────────────────────────────────────── */
+/* ── Tier track (inside card bottom) ──────────────────────── */
 .tierTrack {
     display: flex;
     align-items: flex-start;
     gap: 0;
     overflow-x: auto;
-    padding-bottom: 4px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
+.tierTrack::-webkit-scrollbar { display: none; }
 .tierStep {
     display: flex;
     flex-direction: column;
@@ -121,15 +218,15 @@
     position: relative;
 }
 .tierStepIcon {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     border: 2px solid #E5E7EB;
     background: #F9FAFB;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     position: relative;
     transition: all 0.2s;
 }
@@ -143,7 +240,7 @@
     border: 1.5px solid white;
 }
 .tierStepName {
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     font-weight: 600;
     text-align: center;
 }
@@ -156,7 +253,7 @@
     flex: 1;
     height: 2px;
     background: #E5E7EB;
-    margin-top: 23px;
+    margin-top: 21px;
     min-width: 24px;
 }
 .tierConnectorFilled {
@@ -166,33 +263,36 @@
 /* ── Badge grid ─────────────────────────────────────────────── */
 .badgeGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 300px));
     gap: 1rem;
+    justify-content: center;
 }
 .badgeCard {
     display: flex;
     align-items: flex-start;
     gap: 14px;
-    border-radius: 12px;
+    border-radius: 16px;
     padding: 18px;
     border: 1px solid #E5E7EB;
-    background: #F9FAFB;
+    background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
     transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
 }
 .badgeCard:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
 }
 .badgeEarned {
     border-color: #10B981;
     background: #F0FDF4;
 }
 .badgeLocked {
-    opacity: 0.65;
+    background: #F9FAFB;
+    border-style: dashed;
 }
 .badgeIconWrap {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     background: #E5E7EB;
     display: flex;
@@ -211,9 +311,7 @@
     font-size: 1rem;
     color: #9CA3AF;
 }
-.badgeContent {
-    flex: 1;
-}
+.badgeContent { flex: 1; }
 .badgeName {
     font-size: 0.95rem;
     font-weight: 600;
@@ -235,9 +333,87 @@
     color: #9CA3AF;
 }
 
+/* ── Challenge tabs ─────────────────────────────────────────── */
+.challengeTabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+.challengeTab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: 1px solid #E5E7EB;
+    background: #fff;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #6B7280;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.challengeTab:hover {
+    background: #F9FAFB;
+    color: #374151;
+}
+.challengeTab:focus-visible {
+    outline: 3px solid rgba(37, 99, 235, 0.18);
+    outline-offset: 2px;
+}
+.challengeTabActive {
+    background: #EEF3FD;
+    border-color: #BFDBFE;
+    color: #2563EB;
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.12);
+}
+.challengeTabBadge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: #F3F4F6;
+    color: #6B7280;
+    padding: 1px 7px;
+    border-radius: 20px;
+}
+.challengeTabActive .challengeTabBadge {
+    background: #DBEAFE;
+    color: #2563EB;
+}
+
 /* ── Challenge grid ─────────────────────────────────────────── */
 .challengeGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 380px));
     gap: 1rem;
+    justify-content: center;
+}
+
+/* ── Empty state ────────────────────────────────────────────── */
+.emptyState {
+    color: #9CA3AF;
+    font-size: 0.95rem;
+    padding: 32px 24px;
+    text-align: center;
+    background: linear-gradient(180deg, #F9FAFB 0%, #F3F4F6 100%);
+    border-radius: 16px;
+    border: 1px dashed #D1D5DB;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .wrapper { padding: 16px; }
+    .statsRow {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+    }
+    .statCard { padding: 14px 16px; }
+    .statValue { font-size: 1.4rem; }
+    .tierBannerRight {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+@media (max-width: 480px) {
+    .statsRow { grid-template-columns: 1fr; }
 }
