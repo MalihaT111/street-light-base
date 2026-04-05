@@ -29,7 +29,7 @@ def register():
         email = user_info.get("email")
         first_name = user_info.get("first_name", "")
         last_name = user_info.get("last_name", "")
-        role = user_info.get("role", "user")
+        role = user_info.get("role", "citizen")
         password = user_info.get("password")
 
         if not email:

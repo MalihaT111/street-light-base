@@ -38,7 +38,6 @@ export default function DOTnavbar({ username = "User" }) {
 
           <div className={styles.brandText}>
             <span className = {styles.brandTitle}>Street Light Base</span>
-            <span className={styles.brandSubtitle}>DOT Admin</span>
           </div>
         </div>
 

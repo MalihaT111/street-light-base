@@ -17,6 +17,49 @@ from routes.report_query_utils import (
 from services.cloudinary_service import upload_image
 
 reports_bp = Blueprint("reports", __name__)
+ALL_REPORTS_ALLOWED_ROLES = {
+    "admin",
+    "dot",
+    "dot_admin",
+    "dot_user",
+    "ppl",
+    "ppl_admin",
+    "ppl_user",
+}
+
+
+def _get_current_user_id():
+    identity = get_jwt_identity()
+    return identity.get("user_id") if isinstance(identity, dict) else identity
+
+
+def _get_user_role(user_id):
+    conn = None
+    cur = None
+
+    try:
+        conn = db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT role FROM users WHERE id = %s", (user_id,))
+        row = cur.fetchone()
+        return row[0] if row else None
+    finally:
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()
+
+
+def _can_access_all_reports(role):
+    if not role:
+        return False
+
+    normalized_role = str(role).strip().lower()
+    return (
+        normalized_role in ALL_REPORTS_ALLOWED_ROLES
+        or "dot" in normalized_role
+        or "ppl" in normalized_role
+    )
 
 
 def _run_report_list_query(base_filters):
@@ -122,12 +165,29 @@ def get_poor_reports():
 @jwt_required()
 def get_my_reports():
     try:
-        identity = get_jwt_identity()
-        user_id = identity.get("user_id") if isinstance(identity, dict) else identity
+        filters = parse_list_query_params()
+        filters["user_id"] = _get_current_user_id()
+
+        response, status_code = _run_report_list_query(filters)
+        return jsonify(response), status_code
+    except ValueError as error:
+        return jsonify({"success": False, "error": str(error)}), 400
+    except Exception as error:
+        print("ERROR:", error)
+        return jsonify({"success": False, "error": str(error)}), 500
+
+
+@reports_bp.route("/api/reports/all", methods=["GET"])
+@jwt_required()
+def get_all_reports():
+    try:
+        user_id = _get_current_user_id()
+        role = _get_user_role(user_id)
+
+        if not _can_access_all_reports(role):
+            return jsonify({"success": False, "error": "Forbidden"}), 403
 
         filters = parse_list_query_params()
-        filters["user_id"] = user_id
-
         response, status_code = _run_report_list_query(filters)
         return jsonify(response), status_code
     except ValueError as error:
@@ -143,8 +203,7 @@ def edit_report(report_id):
     conn = None
     cur = None
     try:
-        identity = get_jwt_identity()
-        user_id = identity.get("user_id") if isinstance(identity, dict) else identity
+        user_id = _get_current_user_id()
 
         data = request.get_json()
         rating = data.get("rating")
@@ -218,8 +277,7 @@ def delete_report(report_id):
     conn = None
     cur = None
     try:
-        identity = get_jwt_identity()
-        user_id = identity.get("user_id") if isinstance(identity, dict) else identity
+        user_id = _get_current_user_id()
 
         conn = db_connection()
         cur = conn.cursor()
