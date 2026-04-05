@@ -1,4 +1,6 @@
 import React from "react";
+import { useState } from "react";
+import { RxHamburgerMenu } from "react-icons/rx";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaChartLine, FaFileAlt, FaSignOutAlt } from 'react-icons/fa';
 import styles from "./DOTnavbar.module.css";
@@ -6,6 +8,7 @@ import styles from "./DOTnavbar.module.css";
 export default function DOTnavbar({ username = "User" }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const getActiveTab = () => {
     if (location.pathname === '/dashboard') return 'analytics';
@@ -60,6 +63,24 @@ export default function DOTnavbar({ username = "User" }) {
 
         {/* User section */}
         <div className={styles.userSection}>
+            {/* Mobile: For mobile view, hamburger menu  */}
+            <div className = {styles.hamburgerMenu}>
+              <RxHamburgerMenu 
+                onClick = {() => setMenuOpen(!menuOpen)}
+              />
+            </div>
+            <div>
+              {menuOpen && (
+                <div className={styles.mobileMenu}>
+                  <Link to="/dashboard" className={styles.navItem}>
+                    <span>Dashboard</span>
+                  </Link>
+                  <Link to="/all-reports" className={styles.navItem}>
+                    <span>View Reports</span>
+                  </Link>
+                </div>
+              )}
+            </div>
           <div className={styles.userInfo}>
             <div className={styles.userAvatar}>
               {username.charAt(0).toUpperCase()}

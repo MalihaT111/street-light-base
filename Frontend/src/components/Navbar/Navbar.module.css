@@ -185,6 +185,8 @@
   gap: 1rem;
   padding: 1rem;
   z-index: 2000;
+
+  box-sizing: border-box;
 }
 .mobileMenu .navLink{  
   display: flex;
