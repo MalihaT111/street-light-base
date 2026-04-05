@@ -268,11 +268,11 @@
 
 .statHeader h3 {
   margin: 0;
-  font-size: 0.84rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #64748b;
+  color: #6B7280;
   line-height: 1.2;
   white-space: nowrap;
 }
@@ -413,11 +413,11 @@
 }
 
 .headerCell {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 700;
   color: #6B7280;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 
 .tableRow {

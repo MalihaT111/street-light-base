@@ -1,6 +1,6 @@
 .leaderboard-wrapper{
-    padding: 32px;
-    max-width: 1200px;
+    padding: 32px 28px 40px;
+    max-width: 1320px;
     margin: 0 auto;
     width: 100%;
     box-sizing: border-box;
@@ -41,13 +41,15 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 .stat-card .stat-label{
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     color: #6B7280;
-    margin: 0;
+    margin: 0 0 4px;
 }
 .stat-card .stat-value{
-    font-size: 2rem;
+    font-size: 1.85rem;
     font-weight: 700;
     color: #111827;
     margin-bottom: 4px;
@@ -98,8 +100,8 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  font-weight: bold;
-  font-size: 20px;
+  font-weight: 700;
+  font-size: 1.25rem;
   padding-top: 10px;
   color: white;
   box-shadow: 0 6px 14px rgba(0,0,0,0.15);
@@ -182,11 +184,11 @@
 }
 
 .headerCell {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 700;
   color: #6B7280;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 
 .tableRow {
@@ -362,6 +364,10 @@
     }
 }
 @media (max-width: 768px){
+    .leaderboard-wrapper {
+        padding: 16px;
+    }
+
     .section-wrapper{
         gap: 16px;
     }

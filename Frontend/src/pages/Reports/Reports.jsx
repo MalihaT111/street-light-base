@@ -7,11 +7,12 @@ import DamageRating from './components/DamageRating';
 import ReportDetails from './components/ReportDetails';
 import ReferenceGuide from './components/ReferenceGuide';
 import styles from './Reports.module.css';
+import PageHero from '../../components/PageHero/PageHero';
+import useAuth from '../../hooks/useAuth';
 
 const Reports = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading } = useAuth();
 
   // Form state — photos is an array of { file, preview }, max 3
   const [photos, setPhotos] = useState([]);
@@ -30,18 +31,6 @@ const Reports = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState(null);
-
-  useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    if (!savedUser) { navigate('/'); return; }
-    try {
-      setUser(JSON.parse(savedUser));
-    } catch {
-      navigate('/');
-    } finally {
-      setLoading(false);
-    }
-  }, [navigate]);
 
   // Called by PhotoEvidence when a slot is filled
   const handlePhotoAdd = (index, file, preview) => {
@@ -223,10 +212,10 @@ const Reports = () => {
           </div>
         ) : (
           <>
-            <div className={styles.pageHeader}>
-              <h1 className={styles.pageTitle}>Submit a Report</h1>
-              <p className={styles.pageSubtitle}>Document a damaged streetlight base in your area</p>
-            </div>
+            <PageHero
+              title="Submit a Report"
+              subtitle="Document a damaged streetlight base in your area and earn points for each verified report."
+            />
 
             <form onSubmit={handleSubmit} className={styles.reportLayout}>
               <div className={styles.formColumn}>

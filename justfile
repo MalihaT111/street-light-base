@@ -11,7 +11,7 @@ dev:
 
 # Run the Flask backend
 backend:
-    cd Backend && python app.py
+    cd Backend && python3 app.py
 
 # Run the Vite frontend
 frontend:

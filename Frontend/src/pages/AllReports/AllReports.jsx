@@ -6,6 +6,7 @@ import ReportCard from '../../components/ReportCard/ReportCard';
 // import DashboardTopbar from '../DOT-dashboard/components/DashboardTopbar'; 
 import DOTnavbar from '../../components/DOTnavbar/DOTnavbar';
 import styles from './AllReports.module.css';
+import PageHero from '../../components/PageHero/PageHero';
 
 const CONDITION_OPTIONS = ["Poor", "Fair", "Good"];
 const BOROUGH_OPTIONS = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"];
@@ -234,10 +235,11 @@ function AllReports() {
         <>
             <DOTnavbar activeTab='reports'/>
             <div className={styles["report-wrapper"]}>
-                <div className={styles["top-title"]}>
-                    <h1 className={styles["report-title"]}>All Reports</h1>
-                    <p className={styles["manage-report-subtitle"]}>Monitor and review streetlight condition reports across all boroughs</p>
-                </div>
+                <PageHero
+                    title="All Reports"
+                    subtitle="Monitor and review streetlight condition reports across all five boroughs."
+                    pills={[{ label: "NYC Boroughs" }, { label: "DOT Review" }]}
+                />
                 <div className={styles.filterBar}>
                     <div className={styles.filterGroup}>
                         <MultiSelectDropdown
