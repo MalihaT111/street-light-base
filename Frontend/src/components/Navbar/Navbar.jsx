@@ -1,9 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { FaHome, FaFileAlt, FaChartBar, FaCog, FaSignOutAlt, FaAward } from 'react-icons/fa';
+import { RxHamburgerMenu } from "react-icons/rx";
 import styles from './Navbar.module.css';
 
 const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const storedUser = (() => { try { return JSON.parse(localStorage.getItem('user') || '{}'); } catch { return {}; } })();
   const homeRoute = storedUser?.role === 'admin' ? '/dashboard' : '/home';
@@ -28,6 +31,7 @@ const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
       {!minimal && (
         <>
           <div className={styles.navLinks}>
+            {/* Desktop: For desktop view, the links will be displayed directly. */}
             <Link to="/home" className={`${styles.navLink} ${activeTab === 'home' ? styles.active : ''}`}>
               <FaHome className={styles.navIcon} />
               <span>Home</span>
@@ -54,13 +58,43 @@ const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
               <FaAward className={styles.navIcon} />
               <span>Challenge</span>
             </Link>
-<Link to="/settings" className={`${styles.navLink} ${activeTab === 'settings' ? styles.active : ''}`}>
+            <Link to="/settings" className={`${styles.navLink} ${activeTab === 'settings' ? styles.active : ''}`}>
               <FaCog className={styles.navIcon} />
               <span>Settings</span>
             </Link>
           </div>
 
           <div className={styles.userSection}>
+            {/* Mobile: For mobile view, hamburger menu  */}
+            <div className = {styles.hamburgerMenu}>
+              <RxHamburgerMenu 
+                onClick = {() => setMenuOpen(!menuOpen)}
+              />
+            </div>
+            <div>
+              {menuOpen && (
+                <div className={styles.mobileMenu}>
+                    <Link to="/home" className= {styles.navLink}>
+                    <span>Home</span>
+                  </Link>
+                  <Link to="/reports" className= {styles.navLink}>
+                    <span>Submit Report</span>
+                  </Link>
+                  <Link to="/manage-reports" className={styles.navLink}>
+                    <span>View/Edit Reports</span>
+                  </Link>
+                  <Link to="/leaderboard" className={styles.navLink}>
+                    <span>Leaderboard</span>
+                  </Link>
+                  <Link to="/challenge" className={styles.navLink}>
+                    <span>Challenge</span>
+                  </Link>
+                  <Link to="/settings" className={styles.navLink}>
+                    <span>Settings</span>
+                  </Link>
+                </div>
+              )}
+            </div>
             <div className={styles.userInfo}>
               <div className={styles.userAvatar}>
                 {username.charAt(0).toUpperCase()}
