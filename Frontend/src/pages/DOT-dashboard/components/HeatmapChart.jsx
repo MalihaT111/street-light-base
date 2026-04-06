@@ -118,7 +118,12 @@ export default function HeatmapChart({ data, apiUrl }) {
     // Fetch: refresh point data from the JSON endpoint without reinitializing the map.
     async function refreshHeatmap(url) {
       try {
-        const response = await fetch(url);
+        const token = localStorage.getItem("token");
+        const response = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const payload = await response.json();
 
         if (!response.ok || payload?.success === false) {

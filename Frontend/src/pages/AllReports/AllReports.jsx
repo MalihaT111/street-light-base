@@ -141,20 +141,20 @@ function AllReports() {
         const savedUser = localStorage.getItem("user");
         const token = localStorage.getItem("token");
         if (!savedUser) {
-            navigate("/");
+            navigate("/home");
             return;
         }
         try {
             const parsedUser = JSON.parse(savedUser);
             if (!token || !canAccessAllReports(parsedUser?.role)) {
-                navigate("/");
+                navigate("/home");
                 return;
             }
             setUser(parsedUser);
             fetchReports(token);
         } catch (error) {
             console.error("Error parsing user data:", error);
-            navigate("/");
+            navigate("/home");
         } finally {
             setLoading(false);
         }

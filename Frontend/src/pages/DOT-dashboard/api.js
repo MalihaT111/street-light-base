@@ -28,7 +28,15 @@ export function buildAnalyticsQueryString(filters = {}) {
 
 async function fetchJson(path, filters = {}, signal) {
   const query = buildAnalyticsQueryString(filters);
-  const response = await fetch(`${API_BASE_URL}${path}${query}`, { signal });
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_BASE_URL}${path}${query}`, {
+    signal,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
 
   let payload = {};
 
