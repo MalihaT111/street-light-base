@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 
 from db import db_connection
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 leaderboard_bp = Blueprint("leaderboard", __name__)
 
@@ -34,3 +35,8 @@ def leaderboards():
             cursor.close()
         if connection:
             connection.close()
+@leaderboard_bp.route("/api/leaderboard/stats", methods=["GET"])
+@jwt_required()
+def leaderboard_stats():
+    connection = None
+    cursor = None

@@ -5,16 +5,18 @@ import Navbar from "../../components/Navbar/Navbar.jsx";
 import styles from "./leaderboard.module.css";
 import PageHero from "../../components/PageHero/PageHero.jsx";
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5001";
+
 const Leaderboard = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-
+    const [leaderboard, setLeaderboard] = useState([]);
     useEffect(() => {
         const savedUser = localStorage.getItem("user");
 
         if (!savedUser) {
-            navigate("/");
+            navigate("/home");
             return;
         }
 
@@ -22,11 +24,23 @@ const Leaderboard = () => {
             setUser(JSON.parse(savedUser));
         } catch (error) {
             console.error("Error parsing user data:", error);
-            navigate("/");
+            navigate("/home");
         } finally {
             setLoading(false);
         }
     }, [navigate]);
+
+    useEffect(() => {
+    const token = localStorage.getItem("token");
+    fetch(`${API_BASE}/api/leaderboard`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) setLeaderboard(data.leaderboard);
+      })
+      .catch(err => console.error("Leaderboard fetch failed:", err));
+  }, []);
 
     const username = user?.username || "Citizen";
 
@@ -39,13 +53,7 @@ const Leaderboard = () => {
     { title: 'Maintain 7-day streak', progress: 7, total: 7, reward: 150 },
     { title: 'Earn 3 badges', progress: 3, total: 3, reward: 200 }
     ];
-    const mockLeaderboard = [
-    { rank: 1, name: 'alex_nyc', points: 1250, reports: 18 },
-    { rank: 2, name: 'mike_bk', points: 1100, reports: 16 },
-    { rank: 3, name: 'sarah_q', points: 980, reports: 14 },
-    { rank: 4, name: 'john_man', points: 850, reports: 12 },
-    { rank: 5, name: 'lisa_brx', points: 720, reports: 10 }
-  ];
+    
     return (
         <>
             <Navbar username= {username} activeTab="leaderboard" />
@@ -77,11 +85,11 @@ const Leaderboard = () => {
                 </section>
                 {/* Podium section */}
                 <section className={styles["podium"]}>
-                    {mockLeaderboard.slice(0,3).map((player, index) => (
-                        <div key={player.id || index} className={`${styles["podium-item"]} ${styles[`podium-item${index}`]}`}>
-                            <div className={styles["podium-avatar"]}>{player.name[0].toUpperCase()}</div>
-                            <div className={styles["podium-name"]}>{player.name}</div>
-                            <div className={styles["podium-pts"]}>{player.points} pts</div>
+                    {leaderboard.slice(0, 3).map((player, index) => (
+                        <div key={player.rank} className={`${styles["podium-item"]} ${styles[`podium-item${index}`]}`}>
+                            <div className={styles["podium-avatar"]}>{player.username[0].toUpperCase()}</div>
+                            <div className={styles["podium-name"]}>{player.username}</div>
+                            <div className={styles["podium-pts"]}>{player.total_points} pts</div>
                             <div className={`${styles["podium-platform"]} ${styles[`platform${index}`]}`}>{player.rank}</div>
                         </div>
                     ))}
@@ -104,10 +112,9 @@ const Leaderboard = () => {
                             <div className={styles.headerCell}>Rank</div>
                             <div className={styles.headerCell}>User</div>
                             <div className={styles.headerCell}>Points</div>
-                            <div className={styles.headerCell}>Reports</div>
                         </div>
                         
-                        {mockLeaderboard.map((item) => (
+                        {leaderboard.map((item) => (
                             <div key={item.rank} className={styles.tableRow}>
                             <div className={styles.rankCell}>
                                 <span className=
@@ -121,12 +128,11 @@ const Leaderboard = () => {
                             </div>
                             <div className={styles.userCell}>
                                 <div className={styles.userAvatarSmall}>
-                                {item.name.charAt(0).toUpperCase()}
+                                {item.username.charAt(0).toUpperCase()}
                                 </div>
-                                <span>{item.name}</span>
+                                <span>{item.username}</span>
                             </div>
-                            <div className={styles.pointsCell}>{item.points}</div>
-                            <div className={styles.reportsCell}>{item.reports}</div>
+                            <div className={styles.pointsCell}>{item.total_points}</div>
                             </div>
                         ))}
                         </div>

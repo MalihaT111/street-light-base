@@ -10,6 +10,7 @@ const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
 
   const storedUser = (() => { try { return JSON.parse(localStorage.getItem('user') || '{}'); } catch { return {}; } })();
   const homeRoute = storedUser?.role === 'admin' ? '/dashboard' : '/home';
+  const isAdmin = storedUser?.role === 'admin';
 
   const handleSignOut = () => {
     localStorage.removeItem('user');
@@ -100,6 +101,7 @@ const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
                 {username.charAt(0).toUpperCase()}
               </div>
               <span className={styles.userName}>{username}</span>
+              {isAdmin && (<span className={styles.adminBadge}>Admin</span>)}
             </div>
             <button onClick={handleSignOut} className={styles.signOutBtn} title="Sign Out">
               <FaSignOutAlt className={styles.signOutIcon} />
