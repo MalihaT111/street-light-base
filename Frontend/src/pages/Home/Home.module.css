@@ -588,11 +588,21 @@
   }
   
   .welcomeBanner {
+    grid-template-columns: 1fr;
     padding: 24px;
   }
-  
+
+  .welcomeContent {
+    text-align: center;
+    align-items: center;
+  }
+
   .welcomeTitle {
     font-size: 1.5rem;
+  }
+
+  .welcomeSubtitle {
+    max-width: 100%;
   }
   
   .ctaSection {
