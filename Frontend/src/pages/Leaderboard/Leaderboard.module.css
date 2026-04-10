@@ -292,6 +292,12 @@
   outline: 2px solid #93C5FD;
   outline-offset: 2px;
 }
+
+.filter-tab-active {
+  background-color: #111827;
+  color: #FFFFFF;
+  border-color: #111827;
+}
 .section-wrapper{
     display: grid;
     grid-template-columns: minmax(0, 1fr) 280px;
