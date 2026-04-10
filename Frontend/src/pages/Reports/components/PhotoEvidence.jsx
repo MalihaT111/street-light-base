@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { FaCamera, FaPlus, FaTimes } from 'react-icons/fa';
 import styles from './css/PhotoEvidence.module.css';
 import ImageLightbox from '../../../components/ImageLightbox/ImageLightbox';
+import CameraCapture from './CameraCapture';
 
 const MAX_PHOTOS = 3;
 
@@ -17,6 +18,7 @@ const PhotoEvidence = ({ photos, onAdd, onRemove, onMetadata }) => {
 
   const [lightboxIndex, setLightboxIndex] = useState(null);
   const [loadingSlots, setLoadingSlots] = useState(new Set());
+  const [cameraSlot, setCameraSlot] = useState(null);
   const previewUrls = photos.map(p => p.preview);
   const closeLightbox = () => setLightboxIndex(null);
 
@@ -27,11 +29,31 @@ const PhotoEvidence = ({ photos, onAdd, onRemove, onMetadata }) => {
       return next;
     });
 
-  const handleChange = async (e, index) => {
+  const handleCameraCapture = (file, coords, index) => {
+    setCameraSlot(null);
+    setSlotLoading(index, true);
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      onAdd(index, file, e.target.result);
+      setSlotLoading(index, false);
+      if (index === 0 && onMetadata) {
+        onMetadata({
+          lat: coords?.lat ?? null,
+          lng: coords?.lng ?? null,
+          timestamp: new Date(),
+          source: 'browser',
+        });
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Fallback: file upload (keeps EXIF GPS path working)
+  const handleFileChange = async (e, index) => {
     const file = e.target.files[0];
     if (!file) return;
     e.target.value = '';
-
     setSlotLoading(index, true);
 
     let processedFile = file;
@@ -76,12 +98,12 @@ const PhotoEvidence = ({ photos, onAdd, onRemove, onMetadata }) => {
           lat: rawLat != null ? (exif.GPSLatitudeRef === 'S' ? -rawLat : rawLat).toFixed(6) : null,
           lng: rawLng != null ? (exif.GPSLongitudeRef === 'W' ? -rawLng : rawLng).toFixed(6) : null,
           timestamp: exif ? (exif.DateTimeOriginal || exif.CreateDate || null) : null,
-          exifParsed: true,
+          source: 'exif',
         });
       }
     } catch (err) {
       console.warn('Could not read EXIF data:', err);
-      if (onMetadata) onMetadata({ lat: null, lng: null, timestamp: null, exifParsed: true });
+      if (onMetadata) onMetadata({ lat: null, lng: null, timestamp: null, source: 'exif' });
     }
   };
 
@@ -104,7 +126,7 @@ const PhotoEvidence = ({ photos, onAdd, onRemove, onMetadata }) => {
         <span className={styles.requiredTag}>Required</span>
       </div>
       <div className={styles.cardBody}>
-        {/* Hidden file inputs — one per possible slot */}
+        {/* Hidden file inputs — fallback upload path */}
         {[0, 1, 2].map(i => (
           <input
             key={i}
@@ -112,7 +134,7 @@ const PhotoEvidence = ({ photos, onAdd, onRemove, onMetadata }) => {
             id={`photo-input-${i}`}
             type="file"
             accept="image/*"
-            onChange={(e) => handleChange(e, i)}
+            onChange={(e) => handleFileChange(e, i)}
             className={styles.hiddenInput}
           />
         ))}
@@ -145,28 +167,39 @@ const PhotoEvidence = ({ photos, onAdd, onRemove, onMetadata }) => {
                   {isFirst && <span className={styles.primaryBadge}>Primary</span>}
                 </div>
               ) : isFirst ? (
-                <label htmlFor="photo-input-0" className={styles.dropZone}>
+                <div className={styles.dropZone} onClick={() => setCameraSlot(0)}>
                   <FaCamera className={styles.dropIcon} />
-                  <p className={styles.dropPrompt}>Upload a photo through the app</p>
+                  <p className={styles.dropPrompt}>Take a Photo</p>
                   <p className={styles.dropHint}>
-                    GPS and timestamp are read automatically from image metadata.
+                    Your location will be captured automatically when you take the photo.
                   </p>
-                  <div className={styles.dropNote}>
-                    Make sure location is ON when you take the photo.
-                  </div>
-                  <span className={styles.openCameraBtn}>Upload Photo</span>
-                </label>
+                  <span className={styles.openCameraBtn}>Open Camera</span>
+                  <label
+                    htmlFor="photo-input-0"
+                    className={styles.uploadFallback}
+                    onClick={e => e.stopPropagation()}
+                  >
+                    or upload a file instead
+                  </label>
+                </div>
               ) : (
-                <label htmlFor={`photo-input-${index}`} className={styles.addSlot}>
+                <div className={styles.addSlot} onClick={() => setCameraSlot(index)}>
                   <FaPlus className={styles.addIcon} />
                   <span className={styles.addLabel}>Add photo</span>
                   <span className={styles.addHint}>Optional</span>
-                </label>
+                </div>
               )}
             </div>
           );
         })}
       </div>
+
+      {cameraSlot !== null && (
+        <CameraCapture
+          onCapture={(file, coords) => handleCameraCapture(file, coords, cameraSlot)}
+          onClose={() => setCameraSlot(null)}
+        />
+      )}
 
       {lightboxIndex !== null && (
         <ImageLightbox

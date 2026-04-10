@@ -18,7 +18,7 @@ import {
     FaCity,
 } from "react-icons/fa";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5001";
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
 
 const TIER_META = {
     beginner:  { icon: FaLeaf,    color: "#6B7280", bg: "#F3F4F6", label: "Beginner" },

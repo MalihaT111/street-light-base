@@ -66,6 +66,7 @@
   cursor: pointer;
   text-align: center;
   transition: all 0.2s ease;
+  user-select: none;
 }
 
 .dropZone:hover {
@@ -109,6 +110,19 @@
   color: #2563EB;
 }
 
+.uploadFallback {
+  margin-top: 10px;
+  font-size: 0.75rem;
+  color: #9CA3AF;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.uploadFallback:hover {
+  color: #6B7280;
+}
+
 /* ---- Add photo slot (optional extra) ---- */
 .addSlot {
   display: flex;
@@ -120,6 +134,7 @@
   background: #F9FAFB;
   cursor: pointer;
   transition: all 0.2s ease;
+  user-select: none;
 }
 
 .addSlot:hover {

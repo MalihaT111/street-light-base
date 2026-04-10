@@ -5,7 +5,7 @@ import Navbar from '../../components/Navbar/Navbar';
 import ReportCard from '../../components/ReportCard/ReportCard';
 import styles from './ManageReports.module.css';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5001";
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
 const ITEMS_PER_PAGE = 12;
 
 const CONDITION_OPTIONS = ["Poor", "Fair", "Good"];
