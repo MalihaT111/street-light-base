@@ -73,31 +73,33 @@ const Leaderboard = () => {
                     subtitle="See how you rank against other NYC citizens making the streets safer."
                 />
                 {/* Stat section */}
-                <div className={styles["stat-card"]}>
-                    <div className={styles["stat-label"]}>TOTAL REPORTS</div>
-                    <div className={styles["stat-value"]}>
-                        {stats ? stats.total_reports.toLocaleString() : "—"}
+                <div className ={styles["stat-section"]}>
+                    <div className={styles["stat-card"]}>
+                        <div className={styles["stat-label"]}>TOTAL REPORTS</div>
+                        <div className={styles["stat-value"]}>
+                            {stats ? stats.total_reports.toLocaleString() : "—"}
+                        </div>
+                        <div className={styles["stat-sub"]}>↑ 12% this week</div>
                     </div>
-                    <div className={styles["stat-sub"]}>↑ 12% this week</div>
-                </div>
 
-            <div className={styles["stat-card"]}>
-                <div className={styles["stat-label"]}>ACTIVE USERS</div>
-                <div className={styles["stat-value"]}>
-                    {stats ? stats.active_users.toLocaleString() : "—"}
-                </div>
-                <div className={styles["stat-sub"]}>This month</div>
-            </div>
+                    <div className={styles["stat-card"]}>
+                        <div className={styles["stat-label"]}>ACTIVE USERS</div>
+                        <div className={styles["stat-value"]}>
+                            {stats ? stats.active_users.toLocaleString() : "—"}
+                        </div>
+                        <div className={styles["stat-sub"]}>This month</div>
+                    </div>
 
-            <div className={styles["stat-card"]}>
-                <div className={styles["stat-label"]}>YOUR RANK</div>
-                <div className={styles["stat-value"]}>
-                    {stats?.user_rank ? `#${stats.user_rank}` : "—"}
+                    <div className={styles["stat-card"]}>
+                        <div className={styles["stat-label"]}>YOUR RANK</div>
+                        <div className={styles["stat-value"]}>
+                            {stats?.user_rank ? `#${stats.user_rank}` : "—"}
+                        </div>
+                        <div className={styles["stat-sub"]}>
+                            {stats ? `${stats.user_points} pts${stats.top_pct ? ` • TOP ${stats.top_pct}%` : ""}` : "—"}
+                        </div>
+                    </div>
                 </div>
-                <div className={styles["stat-sub"]}>
-                    {stats ? `${stats.user_points} pts${stats.top_pct ? ` • TOP ${stats.top_pct}%` : ""}` : "—"}
-                </div>
-            </div>
                 {/* Podium section */}
                 <section className={styles["podium"]}>
                     {leaderboard.slice(0, 3).map((player, index) => (
