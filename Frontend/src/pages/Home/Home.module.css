@@ -406,7 +406,7 @@
 
 .tableHeader {
   display: grid;
-  grid-template-columns: 80px 1fr 120px 120px;
+  grid-template-columns: 80px 1fr 120px;
   background-color: #F9FAFB;
   padding: 16px 20px;
   border-bottom: 1px solid #E5E7EB;
@@ -422,7 +422,7 @@
 
 .tableRow {
   display: grid;
-  grid-template-columns: 80px 1fr 120px 120px;
+  grid-template-columns: 80px 1fr 120px;
   padding: 16px 20px;
   border-bottom: 1px solid #E5E7EB;
   align-items: center;
@@ -485,8 +485,7 @@
   font-size: 0.85rem;
 }
 
-.pointsCell,
-.reportsCell {
+.pointsCell {
   font-weight: 600;
   color: #111827;
 }
@@ -617,7 +616,7 @@
   
   .tableHeader,
   .tableRow {
-    grid-template-columns: 60px 1fr 100px 100px;
+    grid-template-columns: 60px 1fr 100px;
     padding: 12px 16px;
   }
   
