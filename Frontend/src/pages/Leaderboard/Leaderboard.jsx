@@ -13,6 +13,9 @@ const Leaderboard = () => {
     const [loading, setLoading] = useState(true);
     const [leaderboard, setLeaderboard] = useState([]);
     const [stats, setStats] = useState(null);
+    const [selectedBorough, setSelectedBorough] = useState("all");
+    const [selectedPeriod, setSelectedPeriod] = useState("all_time");
+
     useEffect(() => {
         const savedUser = localStorage.getItem("user");
 
@@ -32,25 +35,34 @@ const Leaderboard = () => {
     }, [navigate]);
 
     useEffect(() => {
-    const token = localStorage.getItem("token");
-    fetch(`${API_BASE}/api/leaderboard`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) setLeaderboard(data.leaderboard);
-      })
-      .catch(err => console.error("Leaderboard fetch failed:", err));
-  }, []);
+        const token = localStorage.getItem("token");
+        const qs = new URLSearchParams();
+        if (selectedBorough !== "all") qs.set("borough", selectedBorough);
+        if (selectedPeriod !== "all_time") qs.set("period", selectedPeriod);
+        const query = qs.toString() ? `?${qs.toString()}` : "";
+        fetch(`${API_BASE}/api/leaderboard${query}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) setLeaderboard(data.leaderboard);
+            })
+            .catch(err => console.error("Leaderboard fetch failed:", err));
+    }, [selectedBorough, selectedPeriod]);
+
     useEffect(() => {
-    const token = localStorage.getItem("token");
-    fetch(`${API_BASE}/api/leaderboard/stats`, {
-        headers: { Authorization: `Bearer ${token}` },
-    })
-        .then(res => res.json())
-        .then(data => { if (data.success) setStats(data); })
-        .catch(err => console.error("Stats fetch failed:", err));
-    }, []);
+        const token = localStorage.getItem("token");
+        const qs = new URLSearchParams();
+        if (selectedBorough !== "all") qs.set("borough", selectedBorough);
+        if (selectedPeriod !== "all_time") qs.set("period", selectedPeriod);
+        const query = qs.toString() ? `?${qs.toString()}` : "";
+        fetch(`${API_BASE}/api/leaderboard/stats${query}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+            .then(res => res.json())
+            .then(data => { if (data.success) setStats(data); })
+            .catch(err => console.error("Stats fetch failed:", err));
+    }, [selectedBorough, selectedPeriod]);
     const username = user?.username || "Citizen";
 
     if(loading){
@@ -102,14 +114,18 @@ const Leaderboard = () => {
                 </div>
                 {/* Podium section */}
                 <section className={styles["podium"]}>
-                    {leaderboard.slice(0, 3).map((player, index) => (
-                        <div key={player.rank} className={`${styles["podium-item"]} ${styles[`podium-item${index}`]}`}>
-                            <div className={styles["podium-avatar"]}>{player.username[0].toUpperCase()}</div>
-                            <div className={styles["podium-name"]}>{player.username}</div>
-                            <div className={styles["podium-pts"]}>{player.total_points} pts</div>
-                            <div className={`${styles["podium-platform"]} ${styles[`platform${index}`]}`}>{player.rank}</div>
-                        </div>
-                    ))}
+                    {leaderboard.length === 0 ? (
+                        <div style={{ color: "#6B7280", padding: "32px 0" }}>No reporters found for this filter yet.</div>
+                    ) : (
+                        leaderboard.slice(0, 3).map((player, index) => (
+                            <div key={player.rank} className={`${styles["podium-item"]} ${styles[`podium-item${index}`]}`}>
+                                <div className={styles["podium-avatar"]}>{player.username[0].toUpperCase()}</div>
+                                <div className={styles["podium-name"]}>{player.username}</div>
+                                <div className={styles["podium-pts"]}>{player.total_points} pts</div>
+                                <div className={`${styles["podium-platform"]} ${styles[`platform${index}`]}`}>{player.rank}</div>
+                            </div>
+                        ))
+                    )}
                 </section>
                 <div className={styles["section-wrapper"]}>
                     {/* Leaderboard Section */}
@@ -117,10 +133,20 @@ const Leaderboard = () => {
                         <div className={styles.sectionHeader}>
                             <h2>Top Contributors</h2>
                             <div className={styles["leaderboard-btn"]}>
-                                <button className = {styles["filter-tab"]}>All Time</button>
-                                <button className = {styles["filter-tab"]}>Monthly</button>
-                                <button className = {styles["filter-tab"]}>Weekly</button>
-                                <button className = {styles["filter-tab"]}>Daily</button>
+                                {[
+                                    { label: "All Time", value: "all_time" },
+                                    { label: "Monthly",  value: "monthly"  },
+                                    { label: "Weekly",   value: "weekly"   },
+                                    { label: "Daily",    value: "daily"    },
+                                ].map(({ label, value }) => (
+                                    <button
+                                        key={value}
+                                        className={`${styles["filter-tab"]} ${selectedPeriod === value ? styles["filter-tab-active"] : ""}`}
+                                        onClick={() => setSelectedPeriod(value)}
+                                    >
+                                        {label}
+                                    </button>
+                                ))}
                             </div>
                         </div>
                         
@@ -131,47 +157,62 @@ const Leaderboard = () => {
                             <div className={styles.headerCell}>Points</div>
                         </div>
                         
-                        {leaderboard.map((item) => (
-                            <div key={item.rank} className={styles.tableRow}>
-                            <div className={styles.rankCell}>
-                                <span className=
-                                                  {`${styles.rankBadge} 
-                                                    ${item.rank === 1 ? styles.topRank1 : ''}
-                                                    ${item.rank === 2 ? styles.topRank2 : ''}
-                                                    ${item.rank === 3 ? styles.topRank3 : ''}`}
-                                >
-                                {item.rank}
-                                </span>
+                        {leaderboard.length === 0 ? (
+                            <div style={{ padding: "24px 20px", color: "#6B7280", textAlign: "center" }}>
+                                No reporters found for this filter yet.
                             </div>
-                            <div className={styles.userCell}>
-                                <div className={styles.userAvatarSmall}>
-                                {item.username.charAt(0).toUpperCase()}
+                        ) : (
+                            leaderboard.map((item) => (
+                                <div key={item.rank} className={styles.tableRow}>
+                                <div className={styles.rankCell}>
+                                    <span className=
+                                                      {`${styles.rankBadge}
+                                                        ${item.rank === 1 ? styles.topRank1 : ''}
+                                                        ${item.rank === 2 ? styles.topRank2 : ''}
+                                                        ${item.rank === 3 ? styles.topRank3 : ''}`}
+                                    >
+                                    {item.rank}
+                                    </span>
                                 </div>
-                                <span>{item.username}</span>
-                            </div>
-                            <div className={styles.pointsCell}>{item.total_points}</div>
-                            </div>
-                        ))}
+                                <div className={styles.userCell}>
+                                    <div className={styles.userAvatarSmall}>
+                                    {item.username.charAt(0).toUpperCase()}
+                                    </div>
+                                    <span>{item.username}</span>
+                                </div>
+                                <div className={styles.pointsCell}>{item.total_points}</div>
+                                </div>
+                            ))
+                        )}
                         </div>
                     </div>
                     {/* Borough filter */}
                     <div className={styles["borough-filter"]}>
                         <div className={styles["borough-filter-title"]}>Filter by Boroughs</div>
                         <div className={styles["borough-field"]}>
-                            <select>
-                                <option>All Boroughs</option>
-                                <option>Manhattan</option>
-                                <option>Brooklyn</option>
-                                <option>Queens</option>
-                                <option>The Bronx</option>
-                                <option>Staten Island</option>
+                            <select
+                                value={selectedBorough}
+                                onChange={e => setSelectedBorough(e.target.value)}
+                            >
+                                <option value="all">All Boroughs</option>
+                                <option value="Manhattan">Manhattan</option>
+                                <option value="Brooklyn">Brooklyn</option>
+                                <option value="Queens">Queens</option>
+                                <option value="The Bronx">The Bronx</option>
+                                <option value="Staten Island">Staten Island</option>
                             </select>
                         </div>
                         <div className={styles["borough-info-card"]}>
-                            <div className={styles["borough-info-label"]}>Your borough rank</div>
-                            <div className={styles["borough-info-rank"]}>#4</div>
-                            <div className={styles["borough-info-city"]}>in Manhattan</div>
-                        </div>   
+                            <div className={styles["borough-info-label"]}>
+                                {selectedBorough === "all" ? "Your global rank" : "Your borough rank"}
+                            </div>
+                            <div className={styles["borough-info-rank"]}>
+                                {stats?.user_rank ? `#${stats.user_rank}` : "—"}
+                            </div>
+                            <div className={styles["borough-info-city"]}>
+                                {selectedBorough === "all" ? "All Boroughs" : `in ${selectedBorough}`}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>   
