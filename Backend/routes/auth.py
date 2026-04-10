@@ -106,6 +106,7 @@ def login():
         username = data.get("username")
         email = data.get("email")
         password = data.get("password")
+        selected_role = data.get("role", "user")
 
         login_identifier = email or username
         if not login_identifier or not password:
@@ -125,6 +126,14 @@ def login():
             password.encode("utf-8"), user[3].encode("utf-8")
         ):
             return jsonify({"success": False, "error": "Invalid credentials"}), 401
+
+        db_role = user[4]
+        if selected_role == "admin":
+            if db_role != "admin":
+                return jsonify({"success": False, "error": "Invalid credentials"}), 401
+        else:
+            if db_role == "admin":
+                return jsonify({"success": False, "error": "Invalid credentials"}), 401
 
         access_token = create_access_token(identity=str(user[0]), additional_claims={"role": user[4]})
         return jsonify(

@@ -46,9 +46,14 @@ export default function Dashboard() {
 
   const summaryCards = buildSummaryCards(summary.data);
 
+  const username = (() => {
+    try { return JSON.parse(localStorage.getItem("user") || "{}").username || "User"; }
+    catch { return "User"; }
+  })();
+
   return (
     <div className={styles.app}>
-      <DOTnavbar activeTab="analytics" />
+      <DOTnavbar activeTab="analytics" username={username} />
 
       <main className={styles.container}>
         <DashboardHero filters={filters} />

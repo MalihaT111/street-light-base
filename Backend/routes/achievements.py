@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from db import db_connection
+from routes.auth_decorators import citizen_required
 
 achievements_bp = Blueprint("achievements", __name__)
 
@@ -49,7 +50,7 @@ def check_and_award_tier(cursor, user_id):
 
 
 @achievements_bp.route("/api/achievements", methods=["GET"])
-@jwt_required()
+@citizen_required
 def get_achievements():
     user_id = get_jwt_identity()
     connection = None

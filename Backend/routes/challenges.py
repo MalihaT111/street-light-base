@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import datetime, timedelta, timezone
 from db import db_connection
+from routes.auth_decorators import citizen_required
 
 challenges_bp = Blueprint("challenges", __name__)
 
@@ -226,7 +227,7 @@ def check_and_award_challenges(cursor, user_id):
 
 
 @challenges_bp.route("/api/challenges", methods=["GET"])
-@jwt_required()
+@citizen_required
 def get_challenges():
     user_id = get_jwt_identity()
     connection = None

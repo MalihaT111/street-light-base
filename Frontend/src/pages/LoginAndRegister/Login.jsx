@@ -75,7 +75,7 @@ const Login = () => {
             localStorage.setItem('user', JSON.stringify(data.user));
             localStorage.setItem('token', data.access_token);
 
-            navigate('/home');
+            navigate(data.user.role === 'admin' ? '/dashboard' : '/home');
         } catch {
             setErrors({ password: 'Unable to connect to server' });
         }

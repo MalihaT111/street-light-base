@@ -2,24 +2,13 @@ from flask import Blueprint, jsonify, request
 from db import db_connection
 from routes.damage_type_utils import normalize_damage_type_value
 from routes.report_query_utils import build_report_filters, parse_list_query_params
-from functools import wraps
-from flask_jwt_extended import get_jwt, jwt_required
+from routes.auth_decorators import dot_admin_required
 
 analytics_bp = Blueprint("analytics", __name__)
 
 
 DEFAULT_HEATMAP_GRID_SIZE = 0.01
 MAX_HEATMAP_GRID_SIZE = 10.0
-
-def admin_required(fn):
-    @wraps(fn)
-    @jwt_required()
-    def wrapper(*args, **kwargs):
-        claims = get_jwt()
-        if claims.get("role") != "admin":
-            return jsonify({"success": False, "error": "Admins only"}), 403
-        return fn(*args, **kwargs)
-    return wrapper
 
 
 def _parse_heatmap_grid_size():
@@ -150,7 +139,7 @@ def _fetch_heatmap_buckets(cur, filters, grid_size):
 
 
 @analytics_bp.route("/api/analytics/summary", methods=["GET"])
-@admin_required
+@dot_admin_required
 def get_analytics_summary():
     connection = None
     cursor = None
@@ -201,7 +190,7 @@ def get_analytics_summary():
 
 
 @analytics_bp.route("/api/reports/analytics", methods=["GET"])
-@admin_required
+@dot_admin_required
 def get_reports_analytics():
     connection = None
     cursor = None
@@ -268,7 +257,7 @@ def get_reports_analytics():
 
 
 @analytics_bp.route("/api/reports/analytics/heatmap", methods=["GET"])
-@admin_required
+@dot_admin_required
 def get_reports_heatmap():
     connection = None
     cursor = None
