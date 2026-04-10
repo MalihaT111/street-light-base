@@ -40,3 +40,48 @@ def leaderboards():
 def leaderboard_stats():
     connection = None
     cursor = None
+    try:
+        user_id = int(get_jwt_identity())
+        connection = db_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT COUNT(*) FROM reports")
+        total_reports = cursor.fetchone()[0]
+        cursor.execute("""
+            SELECT COUNT(DISTINCT user_id)
+            FROM reports
+            WHERE created_at >= date_trunc('month', CURRENT_DATE)
+        """)
+        active_users = cursor.fetchone()[0]
+        cursor.execute("""
+            SELECT username, total_points, rank
+            FROM (
+                SELECT u.id, u.username,
+                       SUM(pl.points_earned) as total_points,
+                       RANK() OVER (ORDER BY SUM(pl.points_earned) DESC) as rank
+                FROM points_log pl
+                JOIN users u ON pl.user_id = u.id
+                GROUP BY u.id, u.username
+            ) ranked
+            WHERE id = %s
+        """, (user_id,))
+        row = cursor.fetchone()
+        user_rank   = row[2] if row else None
+        user_points = row[1] if row else 0
+        cursor.execute("SELECT COUNT(DISTINCT user_id) FROM points_log")
+        total_ranked = cursor.fetchone()[0]
+        top_pct = round((user_rank / total_ranked) * 100) if user_rank and total_ranked else None
+        return jsonify({
+            "success": True,
+            "total_reports": total_reports,
+            "active_users": active_users,
+            "user_rank": user_rank,
+            "user_points": user_points,
+            "top_pct": top_pct
+        }), 200
+    except Exception as e:
+        return jsonify({"success": False, "error": "Stats failed to load"}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
