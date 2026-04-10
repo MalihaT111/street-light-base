@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from db import db_connection
+from routes.auth_decorators import citizen_required
 
 badges_bp = Blueprint("badges", __name__)
 
@@ -76,7 +77,7 @@ def check_and_award_badges(cursor, user_id):
 
 
 @badges_bp.route("/api/badges", methods=["GET"])
-@jwt_required()
+@citizen_required
 def get_badges():
     user_id = get_jwt_identity()
     connection = None

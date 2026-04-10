@@ -205,7 +205,7 @@ function AllReports() {
 
     return (
         <>
-            <DOTnavbar activeTab='reports'/>
+            <DOTnavbar activeTab='reports' username={user?.username}/>
             <div className={styles["report-wrapper"]}>
                 <div className={styles["top-title"]}>
                     <h1 className={styles["report-title"]}>All Reports</h1>
