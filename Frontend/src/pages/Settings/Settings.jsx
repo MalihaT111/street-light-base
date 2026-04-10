@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './Settings.module.css';
 import Navbar from '../../components/Navbar/Navbar';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5001';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
 const Settings = () => {
   const navigate = useNavigate();

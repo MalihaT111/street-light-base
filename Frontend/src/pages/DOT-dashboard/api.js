@@ -1,5 +1,5 @@
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5001";
+  import.meta.env.VITE_API_BASE_URL ?? "";
 
 function appendParam(params, key, value) {
   if (Array.isArray(value)) {

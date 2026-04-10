@@ -58,23 +58,26 @@ const Reports = () => {
     }
   };
 
-  // Called by PhotoEvidence once EXIF parsing completes on the primary photo.
-  // If GPS coords are absent, we immediately set locationSource to 'error' —
-  // there is no browser fallback.
-  const handlePhotoMetadata = ({ lat, lng, timestamp, exifParsed: parsed }) => {
+  // Called by PhotoEvidence once location is resolved for the primary photo.
+  // source: 'browser' (camera capture + geolocation) | 'exif' (file upload GPS metadata)
+  const handlePhotoMetadata = ({ lat, lng, timestamp, source }) => {
     if (lat != null && lng != null) {
       setLocation({ lat, lng });
-      setLocationSource('exif');
+      setLocationSource(source);
       setLocationError(null);
-    } else if (parsed) {
+    } else {
       setLocationSource('error');
-      setLocationError('No GPS data found in this photo. See below for how to fix this.');
+      setLocationError(
+        source === 'browser'
+          ? 'Location access was denied. Please allow location in your browser and try again.'
+          : 'No GPS data found in this photo. See below for how to fix this.'
+      );
     }
 
     if (timestamp) {
       setPhotoTimestamp(timestamp instanceof Date ? timestamp : new Date(timestamp));
       setTimestampIsFallback(false);
-    } else if (parsed) {
+    } else {
       setPhotoTimestamp(new Date());
       setTimestampIsFallback(true);
     }
@@ -118,14 +121,8 @@ const Reports = () => {
     e.preventDefault();
     if (photos.length === 0 || !rating || damageTypes.length === 0) return;
 
-    // Hard enforcement: only EXIF GPS is accepted. Browser location is not a
-    // valid source because the NYC DOT requires original photo metadata for
-    // incident verification.
-    if (locationSource !== 'exif') {
-      setSubmitError(
-        'Original GPS metadata from the photo is required for NYC DOT verification. ' +
-        'Please retake or re-upload a photo with location data enabled.'
-      );
+    if (locationSource !== 'exif' && locationSource !== 'browser') {
+      setSubmitError('Location data is required. Please take a photo with location access enabled.');
       return;
     }
 
@@ -154,7 +151,7 @@ const Reports = () => {
         console.log(`FormData ${key}:`, value);
       }
 
-      const apiUrl = 'http://localhost:5001/api/reports';
+      const apiUrl = `${import.meta.env.VITE_API_BASE_URL ?? ''}/api/reports`;
       console.log('Submitting report to:', apiUrl);
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -189,9 +186,9 @@ const Reports = () => {
   if (loading) return null;
 
   const username = user?.username || 'Citizen';
-  const isFormValid = !!(photos.length > 0 && rating && damageTypes.length > 0 && locationSource === 'exif');
+  const isFormValid = !!(photos.length > 0 && rating && damageTypes.length > 0 && (locationSource === 'exif' || locationSource === 'browser'));
 
-  const locationStatus = locationSource === 'exif'
+  const locationStatus = (locationSource === 'exif' || locationSource === 'browser')
     ? 'active'
     : locationSource === 'error'
       ? 'error'

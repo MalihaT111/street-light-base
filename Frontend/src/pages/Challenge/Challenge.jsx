@@ -5,7 +5,7 @@ import ChallengeCard from "../../components/ChallengeCard/ChallengeCard";
 import Navbar from "../../components/Navbar/Navbar.jsx";
 import PageHero from "../../components/PageHero/PageHero.jsx";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5001";
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
 
 const Challenge = () => {
     const navigate = useNavigate();

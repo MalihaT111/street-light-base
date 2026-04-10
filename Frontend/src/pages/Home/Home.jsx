@@ -5,7 +5,7 @@ import { FaChartLine, FaFlag, FaTrophy, FaFire, FaMedal, FaArrowRight } from 're
 import Navbar from '../../components/Navbar/Navbar';
 import useAuth from '../../hooks/useAuth';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
 const Home = () => {
   const { user, loading } = useAuth();

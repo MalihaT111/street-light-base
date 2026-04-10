@@ -96,8 +96,8 @@ const ReportDetails = ({
       }).format(photoTimestamp instanceof Date ? photoTimestamp : new Date(photoTimestamp))
     : null;
 
-  // Show the help trigger once a photo is uploaded but EXIF GPS was not found
-  const showHelpTrigger = photoUploaded && locationSource !== 'exif';
+  // Show the help trigger only when a file was uploaded without GPS metadata
+  const showHelpTrigger = photoUploaded && locationSource !== 'exif' && locationSource !== 'browser';
 
   return (
     <>
