@@ -160,7 +160,7 @@ def login():
 def _send_reset_email(recipient_email, token):
     sender_email = os.getenv("MAIL")
     sender_password = os.getenv("MAIL_PASSWORD")
-    reset_link = f"http://localhost:5173/reset-password?token={token}"
+    reset_link = f"https://localhost:5173/reset-password?token={token}"
     msg = EmailMessage()
     msg["Subject"] = "Password Reset Request"
     msg["From"] = sender_email
