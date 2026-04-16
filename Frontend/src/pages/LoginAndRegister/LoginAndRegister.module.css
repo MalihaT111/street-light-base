@@ -238,3 +238,8 @@ a, a:visited{
     font-size: 0.75rem;
     font-weight: 700;
 }
+.success-msg {
+    color: #065F46;
+    font-size: 0.75rem;
+    font-weight: 700;
+}

@@ -70,7 +70,12 @@ def register():
         )
         new_user = cursor.fetchone()
         connection.commit()
-
+        verify_token = create_access_token(
+            identity=str(new_user[0]),
+            additional_claims={"type": "verify_email"},
+            expires_delta=timedelta(minutes=30),
+        )
+        _send_verification_email(new_user[2], verify_token)
         return jsonify(
             {
                 "success": True,
@@ -117,7 +122,7 @@ def login():
         connection = db_connection()
         cursor = connection.cursor()
         cursor.execute(
-            "SELECT id, username, email, password_hash, role FROM users WHERE email = %s OR username = %s",
+            "SELECT id, username, email, password_hash, role, email_verified FROM users WHERE email = %s OR username = %s",
             (login_identifier, login_identifier),
         )
         user = cursor.fetchone()
@@ -134,6 +139,22 @@ def login():
         else:
             if db_role == "admin":
                 return jsonify({"success": False, "error": "Invalid credentials"}), 401
+        if not user[5]:
+            try:
+                verify_token = create_access_token(
+                    identity=str(user[0]),
+                    additional_claims={"type": "verify_email"},
+                    expires_delta=timedelta(minutes=30),
+                )
+                _send_verification_email(user[2], verify_token)
+            except Exception as email_error:
+                print(f"Verification email failed to send: {email_error}")
+            return jsonify({
+                "success": False,
+                "error": "Please verify your email before logging in.",
+                "email_not_verified": True,
+                "email": user[2],
+            }), 403
 
         access_token = create_access_token(identity=str(user[0]), additional_claims={"role": user[4]})
         return jsonify(
@@ -145,6 +166,7 @@ def login():
                     "username": user[1],
                     "email": user[2],
                     "role": user[4],
+                    "email_verified": user[5],
                 },
             }
         ), 200
@@ -250,7 +272,7 @@ def reset_password():
 def _send_verification_email(recipient_email, token):
     sender_email = os.getenv('MAIL')
     sender_password = os.getenv('MAIL_PASSWORD')
-    link = f"http://localhost:5173/verify-email?token={token}"
+    link = f"https://localhost:5173/verify-email?token={token}"
     msg = EmailMessage()
     msg["Subject"] = "Email Verification Request"
     msg["From"] = sender_email
@@ -306,6 +328,42 @@ def email_verification():
         if connection:
             connection.rollback()
         return jsonify({"success": False, "error": "Verification failed"}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+@auth_bp.route("/api/resend-verification", methods=["POST"])
+def resend_verification():
+    connection = None
+    cursor = None
+    try:
+        data = request.get_json() or {}
+        email = data.get("email")
+        if not email:
+            return jsonify({"success": False, "error": "Email is required"}), 400
+
+        connection = db_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT id, email_verified FROM users WHERE email = %s", (email,))
+        user = cursor.fetchone()
+
+        if not user:
+            return jsonify({"success": True}), 200
+
+        if user[1]:
+            return jsonify({"success": False, "error": "Email is already verified"}), 400
+
+        token = create_access_token(
+            identity=str(user[0]),
+            additional_claims={"type": "verify_email"},
+            expires_delta=timedelta(minutes=30),
+        )
+        _send_verification_email(email, token)
+        return jsonify({"success": True, "message": "Verification email sent"}), 200
+
+    except Exception:
+        return jsonify({"success": False, "error": "Failed to resend"}), 500
     finally:
         if cursor:
             cursor.close()

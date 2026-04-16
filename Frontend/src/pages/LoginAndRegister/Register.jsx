@@ -12,6 +12,8 @@ const Register = () => {
     const [reveal, setReveal] = useState(false); 
     const [role, setRole] = useState("user");
     const [errors, setErrors] = useState({ general: "" });
+    const [registered, setRegistered] = useState(false);
+    const [registeredEmail, setRegisteredEmail] = useState('');
     // Form state
     const [formInput, setFormInput] = useState({
         firstName: "",
@@ -53,9 +55,32 @@ const Register = () => {
             return;
         }
 
-        localStorage.setItem('user', JSON.stringify(data.user));
-        navigate('/');
+        setRegisteredEmail(formInput.email);
+        setRegistered(true);
     };
+    if (registered) {
+    return (
+        <>
+            <Navbar minimal />
+            <div className={styles["auth-wrapper"]}>
+                <div className={styles["auth-card"]}>
+                    <h1 className={styles["auth-logo-title"]}>Check your email</h1>
+                    <p className={styles["auth-logo-subtitle"]}>
+                        Verification link sent to <strong>{registeredEmail}</strong>.
+                        Click the link to activate your account.
+                    </p>
+                    <div className={styles["form-box"]}>
+                        <div className={styles["auth-body"]}>
+                            <div className={styles["registeration"]}>
+                                <p>Already verified? <Link to="/" className={styles["sign-up-link"]}>Sign In</Link></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    );
+}
     
     return (
     <>

@@ -11,6 +11,7 @@ import AllReports from "./pages/AllReports/AllReports.jsx";
 import Settings from "./pages/Settings/Settings.jsx";
 import ForgotPassword from "./pages/LoginAndRegister/ForgetPassword.jsx";
 import ResetPassword from "./pages/LoginAndRegister/ResetPassword.jsx";
+import VerifyEmail from "./pages/LoginAndRegister/VerifyEmail.jsx";
 
 function getRole() {
   try {
@@ -40,6 +41,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/home" element={<CitizenRoute><Home /></CitizenRoute>} />
