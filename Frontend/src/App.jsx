@@ -11,6 +11,8 @@ import AllReports from "./pages/AllReports/AllReports.jsx";
 import Settings from "./pages/Settings/Settings.jsx";
 import ForgotPassword from "./pages/LoginAndRegister/ForgetPassword.jsx";
 import ResetPassword from "./pages/LoginAndRegister/ResetPassword.jsx";
+// Testing
+import ToolTipTest from "./pages/Reports/components/ToolTipTest.jsx";
 
 function getRole() {
   try {
@@ -50,6 +52,8 @@ function App() {
         <Route path="/settings" element={<CitizenRoute><Settings /></CitizenRoute>} />
         <Route path="/dashboard" element={<DotAdminRoute><Dashboard /></DotAdminRoute>} />
         <Route path="/all-reports" element={<DotAdminRoute><AllReports /></DotAdminRoute>} />
+        {/* testing */}
+        <Route path="/tooltip-test" element={<ToolTipTest />} />
       </Routes>
     </>
   )

@@ -1,9 +1,13 @@
 import styles from './css/ReferenceGuide.module.css';
+import goodImg from '../../../assets/images/good.jpg'
+import fairImg from '../../../assets/images/fair.jpg'
+import poorImg from '../../../assets/images/poor.png'
+import ToolTip from './ToolTip';
 
 const CONDITION_EXAMPLES = [
-  { label: 'GOOD', imageClass: styles.imageGood, labelClass: styles.labelGood },
-  { label: 'FAIR', imageClass: styles.imageFair, labelClass: styles.labelFair },
-  { label: 'POOR', imageClass: styles.imagePoor, labelClass: styles.labelPoor },
+  { label: 'GOOD', imageClass: styles.imageGood, imageSrc: goodImg, labelClass: styles.labelGood },
+  { label: 'FAIR', imageClass: styles.imageFair, imageSrc: fairImg, labelClass: styles.labelFair },
+  { label: 'POOR', imageClass: styles.imagePoor, imageSrc: poorImg, labelClass: styles.labelPoor },
 ];
 
 const COMMON_DAMAGE_TYPES = [
@@ -23,9 +27,18 @@ const ReferenceGuide = () => (
     <div className={styles.cardBody}>
       <p className={styles.hint}>Compare your photo to these condition examples</p>
       <div className={styles.exampleGrid}>
-        {CONDITION_EXAMPLES.map(({ label, imageClass, labelClass }) => (
+        {CONDITION_EXAMPLES.map(({ label, imageClass, imageSrc, labelClass }) => (
+          // refrence images
           <div key={label} className={styles.exampleItem}>
-            <div className={`${styles.exampleImage} ${imageClass}`} />
+              {/* <ToolTip
+                imgSrc={imageSrc}
+                imgTitle={label}
+                imgDesc={""}
+              /> */}
+              <img 
+                src = {imageSrc}
+                className={`${styles.exampleImage} ${imageClass}`}
+              />
             <span className={`${styles.exampleLabel} ${labelClass}`}>{label}</span>
           </div>
         ))}

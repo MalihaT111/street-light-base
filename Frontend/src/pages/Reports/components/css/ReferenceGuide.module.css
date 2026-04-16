@@ -47,6 +47,7 @@
   aspect-ratio: 1;
   border-radius: 8px;
   border: 1px solid #E5E7EB;
+  object-fit: cover;
 }
 
 .imageGood { background-color: #ECFDF5; }
