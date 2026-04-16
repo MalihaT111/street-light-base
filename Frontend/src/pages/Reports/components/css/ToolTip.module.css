@@ -1,6 +1,7 @@
 .toolTipContainer {
     position: relative;
     display: inline-block;
+    box-sizing: border-box;
 }
 .toolTipChild {
     position: relative;
@@ -11,7 +12,7 @@
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
-    width: max-content;
+    width: 150px;
     background-color: #fff;
     border: 1px solid #E5E7EB;
     border-radius: 8px;
@@ -46,4 +47,9 @@
     font-size: 0.8rem;
     font-weight: 600;
     color: #111827;
+}
+@media (max-width: 768px) {
+    .toolTip {
+      width: 100px;
+    }
 }
