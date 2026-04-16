@@ -1,9 +1,31 @@
 import styles from './css/ReferenceGuide.module.css';
+import goodImg from '../../../assets/images/good.jpg'
+import fairImg from '../../../assets/images/fair.jpg'
+import poorImg from '../../../assets/images/poor.png'
+import ToolTip from './ToolTip';
 
 const CONDITION_EXAMPLES = [
-  { label: 'GOOD', imageClass: styles.imageGood, labelClass: styles.labelGood },
-  { label: 'FAIR', imageClass: styles.imageFair, labelClass: styles.labelFair },
-  { label: 'POOR', imageClass: styles.imagePoor, labelClass: styles.labelPoor },
+  { 
+    label: 'GOOD', 
+    imageClass: styles.imageGood, 
+    imageSrc: goodImg, 
+    labelClass: styles.labelGood, 
+    desc:  "No Action is needed.\n• All Corners are in good condition",
+  },
+  { 
+    label: 'FAIR', 
+    imageClass: styles.imageFair, 
+    imageSrc: fairImg, 
+    labelClass: styles.labelFair, 
+    desc: "Replacement in 1-2 years. \n• One side is corroded",
+  },
+  { 
+    label: 'POOR', 
+    imageClass: styles.imagePoor, 
+    imageSrc: poorImg, 
+    labelClass: styles.labelPoor, 
+    desc: "imediate action.\n• Two or more sides are corroded",
+  },
 ];
 
 const COMMON_DAMAGE_TYPES = [
@@ -23,9 +45,15 @@ const ReferenceGuide = () => (
     <div className={styles.cardBody}>
       <p className={styles.hint}>Compare your photo to these condition examples</p>
       <div className={styles.exampleGrid}>
-        {CONDITION_EXAMPLES.map(({ label, imageClass, labelClass }) => (
+        {CONDITION_EXAMPLES.map(({ label, imageClass, imageSrc, labelClass, desc }) => (
+          // refrence images
           <div key={label} className={styles.exampleItem}>
-            <div className={`${styles.exampleImage} ${imageClass}`} />
+                <ToolTip text ={desc} textTitle={label}>
+                  <img 
+                    src = {imageSrc}
+                    className={`${styles.exampleImage} ${imageClass}`}
+                  />
+                </ToolTip>
             <span className={`${styles.exampleLabel} ${labelClass}`}>{label}</span>
           </div>
         ))}

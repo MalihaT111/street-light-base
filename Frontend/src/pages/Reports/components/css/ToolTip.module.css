@@ -1,0 +1,49 @@
+.toolTipContainer {
+    position: relative;
+    display: inline-block;
+}
+.toolTipChild {
+    position: relative;
+    display: inline-block; 
+}
+.toolTip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    background-color: #fff;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    padding: 1rem;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 10;
+}
+.toolTipContainer:hover .toolTip {
+    visibility: visible;
+    opacity: 1;
+}
+.toolTip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%) rotate(45deg);
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-right: 1px solid #E5E7EB;
+    border-bottom: 1px solid #E5E7EB;
+}
+.contentDesc{
+    font-size: 0.8rem;
+    color: #6B7280;
+    white-space: pre-line;
+}
+.contentTitle{
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #111827;
+}
