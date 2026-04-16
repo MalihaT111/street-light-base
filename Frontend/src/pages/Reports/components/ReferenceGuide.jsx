@@ -24,7 +24,7 @@ const CONDITION_EXAMPLES = [
     imageClass: styles.imagePoor, 
     imageSrc: poorImg, 
     labelClass: styles.labelPoor, 
-    desc: "imediate action.\n• Two or more sides are corroded",
+    desc: "Immediate action.\n• Two or more sides are corroded",
   },
 ];
 
