@@ -1,13 +1,15 @@
 import styles from './css/ToolTip.module.css'
 
-const ToolTip = ({imgSrc, imgTitle, imgDesc}) => {
+const ToolTip = ({text, textTitle, children}) => {
     return(
         // wrapper
-        <div className = {styles.wrapper}>
-            <img src = {imgSrc}/>
-            <div className={styles.content}>
-                <div className={styles.contentTitle}>{imgTitle}</div>
-                <div className={styles.contentDesc}>{imgDesc}</div>
+        <div className = {styles.toolTipContainer}>
+            <div className = {styles.toolTipChild}>
+                {children}
+            </div>
+            <div className = {styles.toolTip}>
+                <div className = {styles.contentTitle}>{textTitle}</div>
+                <span className = {styles.contentDesc}>{text}</span>
             </div>
         </div>
     )

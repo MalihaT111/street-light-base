@@ -2,7 +2,7 @@
   background: #fff;
   border: 1px solid #E5E7EB;
   border-radius: 12px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .cardHeader {

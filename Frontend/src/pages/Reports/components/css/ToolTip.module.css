@@ -1,60 +1,49 @@
-/* wrapper holds image + tooltip */
-.wrapper {
+.toolTipContainer {
     position: relative;
     display: inline-block;
-  }
-  
-  /* small image (trigger) */
-  .wrapper img {
-    width: 90px;
-    height: 90px;
-    object-fit: cover;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-  
-  /* tooltip box */
-  .content {
+}
+.toolTipChild {
+    position: relative;
+    display: inline-block; 
+}
+.toolTip {
     position: absolute;
-  
-    /* 🔽 START SIMPLE: show below image */
-    top: 110%;
+    bottom: 100%;
     left: 50%;
-    transform: translateX(-50%) translateY(5px);
-  
-    width: 220px;
-    padding: 12px;
-    border-radius: 12px;
-  
-    background: #1f1f1f;
-    color: #ffffff;
-  
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
-  
-    opacity: 0;
+    transform: translateX(-50%);
+    width: max-content;
+    background-color: #fff;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    padding: 1rem;
     visibility: hidden;
-  
-    transition: all 0.2s ease;
-    z-index: 100;
-  }
-  
-  /* show on hover */
-  .wrapper:hover .content {
-    opacity: 1;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 10;
+}
+.toolTipContainer:hover .toolTip {
     visibility: visible;
-    transform: translateX(-50%) translateY(0);
-  }
-  
-  /* title */
-  .contentTitle {
-    font-weight: 700;
-    font-size: 15px;
-    margin-bottom: 6px;
-  }
-  
-  /* description */
-  .contentDesc {
-    font-size: 13px;
-    color: #d1d5db;
-    line-height: 1.4;
-  }
+    opacity: 1;
+}
+.toolTip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%) rotate(45deg);
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-right: 1px solid #E5E7EB;
+    border-bottom: 1px solid #E5E7EB;
+}
+.contentDesc{
+    font-size: 0.8rem;
+    color: #6B7280;
+    white-space: pre-line;
+}
+.contentTitle{
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #111827;
+}
