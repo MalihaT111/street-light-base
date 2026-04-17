@@ -16,6 +16,9 @@ const Login = () => {
     const [formInput, setFormInput] = useState({email:"" ,password:""});
     const [errors, setErrors] = useState({});
     // Message for each error type and case
+    const [unverifiedEmail, setUnverifiedEmail] = useState('');
+    const [resendMsg, setResendMsg] = useState('');
+    const [resending, setResending] = useState(false);
     const validate = () => {
         const errorMessage = {};
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -68,7 +71,15 @@ const Login = () => {
             const data = await response.json();
 
             if (!response.ok) {
+                if (data.email_not_verified) {
+                    setErrors({ password: 'Account access restricted due to unverified email. A verification email has been sent to ${data.email}. Please verify to access your account.' });
+                    setUnverifiedEmail(data.email || formInput.email);
+                    setResendMsg('');
+                    return;
+                }
                 setErrors({ password: data.error || 'Login failed' });
+                setUnverifiedEmail('');
+                setResendMsg('');
                 return;
             }
 
@@ -80,6 +91,23 @@ const Login = () => {
             setErrors({ password: 'Unable to connect to server' });
         }
     }
+        const handleResend = async () => {
+            setResending(true);
+            setResendMsg('');
+            try {
+                const res = await fetch(`${import.meta.env.VITE_API_BASE_URL ?? ''}/api/resend-verification`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: unverifiedEmail }),
+            });
+            const d = await res.json();
+            setResendMsg(d.success ? 'Verification email sent! Check your inbox.' : (d.error || 'Failed to resend.'));
+            } catch {
+                setResendMsg('Unable to connect to server.');
+            } finally {
+                setResending(false);
+            }
+        };
   return (
     <>
         <Navbar minimal />
@@ -156,6 +184,24 @@ const Login = () => {
                                 <div className={styles["error"]}>{errors.password}</div>
                             </div>
                         </div>
+                        {unverifiedEmail && (
+                            <div className={styles["registeration"]} style={{ marginTop: '8px' }}>
+                                <button
+                                    type="button"
+                                    onClick={handleResend}
+                                    disabled={resending}
+                                    className={styles["sign-up-link"]}
+                                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                                >
+                                    {resending ? 'Sending...' : 'Resend verification email'}
+                                </button>
+                                {resendMsg && (
+                                    <p className={styles[resendMsg.includes('sent') ? 'success-msg' : 'error']}>
+                                        {resendMsg}
+                                    </p>
+                                )}
+                            </div>
+                        )}
                         <div className={styles["forget-password"]}>
                             <Link to="/forgot-password">Forgot password?</Link>
                         </div>
