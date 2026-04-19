@@ -42,11 +42,22 @@ export default function HeatmapChart({ data, apiUrl }) {
 
     // Init: create the Leaflet map and NYC tile layers once.
     const map = leaflet.map(mapNodeRef.current, {
-      center: [40.7128, -74.006],
-      zoom: 11,
+      // center: [40.7128, -74.006],
+      // zoom: 11,
+      // zoomControl: true,
       zoomControl: true,
+      minZoom: 9.4,
+      maxZoom: 17,
+      maxBoundsViscosity: 1.0,
     });
 
+    const nycBounds = leaflet.latLngBounds(
+      [40.4774, -74.2591],
+      [40.9176, -73.7004]
+    );
+    
+    map.setMaxBounds(nycBounds);
+    map.fitBounds(nycBounds);
     mapRef.current = map;
 
     leaflet
@@ -84,6 +95,10 @@ export default function HeatmapChart({ data, apiUrl }) {
         }
       )
       .addTo(map);
+
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 0);
 
     return () => {
       if (refreshTimerRef.current) {
