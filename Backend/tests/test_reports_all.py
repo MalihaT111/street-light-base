@@ -30,9 +30,12 @@ def insert_report(cur, user_id, borough="Manhattan", rating="poor"):
     return cur.fetchone()[0]
 
 
-def make_auth_headers(flask_app, user_id):
+def make_auth_headers(flask_app, user_id, role="citizen"):
     with flask_app.app_context():
-        token = create_access_token(identity=str(user_id))
+        token = create_access_token(
+            identity=str(user_id),
+            additional_claims={"role": role},
+        )
     return {"Authorization": f"Bearer {token}"}
 
 
@@ -46,7 +49,7 @@ def test_all_reports_requires_dot_or_ppl_role(db_conn, flask_app):
     with flask_app.test_client() as client:
         response = client.get(
             "/api/reports/all",
-            headers=make_auth_headers(flask_app, citizen_id),
+            headers=make_auth_headers(flask_app, citizen_id, role="citizen"),
         )
 
     assert response.status_code == 403
@@ -66,7 +69,7 @@ def test_all_reports_returns_everyones_reports_for_dot_role(db_conn, flask_app):
     with flask_app.test_client() as client:
         response = client.get(
             "/api/reports/all?limit=200",
-            headers=make_auth_headers(flask_app, dot_id),
+            headers=make_auth_headers(flask_app, dot_id, role="dot_admin"),
         )
 
     assert response.status_code == 200
@@ -87,7 +90,7 @@ def test_all_reports_returns_everyones_reports_for_ppl_role(db_conn, flask_app):
     with flask_app.test_client() as client:
         response = client.get(
             "/api/reports/all",
-            headers=make_auth_headers(flask_app, ppl_id),
+            headers=make_auth_headers(flask_app, ppl_id, role="ppl"),
         )
 
     assert response.status_code == 200
@@ -106,7 +109,7 @@ def test_dot_cannot_edit_someone_elses_report(db_conn, flask_app):
     with flask_app.test_client() as client:
         response = client.put(
             f"/api/reports/{report_id}",
-            headers=make_auth_headers(flask_app, dot_id),
+            headers=make_auth_headers(flask_app, dot_id, role="dot_admin"),
             json={"rating": "fair"},
         )
 

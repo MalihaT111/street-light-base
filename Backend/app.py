@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
@@ -32,6 +32,17 @@ def create_app():
     app.register_blueprint(challenges_bp)
     app.register_blueprint(badges_bp)
     app.register_blueprint(achievements_bp)
+
+    @app.route("/api/health")
+    def health_check():
+        return jsonify({"status": "healthy", "environment": os.getenv("FLASK_ENV", "production")}), 200
+
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        # Log the actual error for the developer
+        app.logger.error(f"Unhandled Exception: {str(e)}")
+        # Return a generic message to the user
+        return jsonify({"success": False, "error": "Internal server error"}), 500
 
     return app
 

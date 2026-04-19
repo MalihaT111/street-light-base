@@ -4,10 +4,11 @@ from datetime import timedelta
 from email.message import EmailMessage
 
 import bcrypt
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, jwt_required
 
-from db import db_connection
+from db import get_db_connection, release_db_connection
+from routes.auth_utils import client_role, is_admin_role
 
 
 auth_bp = Blueprint("auth", __name__)
@@ -50,7 +51,7 @@ def register():
             password.encode("utf-8"), bcrypt.gensalt()
         ).decode("utf-8")
 
-        connection = db_connection()
+        connection = get_db_connection()
         cursor = connection.cursor()
         cursor.execute(
             "SELECT id FROM users WHERE email = %s OR username = %s",
@@ -83,22 +84,22 @@ def register():
                     "id": new_user[0],
                     "username": new_user[1],
                     "email": new_user[2],
-                    "role": new_user[3],
+                    "role": client_role(new_user[3]),
                     "first_name": new_user[4],
                     "last_name": new_user[5],
                 },
             }
         ), 201
     except Exception as error:
-        print(f"Registration error: {error}")
+        current_app.logger.error(f"Registration error: {error}")
         if connection:
             connection.rollback()
-        return jsonify({"success": False, "error": str(error)}), 500
+        return jsonify({"success": False, "error": "Internal server error"}), 500
     finally:
         if cursor:
             cursor.close()
         if connection:
-            connection.close()
+            release_db_connection(connection)
 
 
 @auth_bp.route("/api/login", methods=["POST"])
@@ -119,7 +120,7 @@ def login():
                 {"success": False, "error": "Email/username and password required"}
             ), 400
 
-        connection = db_connection()
+        connection = get_db_connection()
         cursor = connection.cursor()
         cursor.execute(
             "SELECT id, username, email, password_hash, role, email_verified FROM users WHERE email = %s OR username = %s",
@@ -134,10 +135,10 @@ def login():
 
         db_role = user[4]
         if selected_role == "admin":
-            if db_role != "admin":
+            if not is_admin_role(db_role):
                 return jsonify({"success": False, "error": "Invalid credentials"}), 401
         else:
-            if db_role == "admin":
+            if is_admin_role(db_role):
                 return jsonify({"success": False, "error": "Invalid credentials"}), 401
         if not user[5]:
             try:
@@ -148,7 +149,7 @@ def login():
                 )
                 _send_verification_email(user[2], verify_token)
             except Exception as email_error:
-                print(f"Verification email failed to send: {email_error}")
+                current_app.logger.error(f"Verification email failed to send: {email_error}")
             return jsonify({
                 "success": False,
                 "error": "Please verify your email before logging in.",
@@ -156,7 +157,10 @@ def login():
                 "email": user[2],
             }), 403
 
-        access_token = create_access_token(identity=str(user[0]), additional_claims={"role": user[4]})
+        access_token = create_access_token(
+            identity=str(user[0]),
+            additional_claims={"role": client_role(user[4])},
+        )
         return jsonify(
             {
                 "success": True,
@@ -165,24 +169,26 @@ def login():
                     "id": user[0],
                     "username": user[1],
                     "email": user[2],
-                    "role": user[4],
+                    "role": client_role(user[4]),
                     "email_verified": user[5],
                 },
             }
         ), 200
     except Exception:
+        current_app.logger.exception("Login exception occurred")
         return jsonify({"success": False, "error": "Login failed"}), 500
     finally:
         if cursor:
             cursor.close()
         if connection:
-            connection.close()
+            release_db_connection(connection)
 
 
 def _send_reset_email(recipient_email, token):
     sender_email = os.getenv("MAIL")
     sender_password = os.getenv("MAIL_PASSWORD")
-    reset_link = f"https://localhost:5173/reset-password?token={token}"
+    frontend_url = os.getenv("FRONTEND_URL", "https://localhost:5173").rstrip("/")
+    reset_link = f"{frontend_url}/reset-password?token={token}"
     msg = EmailMessage()
     msg["Subject"] = "Password Reset Request"
     msg["From"] = sender_email
@@ -212,7 +218,7 @@ def forget_password():
         email = data.get("email")
         if not email:
             return jsonify({"success": False, "error": "Email is required"}), 400
-        connection = db_connection()
+        connection = get_db_connection()
         cursor = connection.cursor()
         cursor.execute("SELECT id FROM users WHERE email = %s", (email,))
         user = cursor.fetchone()
@@ -227,12 +233,13 @@ def forget_password():
         _send_reset_email(email, reset_token)
         return jsonify({"success": True, "message": "If email exists, a reset link has been sent to the corresponding email."}), 200
     except Exception:
+        current_app.logger.exception("Password reset request failed")
         return jsonify({"success": False, "error": "Reset failed"}), 500
     finally:
         if cursor:
             cursor.close()
         if connection:
-            connection.close()
+            release_db_connection(connection)
 
 
 @auth_bp.route("/api/reset-password", methods=["POST"])
@@ -252,7 +259,7 @@ def reset_password():
         if jwt_claim.get("type") != "reset":
             return jsonify({"success": False, "error": "Invalid reset token"}), 400
         password_hash = bcrypt.hashpw(new_password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
-        connection = db_connection()
+        connection = get_db_connection()
         cursor = connection.cursor()
         cursor.execute("UPDATE users SET password_hash = %s WHERE id = %s", (password_hash, int(user_id)))
         if cursor.rowcount == 0:
@@ -262,22 +269,23 @@ def reset_password():
     except Exception as e:
         if connection:
             connection.rollback()
-        print("RESET ERROR:", e)
-        return jsonify({"success": False, "error": str(e)}), 500
+        current_app.logger.error(f"Password update failed: {e}")
+        return jsonify({"success": False, "error": "Internal server error"}), 500
     finally:
         if cursor:
             cursor.close()
         if connection:
-            connection.close()
+            release_db_connection(connection)
 def _send_verification_email(recipient_email, token):
     sender_email = os.getenv('MAIL')
     sender_password = os.getenv('MAIL_PASSWORD')
-    link = f"https://localhost:5173/verify-email?token={token}"
+    frontend_url = os.getenv("FRONTEND_URL", "https://localhost:5173").rstrip("/")
+    link = f"{frontend_url}/verify-email?token={token}"
     msg = EmailMessage()
     msg["Subject"] = "Email Verification Request"
     msg["From"] = sender_email
     msg["To"] = recipient_email
-    msg.set_content(f'Click the link to verify your email:\n{link}\n\nExpires in 10 minutes.')
+    msg.set_content(f'Click the link to verify your email:\n{link}\n\nExpires in 30 minutes.')
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
         server.login(sender_email, sender_password)
         server.send_message(msg)
@@ -293,7 +301,7 @@ def send_verification():
             additional_claims={"type": "verify_email"},
             expires_delta=timedelta(minutes=30)
         )
-        connection = db_connection()
+        connection = get_db_connection()
         cursor = connection.cursor()
         cursor.execute("SELECT email FROM users WHERE id = %s", (user_id,))
         row = cursor.fetchone()
@@ -302,12 +310,13 @@ def send_verification():
         _send_verification_email(row[0], token)
         return jsonify({"success": True, "message": "Verification email sent"}), 200
     except Exception as e:
+        current_app.logger.error(f"Manual verification email trigger failed: {e}")
         return jsonify({"success": False, "error": "Failed to send"}), 500
     finally:
         if cursor:
             cursor.close()
         if connection:
-            connection.close()
+            release_db_connection(connection)
 @auth_bp.route("/api/email-verification", methods=['POST'])
 @jwt_required()
 def email_verification():
@@ -318,21 +327,21 @@ def email_verification():
         user_id = get_jwt_identity()
         if jwt_claim.get("type") != "verify_email":
             return jsonify({"success": False, "error": "Invalid token"}), 400
-        connection = db_connection()
+        connection = get_db_connection()
         cursor = connection.cursor()
         cursor.execute("UPDATE users SET email_verified = TRUE WHERE id = %s", (int(user_id),))
         connection.commit()
         return jsonify({"success": True, "message": "Email verified"}), 200
     except Exception as e:
-        print(f"Verify email error: {e}")
+        current_app.logger.error(f"Verify email error: {e}")
         if connection:
             connection.rollback()
-        return jsonify({"success": False, "error": "Verification failed"}), 500
+        return jsonify({"success": False, "error": "Internal server error"}), 500
     finally:
         if cursor:
             cursor.close()
         if connection:
-            connection.close()
+            release_db_connection(connection)
 @auth_bp.route("/api/resend-verification", methods=["POST"])
 def resend_verification():
     connection = None
@@ -343,7 +352,7 @@ def resend_verification():
         if not email:
             return jsonify({"success": False, "error": "Email is required"}), 400
 
-        connection = db_connection()
+        connection = get_db_connection()
         cursor = connection.cursor()
         cursor.execute("SELECT id, email_verified FROM users WHERE email = %s", (email,))
         user = cursor.fetchone()
@@ -363,9 +372,10 @@ def resend_verification():
         return jsonify({"success": True, "message": "Verification email sent"}), 200
 
     except Exception:
+        current_app.logger.exception("Resend verification failed")
         return jsonify({"success": False, "error": "Failed to resend"}), 500
     finally:
         if cursor:
             cursor.close()
         if connection:
-            connection.close()
+            release_db_connection(connection)

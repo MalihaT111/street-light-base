@@ -1,8 +1,9 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 
-from db import db_connection
+from db import get_db_connection, release_db_connection
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from routes.auth_decorators import citizen_required
+from routes.auth_utils import get_current_user_id
 
 leaderboard_bp = Blueprint("leaderboard", __name__)
 
@@ -39,7 +40,7 @@ def leaderboards():
         reports_join = "JOIN reports r ON pl.report_id = r.id" if needs_reports_join else ""
         params.append(limit)
 
-        connection = db_connection()
+        connection = get_db_connection()
         cursor = connection.cursor()
         cursor.execute(f"""
             SELECT u.username, SUM(pl.points_earned) as total_points
@@ -55,20 +56,22 @@ def leaderboards():
         rows = cursor.fetchall()
         leaderboard = [{"rank": i, "username": r[0], "total_points": r[1]} for i, r in enumerate(rows, 1)]
         return jsonify({"success": True, "leaderboard": leaderboard}), 200
-    except Exception:
+    except Exception as e:
+        current_app.logger.error(f"Leaderboards failure: {e}")
         return jsonify({"success": False, "error": "Leaderboards failed to load"}), 500
     finally:
         if cursor:
             cursor.close()
         if connection:
-            connection.close()
+            release_db_connection(connection)
+
 @leaderboard_bp.route("/api/leaderboard/stats", methods=["GET"])
 @citizen_required
 def leaderboard_stats():
     connection = None
     cursor = None
     try:
-        user_id = int(get_jwt_identity())
+        user_id = get_current_user_id()
         borough = (request.args.get("borough") or "").strip()
         period = (request.args.get("period") or "all_time").strip().lower()
 
@@ -87,7 +90,7 @@ def leaderboard_stats():
         where_clause = ("WHERE " + " AND ".join(conditions)) if conditions else ""
         reports_join = "JOIN reports r ON pl.report_id = r.id" if needs_reports_join else ""
 
-        connection = db_connection()
+        connection = get_db_connection()
         cursor = connection.cursor()
         cursor.execute("SELECT COUNT(*) FROM reports")
         total_reports = cursor.fetchone()[0]
@@ -136,9 +139,10 @@ def leaderboard_stats():
             "borough": borough if needs_reports_join else "all"
         }), 200
     except Exception as e:
+        current_app.logger.error(f"Leaderboard stats failure: {e}")
         return jsonify({"success": False, "error": "Stats failed to load"}), 500
     finally:
         if cursor:
             cursor.close()
         if connection:
-            connection.close()
+            release_db_connection(connection)
