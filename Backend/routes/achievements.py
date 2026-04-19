@@ -1,7 +1,8 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from db import db_connection
+from db import get_db_connection, release_db_connection
 from routes.auth_decorators import citizen_required
+from routes.auth_utils import get_current_user_id
 
 achievements_bp = Blueprint("achievements", __name__)
 
@@ -52,12 +53,12 @@ def check_and_award_tier(cursor, user_id):
 @achievements_bp.route("/api/achievements", methods=["GET"])
 @citizen_required
 def get_achievements():
-    user_id = get_jwt_identity()
+    user_id = get_current_user_id()
     connection = None
     cursor = None
 
     try:
-        connection = db_connection()
+        connection = get_db_connection()
         cursor = connection.cursor()
 
         cursor.execute(
@@ -107,11 +108,11 @@ def get_achievements():
         ), 200
 
     except Exception as e:
-        print("get_achievements error:", e)
-        return jsonify({"success": False, "error": str(e)}), 500
+        current_app.logger.error(f"get_achievements error: {e}")
+        return jsonify({"success": False, "error": "Internal server error"}), 500
 
     finally:
         if cursor:
             cursor.close()
         if connection:
-            connection.close()
+            release_db_connection(connection)

@@ -1,13 +1,13 @@
 import json
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from routes.badges import check_and_award_badges
 from routes.challenges import check_and_award_challenges
 from routes.achievements import check_and_award_tier
 from routes.auth_decorators import citizen_required, dot_admin_required
 
-from db import db_connection
+from db import get_db_connection, release_db_connection
 from routes.damage_type_utils import normalize_damage_types
 from routes.report_query_utils import (
     ALLOWED_SORT_FIELDS,
@@ -16,22 +16,16 @@ from routes.report_query_utils import (
     serialize_report_row,
 )
 from services.cloudinary_service import upload_image
+from routes.auth_utils import get_current_user_id
 
 reports_bp = Blueprint("reports", __name__)
-
-
-def _get_current_user_id():
-    identity = get_jwt_identity()
-    return identity.get("user_id") if isinstance(identity, dict) else identity
-
-
 
 def _run_report_list_query(base_filters):
     conn = None
     cur = None
 
     try:
-        conn = db_connection()
+        conn = get_db_connection()
         cur = conn.cursor()
 
         # Raw report endpoints return database rows directly, with pagination metadata.
@@ -95,7 +89,7 @@ def _run_report_list_query(base_filters):
         if cur:
             cur.close()
         if conn:
-            conn.close()
+            release_db_connection(conn)
 
 
 @reports_bp.route("/api/reports", methods=["GET"])
@@ -107,8 +101,8 @@ def get_reports():
     except ValueError as error:
         return jsonify({"success": False, "error": str(error)}), 400
     except Exception as error:
-        print("ERROR:", error)
-        return jsonify({"success": False, "error": str(error)}), 500
+        current_app.logger.error(f"Error fetching reports: {error}")
+        return jsonify({"success": False, "error": "Internal server error"}), 500
 
 
 @reports_bp.route("/api/reports/poor", methods=["GET"])
@@ -121,8 +115,8 @@ def get_poor_reports():
     except ValueError as error:
         return jsonify({"success": False, "error": str(error)}), 400
     except Exception as error:
-        print("ERROR:", error)
-        return jsonify({"success": False, "error": str(error)}), 500
+        current_app.logger.error(f"Error fetching poor reports: {error}")
+        return jsonify({"success": False, "error": "Internal server error"}), 500
 
 
 @reports_bp.route("/api/reports/mine", methods=["GET"])
@@ -130,15 +124,15 @@ def get_poor_reports():
 def get_my_reports():
     try:
         filters = parse_list_query_params()
-        filters["user_id"] = _get_current_user_id()
+        filters["user_id"] = get_current_user_id()
 
         response, status_code = _run_report_list_query(filters)
         return jsonify(response), status_code
     except ValueError as error:
         return jsonify({"success": False, "error": str(error)}), 400
     except Exception as error:
-        print("ERROR:", error)
-        return jsonify({"success": False, "error": str(error)}), 500
+        current_app.logger.error(f"Error fetching user reports: {error}")
+        return jsonify({"success": False, "error": "Internal server error"}), 500
 
 
 @reports_bp.route("/api/reports/all", methods=["GET"])
@@ -151,8 +145,8 @@ def get_all_reports():
     except ValueError as error:
         return jsonify({"success": False, "error": str(error)}), 400
     except Exception as error:
-        print("ERROR:", error)
-        return jsonify({"success": False, "error": str(error)}), 500
+        current_app.logger.error(f"Error fetching all reports for admin: {error}")
+        return jsonify({"success": False, "error": "Internal server error"}), 500
 
 
 @reports_bp.route("/api/reports/<int:report_id>", methods=["PUT"])
@@ -161,7 +155,7 @@ def edit_report(report_id):
     conn = None
     cur = None
     try:
-        user_id = _get_current_user_id()
+        user_id = get_current_user_id()
 
         data = request.get_json()
         rating = data.get("rating")
@@ -183,7 +177,7 @@ def edit_report(report_id):
         if not set_clauses:
             return jsonify({"success": False, "error": "No fields to update"}), 400
 
-        conn = db_connection()
+        conn = get_db_connection()
         cur = conn.cursor()
 
         cur.execute("SELECT user_id FROM reports WHERE id = %s", (report_id,))
@@ -220,13 +214,13 @@ def edit_report(report_id):
     except Exception as error:
         if conn:
             conn.rollback()
-        print("ERROR:", error)
-        return jsonify({"success": False, "error": str(error)}), 500
+        current_app.logger.error(f"Error editing report {report_id}: {error}")
+        return jsonify({"success": False, "error": "Internal server error"}), 500
     finally:
         if cur:
             cur.close()
         if conn:
-            conn.close()
+            release_db_connection(conn)
 
 
 @reports_bp.route("/api/reports/<int:report_id>", methods=["DELETE"])
@@ -235,9 +229,9 @@ def delete_report(report_id):
     conn = None
     cur = None
     try:
-        user_id = _get_current_user_id()
+        user_id = get_current_user_id()
 
-        conn = db_connection()
+        conn = get_db_connection()
         cur = conn.cursor()
 
         cur.execute("SELECT user_id FROM reports WHERE id = %s", (report_id,))
@@ -254,13 +248,13 @@ def delete_report(report_id):
     except Exception as error:
         if conn:
             conn.rollback()
-        print("ERROR:", error)
-        return jsonify({"success": False, "error": str(error)}), 500
+        current_app.logger.error(f"Error deleting report {report_id}: {error}")
+        return jsonify({"success": False, "error": "Internal server error"}), 500
     finally:
         if cur:
             cur.close()
         if conn:
-            conn.close()
+            release_db_connection(conn)
 
 
 @reports_bp.route("/api/reports", methods=["POST"])
@@ -270,11 +264,7 @@ def submit_report():
     cur = None
 
     try:
-        identity = get_jwt_identity()
-        if isinstance(identity, dict):
-            user_id = identity.get("user_id")
-        else:
-            user_id = identity
+        user_id = get_current_user_id()
 
         latitude = request.form.get("latitude")
         longitude = request.form.get("longitude")
@@ -294,10 +284,10 @@ def submit_report():
         for f in photo_files:
             if f:
                 url = upload_image(f)
-                print(f"Cloudinary URL: {url}")
+                current_app.logger.info(f"Cloudinary upload successful: {url}")
                 uploaded_urls.append(url)
 
-        conn = db_connection()
+        conn = get_db_connection()
         cur = conn.cursor()
         cur.execute(
             """
@@ -341,10 +331,10 @@ def submit_report():
     except Exception as error:
         if conn:
             conn.rollback()
-        print("ERROR:", error)
-        return jsonify({"success": False, "error": str(error)}), 500
+        current_app.logger.error(f"Error submitting report: {error}")
+        return jsonify({"success": False, "error": "Internal server error"}), 500
     finally:
         if cur:
             cur.close()
         if conn:
-            conn.close()
+            release_db_connection(conn)

@@ -1,5 +1,5 @@
-from flask import Blueprint, jsonify, request
-from db import db_connection
+from flask import Blueprint, jsonify, request, current_app
+from db import get_db_connection, release_db_connection
 from routes.damage_type_utils import normalize_damage_type_value
 from routes.report_query_utils import build_report_filters, parse_list_query_params
 from routes.auth_decorators import dot_admin_required
@@ -145,12 +145,11 @@ def get_analytics_summary():
     cursor = None
 
     try:
-        connection = db_connection()
+        connection = get_db_connection()
         cursor = connection.cursor()
 
         cursor.execute("SELECT current_database(), current_schema()")
         db_info = cursor.fetchone()
-        print("DB info:", db_info)
 
         cursor.execute("SELECT COUNT(*) FROM reports")
         total_reports = cursor.fetchone()[0]
@@ -169,8 +168,6 @@ def get_analytics_summary():
             """
         )
         current_month_reports, last_month_reports = cursor.fetchone()
-        print("Total reports from API:", total_reports)
-        print("DB connection details:", connection.dsn)
         return jsonify({
             "success": True,
             "total_reports": total_reports,
@@ -179,14 +176,14 @@ def get_analytics_summary():
         }), 200
 
     except Exception as error:
-        print(f"Analytics summary error: {error}")
-        return jsonify({"success": False, "error": str(error)}), 500
+        current_app.logger.error(f"Analytics summary error: {error}")
+        return jsonify({"success": False, "error": "Internal server error"}), 500
 
     finally:
         if cursor:
             cursor.close()
         if connection:
-            connection.close()
+            release_db_connection(connection)
 
 
 @analytics_bp.route("/api/reports/analytics", methods=["GET"])
@@ -197,7 +194,7 @@ def get_reports_analytics():
 
     try:
         filters = parse_list_query_params()
-        connection = db_connection()
+        connection = get_db_connection()
         cursor = connection.cursor()
 
         # Analytics endpoints return aggregated chart-ready data only.
@@ -247,13 +244,13 @@ def get_reports_analytics():
     except ValueError as error:
         return jsonify({"success": False, "error": str(error)}), 400
     except Exception as error:
-        print(f"Reports analytics error: {error}")
-        return jsonify({"success": False, "error": str(error)}), 500
+        current_app.logger.error(f"Reports analytics error: {error}")
+        return jsonify({"success": False, "error": "Internal server error"}), 500
     finally:
         if cursor:
             cursor.close()
         if connection:
-            connection.close()
+            release_db_connection(connection)
 
 
 @analytics_bp.route("/api/reports/analytics/heatmap", methods=["GET"])
@@ -265,7 +262,7 @@ def get_reports_heatmap():
     try:
         filters = parse_list_query_params()
         grid_size = _parse_heatmap_grid_size()
-        connection = db_connection()
+        connection = get_db_connection()
         cursor = connection.cursor()
 
         # Heatmaps should return density buckets rather than paginated raw points.
@@ -283,10 +280,10 @@ def get_reports_heatmap():
     except ValueError as error:
         return jsonify({"success": False, "error": str(error)}), 400
     except Exception as error:
-        print(f"Reports heatmap error: {error}")
-        return jsonify({"success": False, "error": str(error)}), 500
+        current_app.logger.error(f"Reports heatmap error: {error}")
+        return jsonify({"success": False, "error": "Internal server error"}), 500
     finally:
         if cursor:
             cursor.close()
         if connection:
-            connection.close()
+            release_db_connection(connection)

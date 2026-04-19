@@ -13,9 +13,10 @@ class Config:
     WTF_CSRF_ENABLED = False
     JWT_SKIP_REVOCATION_CHECKS = False
     JWT_EXEMPT_METHODS = {"OPTIONS"}
+    FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
     CORS_RESOURCES = {
         r"/*": {
-            "origins": ["http://localhost:5173"],
+            "origins": [FRONTEND_URL],
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization"],
             "supports_credentials": True,

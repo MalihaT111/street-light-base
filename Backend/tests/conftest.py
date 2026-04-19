@@ -88,6 +88,7 @@ def flask_app():
 
     app = create_app()
     app.config["TESTING"] = True
+    app.config["JWT_SECRET_KEY"] = "test-secret-key-for-pytest-only-32b"
     return app
 
 
@@ -97,5 +98,8 @@ def authed_client(flask_app, test_user):
         with flask_app.app_context():
             from flask_jwt_extended import create_access_token
 
-            token = create_access_token(identity=str(test_user))
+            token = create_access_token(
+                identity=str(test_user),
+                additional_claims={"role": "citizen"},
+            )
         yield client, {"Authorization": f"Bearer {token}"}
