@@ -22,8 +22,46 @@ function normalizeHeatmapResponse(payload) {
 
   return records.map(normalizeHeatPoint).filter(Boolean);
 }
+function getHeatmapGradient(selectedRating) {
+  switch (selectedRating) {
+    case "good":
+      return {
+        0.2: "#22c55e",  
+        0.4: "#16a34a",
+        0.6: "#15803d",
+        0.8: "#14532d",
+        1.0: "#052e16",  
+      };
 
-export default function HeatmapChart({ data, apiUrl }) {
+    case "fair":
+      return {
+        0.2: "#facc15",  
+        0.4: "#eab308",
+        0.6: "#ca8a04",
+        0.8: "#a16207",
+        1.0: "#78350f",  
+      };
+
+    case "poor":
+      return {
+        0.2: "#ef4444",  
+        0.4: "#dc2626",
+        0.6: "#b91c1c",
+        0.8: "#991b1b",
+        1.0: "#450a0a",  
+      };
+
+    default:
+      return {
+        0.2: "#3b82f6",  
+        0.4: "#2563eb",
+        0.6: "#1d4ed8",
+        0.8: "#f97316", 
+        1.0: "#dc2626",  
+      };
+  }
+}
+export default function HeatmapChart({ data, apiUrl, selectedRating = "all" }) {
   const mapNodeRef = useRef(null);
   const mapRef = useRef(null);
   const heatLayerRef = useRef(null);
@@ -81,6 +119,8 @@ export default function HeatmapChart({ data, apiUrl }) {
         radius: 25,
         blur: 15,
         maxZoom: 17,
+        gradient: getHeatmapGradient(selectedRating),
+
       })
       .addTo(map);
     setPointCount(seededPoints.length);
@@ -112,25 +152,36 @@ export default function HeatmapChart({ data, apiUrl }) {
   }, []);
 
   useEffect(() => {
-    if (!heatLayerRef.current) {
-      return;
-    }
-
+    if (!mapRef.current) return;
+  
     const nextPoints = normalizeHeatmapResponse(data);
-
-    // Update: reuse the same layer instance so the map stays mounted.
-    heatLayerRef.current.setLatLngs(nextPoints);
+    const nextGradient = getHeatmapGradient(selectedRating);
+  
+    // remove old heat layer
+    if (heatLayerRef.current) {
+      mapRef.current.removeLayer(heatLayerRef.current);
+    }
+  
+    // create new one with updated gradient
+    heatLayerRef.current = window.L
+      .heatLayer(nextPoints, {
+        radius: 25,
+        blur: 15,
+        maxZoom: 17,
+        gradient: nextGradient,
+      })
+      .addTo(mapRef.current);
+  
     setPointCount(nextPoints.length);
-  }, [data]);
+  }, [data, selectedRating]);
 
   useEffect(() => {
-    if (!apiUrl || !heatLayerRef.current) {
+    if (!apiUrl || !mapRef.current) {
       return undefined;
     }
-
+  
     let isMounted = true;
-
-    // Fetch: refresh point data from the JSON endpoint without reinitializing the map.
+  
     async function refreshHeatmap(url) {
       try {
         const token = localStorage.getItem("token");
@@ -140,19 +191,32 @@ export default function HeatmapChart({ data, apiUrl }) {
           },
         });
         const payload = await response.json();
-
+  
         if (!response.ok || payload?.success === false) {
           throw new Error(
             payload?.error || `Heatmap refresh failed with status ${response.status}`
           );
         }
-
-        if (!isMounted || !heatLayerRef.current) {
+  
+        if (!isMounted || !mapRef.current) {
           return;
         }
-
+  
         const refreshedPoints = normalizeHeatmapResponse(payload);
-        heatLayerRef.current.setLatLngs(refreshedPoints);
+  
+        if (heatLayerRef.current) {
+          mapRef.current.removeLayer(heatLayerRef.current);
+        }
+  
+        heatLayerRef.current = window.L
+          .heatLayer(refreshedPoints, {
+            radius: 25,
+            blur: 15,
+            maxZoom: 17,
+            gradient: getHeatmapGradient(selectedRating),
+          })
+          .addTo(mapRef.current);
+  
         setPointCount(refreshedPoints.length);
         setRefreshError("");
       } catch (error) {
@@ -161,21 +225,22 @@ export default function HeatmapChart({ data, apiUrl }) {
         }
       }
     }
-
+  
     refreshHeatmap(apiUrl);
+  
     refreshTimerRef.current = window.setInterval(() => {
       refreshHeatmap(apiUrl);
     }, 30000);
-
+  
     return () => {
       isMounted = false;
-
+  
       if (refreshTimerRef.current) {
         window.clearInterval(refreshTimerRef.current);
         refreshTimerRef.current = null;
       }
     };
-  }, [apiUrl]);
+  }, [apiUrl, selectedRating]);
 
   return (
     <div className={styles.heatmapRoot}>

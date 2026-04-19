@@ -165,8 +165,9 @@ export default function Dashboard() {
               ))}
             </div>
             <HeatmapChart
-              data={heatmap.data}
+              data={heatmap.data} 
               apiUrl={heatmapApiUrl}
+              selectedRating ={selectedRating}
             />
           </ChartCard>
         </section>
