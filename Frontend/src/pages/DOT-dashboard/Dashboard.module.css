@@ -439,7 +439,32 @@
   font-size: 11px;
   font-weight: 600;
 }
+/* For filter buttons above heatmap */
+.heatmapFilters {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
 
+.filterButton {
+  border: 1px solid #cbd5e1;
+  background: white;
+  color: #334155;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.filterButton:hover {
+  background: #f1f5f9;
+}
+
+.filterButtonActive {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
 @keyframes pulse {
   0% {
     background-position: 100% 0;
