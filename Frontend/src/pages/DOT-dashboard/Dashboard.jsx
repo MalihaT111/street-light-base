@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import DashboardTopbar from "./components/DashboardTopbar";
 import DOTnavbar from "../../components/DOTnavbar/DOTnavbar";
 import SummaryCards from "./components/SummaryCards";
@@ -22,7 +23,6 @@ const DEFAULT_FILTERS = {
 };
 
 function DashboardHero({ filters }) {
-  const appliedFilters = formatAppliedFilters(filters);
 
   return (
     <section className={styles.hero}>
@@ -39,10 +39,19 @@ function DashboardHero({ filters }) {
 }
 
 export default function Dashboard() {
-  const filters = DEFAULT_FILTERS;
+  const [selectedRating, setSelectedRating] = useState("all");
+
+  const filters = useMemo(
+    () => ({
+      ...DEFAULT_FILTERS,
+      rating: selectedRating === "all" ? [] : [selectedRating],
+    }),
+    [selectedRating]
+  );
   const { summary, analytics, heatmap, isLoading } =
     useAnalyticsDashboard(filters);
   const heatmapApiUrl = getAnalyticsHeatmapUrl(filters);
+
 
   const summaryCards = buildSummaryCards(summary.data);
 
@@ -139,7 +148,27 @@ export default function Dashboard() {
             error={heatmap.error}
             className={styles.fullWidthCard}
           >
-            <HeatmapChart data={heatmap.data} apiUrl={heatmapApiUrl} />
+            <div className={styles.heatmapFilters}>
+              {["all", "good", "fair", "poor"].map((rating) => (
+                <button
+                  key={rating}
+                  type="button"
+                  onClick={() => setSelectedRating(rating)}
+                  className={
+                    selectedRating === rating
+                      ? `${styles.filterButton} ${styles.filterButtonActive}`
+                      : styles.filterButton
+                  }
+                >
+                  {rating.charAt(0).toUpperCase() + rating.slice(1)}
+                </button>
+              ))}
+            </div>
+            <HeatmapChart
+              data={heatmap.data} 
+              apiUrl={heatmapApiUrl}
+              selectedRating ={selectedRating}
+            />
           </ChartCard>
         </section>
       </main>
