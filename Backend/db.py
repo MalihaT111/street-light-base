@@ -2,9 +2,11 @@ import os
 from urllib.parse import quote_plus, urlparse
 
 import psycopg2
+import psycopg2.pool
 
 
 NEON_HOST_MARKER = "neon.tech"
+_db_pool = None
 
 
 def _build_database_url_from_parts():
@@ -52,5 +54,22 @@ def _get_neon_database_url():
     return database_url
 
 
-def db_connection():
-    return psycopg2.connect(_get_neon_database_url(), connect_timeout=10)
+def get_db_pool():
+    global _db_pool
+    if _db_pool is None:
+        _db_pool = psycopg2.pool.ThreadedConnectionPool(
+            1,  # Minimum connections
+            20, # Maximum connections
+            _get_neon_database_url(),
+            connect_timeout=10
+        )
+    return _db_pool
+
+
+def get_db_connection():
+    return get_db_pool().getconn()
+
+
+def release_db_connection(conn):
+    if conn:
+        get_db_pool().putconn(conn)
