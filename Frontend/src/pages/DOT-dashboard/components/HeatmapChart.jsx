@@ -22,44 +22,69 @@ function normalizeHeatmapResponse(payload) {
 
   return records.map(normalizeHeatPoint).filter(Boolean);
 }
+
+function getMaxIntensity(points) {
+  if (!points?.length) return 1;
+  const max = points.reduce((acc, point) => {
+    const value = Number(point?.[2] ?? 0);
+    return Number.isFinite(value) ? Math.max(acc, value) : acc;
+  }, 0);
+  return max > 0 ? max : 1;
+}
+
 function getHeatmapGradient(selectedRating) {
   switch (selectedRating) {
     case "good":
       return {
-        0.2: "#22c55e",  
-        0.4: "#16a34a",
-        0.6: "#15803d",
-        0.8: "#14532d",
-        1.0: "#052e16",  
+        0.0: "rgba(34, 197, 94, 0)",
+        0.25: "#86efac",
+        0.5: "#22c55e",
+        0.75: "#16a34a",
+        1.0: "#065f46",
       };
 
     case "fair":
       return {
-        0.2: "#facc15",  
-        0.4: "#eab308",
-        0.6: "#ca8a04",
-        0.8: "#a16207",
-        1.0: "#78350f",  
+        0.0: "rgba(250, 204, 21, 0)",
+        0.25: "#fde047",
+        0.5: "#facc15",
+        0.75: "#f59e0b",
+        1.0: "#b45309",
       };
 
     case "poor":
       return {
-        0.2: "#ef4444",  
-        0.4: "#dc2626",
-        0.6: "#b91c1c",
-        0.8: "#991b1b",
-        1.0: "#450a0a",  
+        0.0: "rgba(239, 68, 68, 0)",
+        0.25: "#fca5a5",
+        0.5: "#ef4444",
+        0.75: "#dc2626",
+        1.0: "#7f1d1d",
       };
 
     default:
       return {
-        0.2: "#3b82f6",  
-        0.4: "#2563eb",
-        0.6: "#1d4ed8",
-        0.8: "#f97316", 
-        1.0: "#dc2626",  
+        0.0: "rgba(59, 130, 246, 0)",
+        0.2: "#60a5fa",
+        0.45: "#2563eb",
+        0.7: "#0f766e",
+        0.85: "#f97316",
+        1.0: "#dc2626",
       };
   }
+}
+
+function getHeatLayerOptions({ points, selectedRating }) {
+  return {
+    radius: 28,
+    blur: 18,
+    maxZoom: 17,
+    // Ensures the plugin scales intensities to visible color stops.
+    max: getMaxIntensity(points),
+    // Pushes low densities above “barely visible grey”.
+    minOpacity: 0.22,
+    maxOpacity: 0.9,
+    gradient: getHeatmapGradient(selectedRating),
+  };
 }
 export default function HeatmapChart({ data, apiUrl, selectedRating = "all" }) {
   const mapNodeRef = useRef(null);
@@ -115,13 +140,7 @@ export default function HeatmapChart({ data, apiUrl, selectedRating = "all" }) {
 
     // Init: create the heat layer once and keep it for live updates.
     heatLayerRef.current = leaflet
-      .heatLayer(seededPoints, {
-        radius: 25,
-        blur: 15,
-        maxZoom: 17,
-        gradient: getHeatmapGradient(selectedRating),
-
-      })
+      .heatLayer(seededPoints, getHeatLayerOptions({ points: seededPoints, selectedRating }))
       .addTo(map);
     setPointCount(seededPoints.length);
 
@@ -155,7 +174,6 @@ export default function HeatmapChart({ data, apiUrl, selectedRating = "all" }) {
     if (!mapRef.current) return;
   
     const nextPoints = normalizeHeatmapResponse(data);
-    const nextGradient = getHeatmapGradient(selectedRating);
   
     // remove old heat layer
     if (heatLayerRef.current) {
@@ -164,12 +182,7 @@ export default function HeatmapChart({ data, apiUrl, selectedRating = "all" }) {
   
     // create new one with updated gradient
     heatLayerRef.current = window.L
-      .heatLayer(nextPoints, {
-        radius: 25,
-        blur: 15,
-        maxZoom: 17,
-        gradient: nextGradient,
-      })
+      .heatLayer(nextPoints, getHeatLayerOptions({ points: nextPoints, selectedRating }))
       .addTo(mapRef.current);
   
     setPointCount(nextPoints.length);
@@ -209,12 +222,10 @@ export default function HeatmapChart({ data, apiUrl, selectedRating = "all" }) {
         }
   
         heatLayerRef.current = window.L
-          .heatLayer(refreshedPoints, {
-            radius: 25,
-            blur: 15,
-            maxZoom: 17,
-            gradient: getHeatmapGradient(selectedRating),
-          })
+          .heatLayer(
+            refreshedPoints,
+            getHeatLayerOptions({ points: refreshedPoints, selectedRating })
+          )
           .addTo(mapRef.current);
   
         setPointCount(refreshedPoints.length);
@@ -257,11 +268,7 @@ export default function HeatmapChart({ data, apiUrl, selectedRating = "all" }) {
       ) : null}
       {refreshError ? (
         <div className={styles.heatmapStatus}>{refreshError}</div>
-      ) : (
-        <div className={styles.heatmapStatus}>
-     
-        </div>
-      )}
+      ) : null}
     </div>
   );
 }
