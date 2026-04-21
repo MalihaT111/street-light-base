@@ -4,6 +4,7 @@ import { FaTrophy, FaArrowRight } from "react-icons/fa";
 import Navbar from "../../components/Navbar/Navbar.jsx";
 import styles from "./leaderboard.module.css";
 import PageHero from "../../components/PageHero/PageHero.jsx";
+import Cookies from 'js-cookie';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
 
@@ -17,7 +18,7 @@ const Leaderboard = () => {
     const [selectedPeriod, setSelectedPeriod] = useState("all_time");
 
     useEffect(() => {
-        const savedUser = localStorage.getItem("user");
+        const savedUser = Cookies.get("user");
 
         if (!savedUser) {
             navigate("/home");
@@ -35,7 +36,7 @@ const Leaderboard = () => {
     }, [navigate]);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
+        const token = Cookies.get("token");
         const qs = new URLSearchParams();
         if (selectedBorough !== "all") qs.set("borough", selectedBorough);
         if (selectedPeriod !== "all_time") qs.set("period", selectedPeriod);
@@ -51,7 +52,7 @@ const Leaderboard = () => {
     }, [selectedBorough, selectedPeriod]);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
+        const token = Cookies.get("token");
         const qs = new URLSearchParams();
         if (selectedBorough !== "all") qs.set("borough", selectedBorough);
         if (selectedPeriod !== "all_time") qs.set("period", selectedPeriod);

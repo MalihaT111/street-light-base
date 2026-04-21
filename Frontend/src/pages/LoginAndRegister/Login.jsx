@@ -5,6 +5,7 @@ import Navbar from '../../components/Navbar/Navbar';
 import { CiMail, CiLock } from "react-icons/ci";
 import { FaUser, FaLandmark } from "react-icons/fa";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
+import Cookies from 'js-cookie';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -83,10 +84,10 @@ const Login = () => {
                 return;
             }
 
-            localStorage.setItem('user', JSON.stringify(data.user));
-            localStorage.setItem('token', data.access_token);
+            Cookies.set('user', JSON.stringify(data.user), { expires: 7, sameSite: 'Strict' });
+            Cookies.set('token', data.access_token, { expires: 7, sameSite: 'Strict' });
 
-            navigate(data.user.role === 'admin' ? '/dashboard' : '/home');
+            setTimeout(() => navigate(data.user.role === 'admin' ? '/dashboard' : '/home'), 50);
         } catch {
             setErrors({ password: 'Unable to connect to server' });
         }

@@ -4,6 +4,7 @@ import styles from "./Challenge.module.css";
 import ChallengeCard from "../../components/ChallengeCard/ChallengeCard";
 import Navbar from "../../components/Navbar/Navbar.jsx";
 import PageHero from "../../components/PageHero/PageHero.jsx";
+import Cookies from 'js-cookie';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
 
@@ -15,7 +16,7 @@ const Challenge = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const savedUser = localStorage.getItem("user");
+        const savedUser = Cookies.get("user");
         if (!savedUser) {
             navigate("/");
             return;
@@ -30,7 +31,7 @@ const Challenge = () => {
     useEffect(() => {
         if (!user) return;
 
-        const token = localStorage.getItem("token");
+        const token = Cookies.get("token");
         setLoading(true);
         setError(null);
 

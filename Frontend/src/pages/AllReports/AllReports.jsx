@@ -4,6 +4,7 @@ import { FaSearch, FaChevronDown, FaTimes } from 'react-icons/fa';
 import ReportCard from '../../components/ReportCard/ReportCard';
 import DOTnavbar from '../../components/DOTnavbar/DOTnavbar';
 import styles from './AllReports.module.css';
+import Cookies from 'js-cookie';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
 const CONDITION_OPTIONS = ["Poor", "Fair", "Good"];
@@ -138,8 +139,8 @@ function AllReports() {
     };
 
     useEffect(() => {
-        const savedUser = localStorage.getItem("user");
-        const token = localStorage.getItem("token");
+        const savedUser = Cookies.get("user");
+        const token = Cookies.get("token");
         if (!savedUser) {
             navigate("/home");
             return;

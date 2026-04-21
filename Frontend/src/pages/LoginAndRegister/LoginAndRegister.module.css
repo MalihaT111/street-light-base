@@ -243,3 +243,54 @@ a, a:visited{
     font-size: 0.75rem;
     font-weight: 700;
 }
+.tooltip-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 6px;
+}
+
+.tooltip-icon {
+    font-size: 0.8rem;
+    color: #8A8880;
+    cursor: pointer;
+}
+
+.tooltip-box {
+    display: none;
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    border: 1px solid #E2E0DA;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    padding: 12px 14px;
+    width: 220px;
+    z-index: 100;
+    font-size: 0.75rem;
+    color: #1A1F2E;
+}
+
+.tooltip-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tooltip-wrapper:hover .tooltip-box {
+    display: block;
+}
+
+.req-met {
+    color: #065F46;
+    font-weight: 600;
+}
+
+.req-unmet {
+    color: #DC2626;
+}

@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const useAuth = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(() => {
     try {
-      const savedUser = localStorage.getItem('user');
+      const savedUser = Cookies.get('user');
       return savedUser ? JSON.parse(savedUser) : null;
     } catch (error) {
       console.error('Error parsing user data:', error);

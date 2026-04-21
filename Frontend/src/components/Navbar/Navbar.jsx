@@ -3,18 +3,19 @@ import { useState } from 'react';
 import { FaHome, FaFileAlt, FaChartBar, FaCog, FaSignOutAlt, FaAward } from 'react-icons/fa';
 import { RxHamburgerMenu } from "react-icons/rx";
 import styles from './Navbar.module.css';
+import Cookies from 'js-cookie';
 
 const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const storedUser = (() => { try { return JSON.parse(localStorage.getItem('user') || '{}'); } catch { return {}; } })();
+  const storedUser = (() => { try { return JSON.parse(Cookies.get('user')); } catch { return null; } })(); 
   const homeRoute = storedUser?.role === 'admin' ? '/dashboard' : '/home';
   const isAdmin = storedUser?.role === 'admin';
 
   const handleSignOut = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
+    Cookies.remove('user');
+    Cookies.remove('token');
     navigate('/');
   };
 

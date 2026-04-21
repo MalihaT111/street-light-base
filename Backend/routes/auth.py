@@ -2,6 +2,7 @@ import os
 import smtplib
 from datetime import timedelta
 from email.message import EmailMessage
+import re
 
 import bcrypt
 from flask import Blueprint, jsonify, request, current_app
@@ -39,13 +40,9 @@ def register():
             return jsonify({"success": False, "error": "Password is required"}), 400
         if not username:
             return jsonify({"success": False, "error": "Username is required"}), 400
-        if len(password) < 8:
-            return jsonify(
-                {
-                    "success": False,
-                    "error": "Password must be at least 8 characters long",
-                }
-            ), 400
+        password_error = validate_password(password)
+        if password_error:
+            return jsonify({"success": False, "error": password_error}), 400
 
         password_hash = bcrypt.hashpw(
             password.encode("utf-8"), bcrypt.gensalt()
@@ -101,6 +98,16 @@ def register():
         if connection:
             release_db_connection(connection)
 
+def validate_password(password):
+    if len(password) < 8:
+        return "Password must be at least 8 characters long"
+    if not re.search(r'[A-Z]', password):
+        return "Password must contain at least one uppercase letter"
+    if not re.search(r'[0-9]', password):
+        return "Password must contain at least one number"
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+        return "Password must contain at least one special character"
+    return None
 
 @auth_bp.route("/api/login", methods=["POST"])
 def login():
@@ -252,8 +259,9 @@ def reset_password():
         new_password = data.get("new_password")
         if not new_password:
             return jsonify({"success": False, "error": "Password is required"}), 400
-        if len(new_password) < 8:
-            return jsonify({"success": False, "error": "Password must be at least 8 characters long"}), 400
+        password_error = validate_password(new_password)
+        if password_error:
+            return jsonify({"success": False, "error": password_error}), 400
         jwt_claim = get_jwt()
         user_id = get_jwt_identity()
         if jwt_claim.get("type") != "reset":

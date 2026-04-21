@@ -9,6 +9,7 @@ import ReferenceGuide from './components/ReferenceGuide';
 import styles from './Reports.module.css';
 import PageHero from '../../components/PageHero/PageHero';
 import useAuth from '../../hooks/useAuth';
+import Cookies from 'js-cookie';
 
 const Reports = () => {
   const navigate = useNavigate();
@@ -130,7 +131,7 @@ const Reports = () => {
     setSubmitError(null);
 
     try {
-      const token = localStorage.getItem('token');
+      const token = Cookies.get('token');
       const borough = await getBoroughFromCoords(location.lat, location.lng);
 
       const formData = new FormData();
