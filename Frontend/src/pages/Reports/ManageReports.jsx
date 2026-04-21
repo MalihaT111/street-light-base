@@ -4,6 +4,7 @@ import { FaSearch, FaChevronDown, FaTimes } from 'react-icons/fa';
 import Navbar from '../../components/Navbar/Navbar';
 import ReportCard from '../../components/ReportCard/ReportCard';
 import styles from './ManageReports.module.css';
+import Cookies from 'js-cookie';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
 const ITEMS_PER_PAGE = 12;
@@ -134,7 +135,7 @@ function ManageReports() {
     const [saveError, setSaveError] = useState(null);
 
     useEffect(() => {
-        const savedUser = localStorage.getItem("user");
+        const savedUser = Cookies.get("user");
         if (!savedUser) {
             navigate("/");
             return;
@@ -151,7 +152,7 @@ function ManageReports() {
     async function fetchReports() {
         setFetchError(null);
         try {
-            const token = localStorage.getItem("token");
+            const token = Cookies.get("token");
             if (!token) {
                 navigate("/");
                 return;
@@ -182,7 +183,7 @@ function ManageReports() {
     const handleDelete = async (reportId) => {
         if (!window.confirm("Delete this report? This cannot be undone.")) return;
         try {
-            const token = localStorage.getItem("token");
+            const token = Cookies.get("token");
             const res = await fetch(`${API_BASE}/api/reports/${reportId}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${token}` },
@@ -214,7 +215,7 @@ function ManageReports() {
         setSaving(true);
         setSaveError(null);
         try {
-            const token = localStorage.getItem("token");
+            const token = Cookies.get("token");
             const res = await fetch(`${API_BASE}/api/reports/${editingReport.id}`, {
                 method: "PUT",
                 headers: {

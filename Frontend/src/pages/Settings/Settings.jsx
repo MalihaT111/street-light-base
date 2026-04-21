@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Settings.module.css';
 import Navbar from '../../components/Navbar/Navbar';
+import Cookies from 'js-cookie';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
@@ -24,7 +25,7 @@ const Settings = () => {
   const [deleteStatus, setDeleteStatus] = useState({ loading: false, error: '' });
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('user');
+    const savedUser = Cookies.get('user');
     if (!savedUser) {
       navigate('/');
       return;
@@ -40,7 +41,7 @@ const Settings = () => {
     }
   }, [navigate]);
 
-  const token = localStorage.getItem('token');
+  const token = Cookies.get('token');
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   // --- Account Info ---
@@ -65,7 +66,7 @@ const Settings = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Update failed.');
       const updatedUser = { ...user, username: accountForm.name, email: accountForm.email };
-      localStorage.setItem('user', JSON.stringify(updatedUser));
+      Cookies.set('user', JSON.stringify(updatedUser), { expires: 7, sameSite: 'Strict' });
       setUser(updatedUser);
       setAccountStatus({ loading: false, success: 'Account updated successfully.', error: '' });
     } catch (err) {
@@ -124,8 +125,8 @@ const Settings = () => {
         const data = await res.json();
         throw new Error(data.error || 'Deletion failed.');
       }
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
+      Cookies.remove('user');
+      Cookies.remove('token');
       navigate('/');
     } catch (err) {
       setDeleteStatus({ loading: false, error: err.message || 'Unable to connect to server.' });
@@ -134,8 +135,8 @@ const Settings = () => {
 
   // --- Logout ---
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
+    Cookies.remove('user');
+    Cookies.remove('token');
     navigate('/');
   };
 

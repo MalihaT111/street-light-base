@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "../Dashboard.module.css";
+import Cookies from 'js-cookie';
 
 function normalizeHeatPoint(item) {
   const lat = Number(item?.lat ?? item?.latitude);
@@ -197,7 +198,7 @@ export default function HeatmapChart({ data, apiUrl, selectedRating = "all" }) {
   
     async function refreshHeatmap(url) {
       try {
-        const token = localStorage.getItem("token");
+        const token = Cookies.get("token");
         const response = await fetch(url, {
           headers: {
             Authorization: `Bearer ${token}`,

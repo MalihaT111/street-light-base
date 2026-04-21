@@ -17,6 +17,7 @@ import {
     FaNewspaper,
     FaCity,
 } from "react-icons/fa";
+import Cookies from 'js-cookie';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
 
@@ -38,7 +39,7 @@ const Progress = () => {
     const { user, loading: userLoading } = useAuth();
     const [activeChallenge, setActiveChallenge] = useState("daily");
 
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
     const authHeaders = useMemo(() => ({ Authorization: `Bearer ${token}` }), [token]);
 
     const { 

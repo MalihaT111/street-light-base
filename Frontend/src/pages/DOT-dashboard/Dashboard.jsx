@@ -14,6 +14,7 @@ import {
   formatAppliedFilters,
 } from "./utils/analytics";
 import styles from "./Dashboard.module.css";
+import Cookies from 'js-cookie';
 
 const DEFAULT_FILTERS = {
   borough: [],
@@ -56,7 +57,7 @@ export default function Dashboard() {
   const summaryCards = buildSummaryCards(summary.data);
 
   const username = (() => {
-    try { return JSON.parse(localStorage.getItem("user") || "{}").username || "User"; }
+    try { return JSON.parse(Cookies.get("user") || "{}").username || "User"; }
     catch { return "User"; }
   })();
 

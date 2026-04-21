@@ -4,6 +4,7 @@ import styles from './Home.module.css';
 import { FaChartLine, FaFlag, FaTrophy, FaFire, FaMedal, FaArrowRight } from 'react-icons/fa';
 import Navbar from '../../components/Navbar/Navbar';
 import useAuth from '../../hooks/useAuth';
+import Cookies from 'js-cookie';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
@@ -19,7 +20,7 @@ const Home = () => {
   useEffect(() => {
     if (loading || !user) return;
 
-    const token = localStorage.getItem('token');
+    const token = Cookies.get('token');
     const authHeaders = {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',

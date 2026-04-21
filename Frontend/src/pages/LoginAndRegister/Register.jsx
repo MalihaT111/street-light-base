@@ -5,6 +5,7 @@ import Navbar from '../../components/Navbar/Navbar';
 import { CiUser, CiMail, CiLock } from "react-icons/ci";
 import { FaUser, FaLandmark } from "react-icons/fa";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
+import { PASSWORD_REQUIREMENTS, validatePasswordComplexity } from './passwordUtils';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -35,6 +36,11 @@ const Register = () => {
         e.preventDefault();
         setErrors({ general: "" });
 
+        const complexityError = validatePasswordComplexity(formInput.password);
+        if (complexityError) {
+            setErrors({ general: complexityError });
+            return;
+        }
         const response = await fetch(`${import.meta.env.VITE_API_BASE_URL ?? ''}/api/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -188,7 +194,22 @@ const Register = () => {
                         </div>
                         {/* Input field for password */}
                         <div className={styles["field"]}>
-                            <label htmlFor = "password">PASSWORD</label>
+                            <label className={styles["field-label"]} htmlFor="password">
+                                Password
+                                <span className={styles["tooltip-wrapper"]}>
+                                    <span className={styles["tooltip-icon"]}>ⓘ</span>
+                                    <div className={styles["tooltip-box"]}>
+                                        <p style={{ fontWeight: 600, marginBottom: '6px' }}>Password must have:</p>
+                                        <ul>
+                                            {PASSWORD_REQUIREMENTS.map((req, i) => (
+                                                <li key={i} className={req.test(formInput.password) ? styles["req-met"] : styles["req-unmet"]}>
+                                                    {req.test(formInput.password) ? '✓' : '✗'} {req.label}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </span>
+                            </label>
                             <div className={styles["input-wrapper"]}>
                                 <CiLock className = {styles.icon}/>
                                 <input 

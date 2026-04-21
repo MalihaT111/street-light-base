@@ -12,24 +12,26 @@ import Settings from "./pages/Settings/Settings.jsx";
 import ForgotPassword from "./pages/LoginAndRegister/ForgetPassword.jsx";
 import ResetPassword from "./pages/LoginAndRegister/ResetPassword.jsx";
 import VerifyEmail from "./pages/LoginAndRegister/VerifyEmail.jsx";
+import Cookies from 'js-cookie';
 
 function getRole() {
   try {
-    return JSON.parse(localStorage.getItem("user") || "{}").role || "";
+    return JSON.parse(Cookies.get("user") || "{}").role || "";
   } catch {
     return "";
   }
 }
 
 function DotAdminRoute({ children }) {
-  const token = localStorage.getItem("token");
+  const token = Cookies.get("token");
   if (!token) return <Navigate to="/" replace />;
   if (getRole() !== "admin") return <Navigate to="/home" replace />;
   return children;
 }
 
 function CitizenRoute({ children }) {
-  const token = localStorage.getItem("token");
+  const token = Cookies.get("token");
+  // console.log('CitizenRoute token:', token);
   if (!token) return <Navigate to="/" replace />;
   if (getRole() === "admin") return <Navigate to="/dashboard" replace />;
   return children;

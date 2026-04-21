@@ -4,6 +4,7 @@ import styles from './LoginAndRegister.module.css';
 import Navbar from '../../components/Navbar/Navbar';
 import { CiLock } from 'react-icons/ci';
 import { IoEyeOutline, IoEyeOffOutline } from 'react-icons/io5';
+import { PASSWORD_REQUIREMENTS, validatePasswordComplexity } from './passwordUtils';
 
 const ResetPassword = () => {
     const navigate = useNavigate();
@@ -26,7 +27,10 @@ const ResetPassword = () => {
         e.preventDefault();
         const errs = {};
         if (!formInput.password.trim()) errs.password = 'Password is required';
-        else if (formInput.password.length < 8) errs.password = 'Password must be at least 8 characters';
+        else {
+            const complexityError = validatePasswordComplexity(formInput.password);
+            if (complexityError) errs.password = complexityError;
+        }
         if (formInput.password !== formInput.confirmPassword) errs.confirmPassword = 'Passwords do not match';
         setErrors(errs);
         if (Object.keys(errs).length > 0) return;
@@ -75,7 +79,22 @@ const ResetPassword = () => {
                             {!success ? (
                                 <form onSubmit={handleSubmit}>
                                     <div className={styles['field']}>
-                                        <label htmlFor="password">NEW PASSWORD</label>
+                                        <label className={styles["field-label"]} htmlFor="password">
+                                            New Password
+                                            <span className={styles["tooltip-wrapper"]}>
+                                                <span className={styles["tooltip-icon"]}>ⓘ</span>
+                                                <div className={styles["tooltip-box"]}>
+                                                    <p style={{ fontWeight: 600, marginBottom: '6px' }}>Password must have:</p>
+                                                    <ul>
+                                                        {PASSWORD_REQUIREMENTS.map((req, i) => (
+                                                            <li key={i} className={req.test(formInput.password) ? styles["req-met"] : styles["req-unmet"]}>
+                                                                {req.test(formInput.password) ? '✓' : '✗'} {req.label}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            </span>
+                                        </label>
                                         <div className={styles['input-wrapper']}>
                                             <CiLock className={styles['icon']} />
                                             <input id="password" type={revealNew ? 'text' : 'password'} placeholder="New password" value={formInput.password} onChange={handleChange} />
