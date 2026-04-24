@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? "";
 
@@ -28,7 +30,7 @@ export function buildAnalyticsQueryString(filters = {}) {
 
 async function fetchJson(path, filters = {}, signal) {
   const query = buildAnalyticsQueryString(filters);
-  const token = localStorage.getItem("token");
+  const token = Cookies.get("token");
 
   const response = await fetch(`${API_BASE_URL}${path}${query}`, {
     signal,

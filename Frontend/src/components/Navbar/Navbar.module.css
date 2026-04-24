@@ -52,18 +52,22 @@
   align-items: center;
   gap: 8px;
   text-decoration: none;
-  color: #6B7280;
+  background: none;
+  border: none;
+  color: #2563EB;
   font-size: 0.85rem;
   font-weight: 500;
+  font-family: inherit;
   padding: 8px 12px;
   border-radius: 8px;
   transition: all 0.2s ease;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .navLink:hover {
-  background-color: #F9FAFB;
-  color: #374151;
+  background-color: #EEF3FD;
+  color: #1D4ED8;
 }
 
 .navLink.active {

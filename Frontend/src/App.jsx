@@ -17,7 +17,8 @@ import Cookies from 'js-cookie';
 
 function getRole() {
   try {
-    const role = JSON.parse(localStorage.getItem("user") || "{}").role || "";
+    const savedUser = Cookies.get("user");
+    const role = savedUser ? JSON.parse(savedUser).role || "" : "";
     return ["admin", "dot_admin", "ppl"].includes(String(role).trim().toLowerCase()) ? "admin" : role;
   } catch {
     return "";

@@ -4,6 +4,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaChartLine, FaFileAlt, FaSignOutAlt } from 'react-icons/fa';
 import styles from "./DOTnavbar.module.css";
+import Cookies from 'js-cookie';
 
 export default function DOTnavbar({ username = "User" }) {
   const location = useLocation();
@@ -19,8 +20,8 @@ export default function DOTnavbar({ username = "User" }) {
   const activeTab = getActiveTab();
 
   const handleSignOut = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
+    Cookies.remove('user');
+    Cookies.remove('token');
     navigate('/');
   };
 

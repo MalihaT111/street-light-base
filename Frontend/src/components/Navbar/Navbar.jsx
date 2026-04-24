@@ -13,7 +13,14 @@ const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const storedUser = (() => { try { return JSON.parse(localStorage.getItem('user') || '{}'); } catch { return {}; } })();
+  const storedUser = (() => {
+    try {
+      const savedUser = Cookies.get('user');
+      return savedUser ? JSON.parse(savedUser) : {};
+    } catch {
+      return {};
+    }
+  })();
   const normalizedRole = getNormalizedRole(storedUser?.role || '');
   const homeRoute = normalizedRole === 'admin' ? '/dashboard' : '/home';
   const isAdmin = normalizedRole === 'admin';
@@ -21,7 +28,7 @@ const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
 
   const handleSignOut = () => {
     Cookies.remove('token');
-    localStorage.removeItem('user');
+    Cookies.remove('user');
     navigate('/');
   };
 
