@@ -33,6 +33,11 @@ def create_app():
     app.register_blueprint(badges_bp)
     app.register_blueprint(achievements_bp)
 
+    @app.teardown_appcontext
+    def shutdown_session(exception=None):
+        # Placeholder for potential scoped session cleanup if using an ORM
+        pass
+
     @app.route("/api/health")
     def health_check():
         return jsonify({"status": "healthy", "environment": os.getenv("FLASK_ENV", "production")}), 200

@@ -19,7 +19,7 @@ from datetime import datetime, timedelta, timezone
 from urllib import error, parse, request
 
 
-DEFAULT_BASE_URL = "http://localhost:5001"
+DEFAULT_BASE_URL = "http://localhost:5000"
 
 
 def build_url(base_url, path, query=None):

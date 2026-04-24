@@ -19,7 +19,7 @@ const DAMAGE_TYPE_LABELS = {
 };
 
 function canAccessAllReports(role) {
-    return String(role || "").trim().toLowerCase() === "admin";
+    return ["admin", "dot_admin", "ppl"].includes(String(role || "").trim().toLowerCase());
 }
 
 function formatReport(r) {

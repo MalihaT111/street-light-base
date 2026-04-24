@@ -5,17 +5,23 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import styles from './Navbar.module.css';
 import Cookies from 'js-cookie';
 
+function getNormalizedRole(role) {
+  return ["admin", "dot_admin", "ppl"].includes(String(role).trim().toLowerCase()) ? "admin" : role;
+}
+
 const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const storedUser = (() => { try { return JSON.parse(Cookies.get('user')); } catch { return null; } })(); 
-  const homeRoute = storedUser?.role === 'admin' ? '/dashboard' : '/home';
-  const isAdmin = storedUser?.role === 'admin';
+  const storedUser = (() => { try { return JSON.parse(localStorage.getItem('user') || '{}'); } catch { return {}; } })();
+  const normalizedRole = getNormalizedRole(storedUser?.role || '');
+  const homeRoute = normalizedRole === 'admin' ? '/dashboard' : '/home';
+  const isAdmin = normalizedRole === 'admin';
+  const displayUsername = typeof username === 'string' && username.trim() ? username : 'User';
 
   const handleSignOut = () => {
-    Cookies.remove('user');
     Cookies.remove('token');
+    localStorage.removeItem('user');
     navigate('/');
   };
 
@@ -34,15 +40,18 @@ const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
         <>
           <div className={styles.navLinks}>
             {/* Desktop: For desktop view, the links will be displayed directly. */}
-            <Link to="/home" className={`${styles.navLink} ${activeTab === 'home' ? styles.active : ''}`}>
+            <Link to={homeRoute} className={`${styles.navLink} ${activeTab === 'home' ? styles.active : ''}`}>
               <FaHome className={styles.navIcon} />
               <span>Home</span>
             </Link>
             <div className={styles.dropdown}>
-              <Link className={`${styles.navLink} ${activeTab === 'reports' ? styles.active : ''}`}>
+              <button
+                type="button"
+                className={`${styles.navLink} ${activeTab === 'reports' ? styles.active : ''}`}
+              >
                 <FaFileAlt className={styles.navIcon} />
                 <span>Reports ▾</span>
-              </Link>
+              </button>
               <div className={styles.dropdownMenu}>
                   <Link to="/reports" className={styles.dropdownItem}>
                     <span>Submit Report</span>
@@ -76,7 +85,7 @@ const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
             <div>
               {menuOpen && (
                 <div className={styles.mobileMenu}>
-                    <Link to="/home" className= {styles.navLink}>
+                    <Link to={homeRoute} className= {styles.navLink}>
                     <span>Home</span>
                   </Link>
                   <Link to="/reports" className= {styles.navLink}>
@@ -99,9 +108,9 @@ const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
             </div>
             <div className={styles.userInfo}>
               <div className={styles.userAvatar}>
-                {username.charAt(0).toUpperCase()}
+                {displayUsername.charAt(0).toUpperCase()}
               </div>
-              <span className={styles.userName}>{username}</span>
+              <span className={styles.userName}>{displayUsername}</span>
               {isAdmin && (<span className={styles.adminBadge}>Admin</span>)}
             </div>
             <button onClick={handleSignOut} className={styles.signOutBtn} title="Sign Out">

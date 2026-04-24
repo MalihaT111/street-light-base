@@ -9,6 +9,7 @@ import Progress from "./pages/Progress/Progress.jsx";
 import Dashboard from "./pages/DOT-dashboard/Dashboard.jsx";
 import AllReports from "./pages/AllReports/AllReports.jsx";
 import Settings from "./pages/Settings/Settings.jsx";
+import Challenge from "./pages/Challenge/Challenge.jsx";
 import ForgotPassword from "./pages/LoginAndRegister/ForgetPassword.jsx";
 import ResetPassword from "./pages/LoginAndRegister/ResetPassword.jsx";
 import VerifyEmail from "./pages/LoginAndRegister/VerifyEmail.jsx";
@@ -16,7 +17,8 @@ import Cookies from 'js-cookie';
 
 function getRole() {
   try {
-    return JSON.parse(Cookies.get("user") || "{}").role || "";
+    const role = JSON.parse(localStorage.getItem("user") || "{}").role || "";
+    return ["admin", "dot_admin", "ppl"].includes(String(role).trim().toLowerCase()) ? "admin" : role;
   } catch {
     return "";
   }
@@ -51,6 +53,7 @@ function App() {
         <Route path="/reports" element={<CitizenRoute><Reports /></CitizenRoute>} />
         <Route path="/manage-reports" element={<CitizenRoute><ManageReports /></CitizenRoute>} />
         <Route path="/progress" element={<CitizenRoute><Progress /></CitizenRoute>} />
+        <Route path="/challenge" element={<CitizenRoute><Challenge /></CitizenRoute>} />
         <Route path="/settings" element={<CitizenRoute><Settings /></CitizenRoute>} />
         <Route path="/dashboard" element={<DotAdminRoute><Dashboard /></DotAdminRoute>} />
         <Route path="/all-reports" element={<DotAdminRoute><AllReports /></DotAdminRoute>} />
