@@ -1,0 +1,162 @@
+body{
+    box-sizing: border-box;
+ }
+ .wrapper {
+    padding: 32px 28px 40px;
+    max-width: 1320px;
+    margin: 0 auto;
+ }
+ 
+ 
+ .section {
+    width: 100%;
+    margin-bottom: 36px;
+ }
+ 
+ 
+ .missionCard {
+    background: #ffffff;
+    border: 1px solid #dbe3f0;
+    border-radius: 1.25rem;
+    padding: 2rem;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+    transition: all 0.2s ease;
+ }
+ 
+ 
+ .missionCard:hover {
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+ }
+ 
+ 
+ .eyebrow {
+    color: #2563eb;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+ }
+ 
+ 
+ .missionCard h2,
+ .callout h2 {
+    margin-bottom: 1rem;
+    font-weight: 700;
+ }
+ 
+ 
+ .missionCard p,
+ .flowCard p,
+ .benefitCard p,
+ .callout p {
+    color: #475569;
+ }
+ 
+ 
+ .sectionTitle {
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    margin-bottom: 1.25rem;
+    font-weight: 700;
+ }
+ 
+ 
+ .flowGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.2rem;
+ }
+ 
+ 
+ .flowCard,
+ .benefitCard {
+    background: #ffffff;
+    border: 1px solid #dbe3f0;
+    border-radius: 1rem;
+    padding: 1.4rem;
+    transition: all 0.2s ease;
+ }
+ 
+ 
+ .flowCard:hover,
+ .benefitCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
+ }
+ 
+ 
+ .flowCard span {
+    width: 2.6rem;
+    height: 2.6rem;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #ffffff;
+    font-weight: 800;
+    margin-bottom: 1rem;
+ }
+ 
+ 
+ .flowCard h3,
+ .benefitCard h3 {
+    margin-bottom: 0.6rem;
+    font-size: 1.05rem;
+ }
+ 
+ 
+ .benefitGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.2rem;
+ }
+ 
+ 
+ .callout {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #ffffff;
+    border-radius: 1.25rem;
+    padding: 2.2rem;
+    text-align: center;
+ }
+ 
+ 
+ .callout p {
+    max-width: 620px;
+    margin: 0 auto;
+    color: #cbd5e1;
+ }
+ 
+ 
+ .viewAllLink {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 1rem;
+    gap: 0.5rem;
+    color: #2563Eb;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+ }
+ /* For Divider */
+ .section:not(:last-child)::after {
+    content: "";
+    display: block;
+    height: 1px;
+    background: #e2e8f0;
+    margin-top: 36px;
+ }
+ @media (max-width: 900px) {
+    .flowGrid,
+    .benefitGrid {
+      grid-template-columns: 1fr;
+    }
+     .wrapper {
+      padding: 24px 16px 32px;
+    }
+     .section {
+      padding: 0;
+    }
+ }
+ 
