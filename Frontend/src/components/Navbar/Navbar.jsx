@@ -114,6 +114,9 @@ const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
                     <Link to={homeRoute} className= {styles.navLink}>
                     <span>Home</span>
                   </Link>
+                  <Link to="/mission" className= {styles.navLink}>
+                    <span>Mission</span>
+                  </Link>
                   <Link to="/reports" className= {styles.navLink}>
                     <span>Submit Report</span>
                   </Link>
