@@ -47,10 +47,29 @@ const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
         <>
           <div className={styles.navLinks}>
             {/* Desktop: For desktop view, the links will be displayed directly. */}
-            <Link to={homeRoute} className={`${styles.navLink} ${activeTab === 'home' ? styles.active : ''}`}>
+            {/* <Link to={homeRoute} className={`${styles.navLink} ${activeTab === 'home' ? styles.active : ''}`}>
               <FaHome className={styles.navIcon} />
               <span>Home</span>
-            </Link>
+            </Link> */}
+
+            <div className={styles.dropdown}>
+              <button
+                type="button"
+                className={`${styles.navLink} ${activeTab === 'home' ? styles.active : ''}`}
+              >
+                <FaFileAlt className={styles.navIcon} />
+                <span>Home ▾</span>
+              </button>
+              <div className={styles.dropdownMenu}>
+                  <Link to={homeRoute} className={styles.dropdownItem}>
+                    <span>Home</span>
+                  </Link>
+                  <Link to="/mission" className={styles.dropdownItem}>
+                    <span>Mission</span>
+                  </Link>
+              </div>
+            </div>
+
             <div className={styles.dropdown}>
               <button
                 type="button"
@@ -94,6 +113,9 @@ const Navbar = ({ username, activeTab = 'home', minimal = false }) => {
                 <div className={styles.mobileMenu}>
                     <Link to={homeRoute} className= {styles.navLink}>
                     <span>Home</span>
+                  </Link>
+                  <Link to="/mission" className= {styles.navLink}>
+                    <span>Mission</span>
                   </Link>
                   <Link to="/reports" className= {styles.navLink}>
                     <span>Submit Report</span>

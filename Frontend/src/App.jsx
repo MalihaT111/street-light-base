@@ -10,6 +10,7 @@ import Dashboard from "./pages/DOT-dashboard/Dashboard.jsx";
 import AllReports from "./pages/AllReports/AllReports.jsx";
 import Settings from "./pages/Settings/Settings.jsx";
 import Challenge from "./pages/Challenge/Challenge.jsx";
+import Mission from "./pages/Mission/Missinon.jsx";
 import ForgotPassword from "./pages/LoginAndRegister/ForgetPassword.jsx";
 import ResetPassword from "./pages/LoginAndRegister/ResetPassword.jsx";
 import VerifyEmail from "./pages/LoginAndRegister/VerifyEmail.jsx";
@@ -55,6 +56,7 @@ function App() {
         <Route path="/manage-reports" element={<CitizenRoute><ManageReports /></CitizenRoute>} />
         <Route path="/progress" element={<CitizenRoute><Progress /></CitizenRoute>} />
         <Route path="/challenge" element={<CitizenRoute><Challenge /></CitizenRoute>} />
+        <Route path="/mission" element={<CitizenRoute><Mission /></CitizenRoute>} />
         <Route path="/settings" element={<CitizenRoute><Settings /></CitizenRoute>} />
         <Route path="/dashboard" element={<DotAdminRoute><Dashboard /></DotAdminRoute>} />
         <Route path="/all-reports" element={<DotAdminRoute><AllReports /></DotAdminRoute>} />
