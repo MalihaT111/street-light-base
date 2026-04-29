@@ -22,7 +22,7 @@ function Mission() {
      <main className={styles.wrapper}>
        <PageHero
          title="Our Mission"
-         subtitle="Supporting the city’s mission to maintain safe, reliable infrastructure by identifying and reporting streetlight hazards."
+         subtitle="Supporting the city’s mission to maintain safe, reliable infrastructure by identifying and reporting streetlight damages."
        />
 
 
