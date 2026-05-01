@@ -5,6 +5,7 @@ Street Light Base is a web application developed to help the agency proactively 
 ## Features
 - User Registration and Login
 - Home Page
+- Mission Page
 - Report Submission
 - View Personal Reports
 - Leaderboard 
