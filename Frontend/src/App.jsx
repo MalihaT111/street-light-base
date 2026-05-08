@@ -8,6 +8,7 @@ import ManageReports from "./pages/Reports/ManageReports.jsx";
 import Progress from "./pages/Progress/Progress.jsx";
 import Dashboard from "./pages/DOT-dashboard/Dashboard.jsx";
 import AllReports from "./pages/AllReports/AllReports.jsx";
+import GeoExport from "./pages/GeoExport/GeoExport.jsx";
 import Settings from "./pages/Settings/Settings.jsx";
 import Challenge from "./pages/Challenge/Challenge.jsx";
 import Mission from "./pages/Mission/Missinon.jsx";
@@ -60,6 +61,7 @@ function App() {
         <Route path="/settings" element={<CitizenRoute><Settings /></CitizenRoute>} />
         <Route path="/dashboard" element={<DotAdminRoute><Dashboard /></DotAdminRoute>} />
         <Route path="/all-reports" element={<DotAdminRoute><AllReports /></DotAdminRoute>} />
+        <Route path="/export" element={<DotAdminRoute><GeoExport /></DotAdminRoute>} />
       </Routes>
     </>
   )

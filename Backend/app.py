@@ -17,6 +17,7 @@ from routes.user import user_bp
 from routes.challenges import challenges_bp
 from routes.badges import badges_bp
 from routes.achievements import achievements_bp
+from routes.geojson_export import geojson_export_bp
 
 def create_app():
     app = Flask(__name__)
@@ -32,6 +33,7 @@ def create_app():
     app.register_blueprint(challenges_bp)
     app.register_blueprint(badges_bp)
     app.register_blueprint(achievements_bp)
+    app.register_blueprint(geojson_export_bp)
 
     @app.teardown_appcontext
     def shutdown_session(exception=None):
