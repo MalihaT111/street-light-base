@@ -12,11 +12,14 @@ Street Light Base is a web application developed to help the agency proactively 
 - Challenges and Achievements
 - DOT analytics Dashboard 
 - View All Reports (DOT ONLY)
+- Download Reports (GeoJSON and DOT ONLY)
 
 ## Tech Stack
 - Frontend: React.JS , Vanilla CSS
 - Backend: Python (Flask)
 - Database: PostgreSql
+- Storage: Cloudinary (image uploads for reports)
+- Auth: JWT, bcrypt
 
 ## Architecture
 Frontend (React) → Backend (Flask) → Database (PostgreSQL)
@@ -31,6 +34,7 @@ A `.env` file is required but is not included in the repository for security rea
 The `.env` file will be provided separately.
 
 ### Run this project
+#### Locally:
 ```bash
 cd Frontend 
 npm install 

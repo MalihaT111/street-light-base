@@ -33,7 +33,7 @@ def register():
         last_name = user_info.get("last_name", "")
         role = user_info.get("role", "citizen")
         password = user_info.get("password")
-
+        #validity checks
         if not email:
             return jsonify({"success": False, "error": "Email is required"}), 400
         if not password:
@@ -73,6 +73,7 @@ def register():
             additional_claims={"type": "verify_email"},
             expires_delta=timedelta(minutes=30),
         )
+        #verification in order to gain access
         _send_verification_email(new_user[2], verify_token)
         return jsonify(
             {
@@ -98,6 +99,7 @@ def register():
         if connection:
             release_db_connection(connection)
 
+#password requirments
 def validate_password(password):
     if len(password) < 8:
         return "Password must be at least 8 characters long"
@@ -122,6 +124,7 @@ def login():
         selected_role = data.get("role", "user")
 
         login_identifier = email or username
+        #validity checks
         if not login_identifier or not password:
             return jsonify(
                 {"success": False, "error": "Email/username and password required"}
@@ -147,6 +150,7 @@ def login():
         else:
             if is_admin_role(db_role):
                 return jsonify({"success": False, "error": "Invalid credentials"}), 401
+        #unverified users must verify
         if not user[5]:
             try:
                 verify_token = create_access_token(
@@ -230,7 +234,7 @@ def forget_password():
         cursor.execute("SELECT id FROM users WHERE email = %s", (email,))
         user = cursor.fetchone()
         if not user:
-            return jsonify({"success": True, "message": "If that email exists, a reset link has been sent."}), 200
+            return jsonify({"success": True, "message": "If email exists, a reset link has been sent."}), 200
         user_id = user[0]
         reset_token = create_access_token(
             identity=str(user_id),

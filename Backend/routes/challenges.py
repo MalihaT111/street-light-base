@@ -85,7 +85,7 @@ CHALLENGES = {
     },
 }
 
-
+#time helper
 def _period_suffix(challenge_type):
     now = datetime.now(timezone.utc)
     if challenge_type == "daily":

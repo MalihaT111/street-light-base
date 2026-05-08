@@ -43,6 +43,8 @@ function formatReport(r) {
             ? r.photo_urls
             : r.photo_url ? [r.photo_url] : [],
         created_at: r.created_at,
+        latitude: r.latitude,
+        longitude: r.longitude,
     };
 }
 
@@ -136,6 +138,45 @@ function AllReports() {
         setSelectedConditions([]);
         setSelectedBoroughs([]);
         setSearchQuery('');
+    };
+
+    const csvHelper = (value) => {
+        const str = value == null ? '' : String(value);
+        return `"${str.replace(/"/g, '""')}"`;
+    };
+    
+    const handleExportCSV = () => {
+        const header = ['ID', 'Borough', 'Rating', 'Damage Types', 'Date', 'Latitude', 'Longitude', 'Photo URL'];
+        const rows = filteredReports.map((r) => {
+            const photoUrl = r.photo_urls?.[0] || r.photo_url || '';
+            return [r.id, r.borough, r.rating, r.damageType, r.date, r.latitude, r.longitude, photoUrl];
+        });
+        const csv = [header, ...rows].map(row => row.map(csvHelper).join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `reports-${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+    };
+
+    const handleExportGeoJSON = () => {
+        const features = filteredReports
+        .filter(r => r.latitude && r.longitude)
+        .map(r => ({
+            type: 'Feature',
+            geometry: { type: 'Point', coordinates: [parseFloat(r.longitude), parseFloat(r.latitude)] },
+            properties: {
+                id: r.id, borough: r.borough, rating: r.rating,
+                damage_types: r.damageType, date: r.date,
+                photo_url: r.photo_urls?.[0] || r.photo_url || null,
+            },
+        }));
+        const geojson = JSON.stringify({ type: 'FeatureCollection', features }, null, 2);
+        const blob = new Blob([geojson], { type: 'application/geo+json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `reports-${new Date().toISOString().slice(0, 10)}.geojson`;
+        a.click();
     };
 
     useEffect(() => {
@@ -256,6 +297,14 @@ function AllReports() {
                             <option>Rating: Poor to Good</option>
                             <option>Rating: Good to Poor</option>
                         </select>
+                    </div>
+                    <div className={styles.exportGroup}>
+                        <button type="button" className={styles.exportBtn} onClick={handleExportCSV}>
+                            Export CSV
+                        </button>
+                        <button type="button" className={styles.exportBtn} onClick={handleExportGeoJSON}>
+                            Export GeoJSON
+                        </button>
                     </div>
                 </div>
 

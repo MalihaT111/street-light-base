@@ -324,3 +324,29 @@
     border: 1px solid #2563EB;
     color: white;
 }
+.exportGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.exportBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  background: white;
+  color: #374151;
+  border: 1px solid #D1D5DB;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s;
+}
+.exportBtn:hover {
+  background: #F3F4F6;
+  border-color: #9CA3AF;
+}
