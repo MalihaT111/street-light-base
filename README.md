@@ -16,8 +16,6 @@ Street Light Base is a gamified civic reporting web application developed to hel
 8. [User Manual](#user-manual)
 9. [Test Cases](#test-cases)
 10. [Validation Rules](#validation-rules)
-11. [Known Issues & Bug Reports](#known-issues--bug-reports)
-
 ---
 
 ## Features
@@ -955,23 +953,9 @@ pytest tests/test_reports_all.py -v   # report access control only
 
 ---
 
-## Known Issues & Bug Reports
-
-### Resolved Issues
-
-| Issue | Description | Resolution |
-|-------|-------------|------------|
-| Role access bug | Users with `ppl` or `admin` role strings were rejected by the DOT admin guard | Normalized role check now covers `admin`, `dot_admin`, `ppl` |
-| GeoJSON null coordinates | Reports with `(0, 0)` coordinates were exported and corrupted heatmap data | Added filter to exclude `latitude = 0 AND longitude = 0` |
-| Weekly challenge bleed | Completing a weekly challenge in week N was incorrectly satisfying week N+1 | ISO week suffix appended to challenge key (e.g., `2026-W14`) |
-| Double points on challenge | Calling `check_and_award_challenges` twice gave double points | `ON CONFLICT DO NOTHING` on `user_challenges` insert; points only logged on successful insert |
-| Email enumeration on forgot-password | Returning `"email not found"` revealed whether an email was registered | Endpoint now always returns the same success response |
-
 ### Open Issues
 
 | Issue | Severity | Description |
 |-------|----------|-------------|
 | No rate limiting | Medium | `/api/register` and `/api/login` have no request rate limiting; brute-force attacks are possible |
 | Borough auto-detection | Low | Borough is currently provided by the client (frontend reverse-geocoding); server does not independently validate it |
-| No pagination on GeoJSON export | Low | Large exports fetch all rows at once; very large datasets may cause memory pressure |
-| HTTPS not enforced in production | Medium | The dev setup uses a self-signed cert; production deployment should enforce HTTPS at the load balancer |
