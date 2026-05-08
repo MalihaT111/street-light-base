@@ -7,3 +7,4 @@ bcrypt==5.0.0
 cloudinary==1.44.1
 gunicorn==21.2.0
 pytest==9.0.2
+pyproj==3.7.0

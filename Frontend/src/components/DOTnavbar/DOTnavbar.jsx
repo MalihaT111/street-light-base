@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FaChartLine, FaFileAlt, FaSignOutAlt } from 'react-icons/fa';
+import { FaChartLine, FaFileAlt, FaSignOutAlt, FaDownload } from 'react-icons/fa';
 import styles from "./DOTnavbar.module.css";
 import Cookies from 'js-cookie';
 
@@ -14,6 +14,7 @@ export default function DOTnavbar({ username = "User" }) {
   const getActiveTab = () => {
     if (location.pathname === '/dashboard') return 'analytics';
     if (location.pathname === '/all-reports') return 'reports';
+    if (location.pathname === '/export') return 'export';
     return 'analytics';
   };
 
@@ -59,6 +60,14 @@ export default function DOTnavbar({ username = "User" }) {
             <FaFileAlt />
             View Reports
           </Link>
+
+          <Link
+            to="/export"
+            className={`${styles.navItem} ${activeTab === 'export' ? styles.active : ''}`}
+          >
+            <FaDownload />
+            Export
+          </Link>
         </nav>
 
         {/* User section */}
@@ -77,6 +86,9 @@ export default function DOTnavbar({ username = "User" }) {
                   </Link>
                   <Link to="/all-reports" className={styles.navItem}>
                     <span>View Reports</span>
+                  </Link>
+                  <Link to="/export" className={styles.navItem}>
+                    <span>Export</span>
                   </Link>
                 </div>
               )}
